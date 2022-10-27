@@ -13,12 +13,29 @@ public class ListWindow : Window
     public ListWindow()
     {
         FilesService service = new FilesService(Config.FILE);
+        string[] staticHeader = new string[] { "Name", "Size", "Date" }; //chage me
 
-        this.table = new Table(service.Headers());
+        this.table = new Table(staticHeader); //service.Headers()
 
-        foreach (string[] item in service.Data())
+        //foreach (string[] item in service.Data())
+        //{
+        //    table.Add(item);
+        //}
+
+        string path = @"C:\Users\root\Desktop\Example Folder";
+        //Directories
+        string[] directories = Directory.GetDirectories(path);
+        foreach (string directory in directories)
         {
-            table.Add(item);
+            DirectoryInfo di = new DirectoryInfo(directory);
+            table.Add(new string[] { @"\" + di.Name, "0", di.LastWriteTime.ToString("MMM dd HH:mm") });
+        }
+        //Files
+        string[] files = Directory.GetFiles(path);
+        foreach (string file in files)
+        {
+            FileInfo fi = new FileInfo(file);
+            table.Add(new string[] { fi.Name, fi.Length.ToString(), fi.LastWriteTime.ToString("MMM dd HH:mm") });
         }
 
         this.table.RowSelected += Table_RowSelected;
