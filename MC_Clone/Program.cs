@@ -6,15 +6,6 @@ internal class Program
     {
         Console.CursorVisible = false;
 
-        /*
-        Table table = new Table(new string[] { "jmeno", "prijmeni", "vek" });
-
-        for (int i = 0; i < 20; i++)
-        {
-            table.Add(new string[] { "pepa " + i, "novak", i.ToString() });
-        }
-        */
-
         Application app = new Application();
 
         while (true)
