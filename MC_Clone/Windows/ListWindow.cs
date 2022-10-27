@@ -22,13 +22,25 @@ public class ListWindow : Window
         //    table.Add(item);
         //}
 
-        string path = @"C:\Users\root\Desktop\Example Folder";
+        ImportRows();
+
+        this.table.RowSelected += Table_RowSelected;
+    }
+
+    void ImportRows()
+    {
+        string path = @"C:\Users\root\Desktop"; //@"C:\Users\root\Desktop\Example Folder"
         //Directories
         string[] directories = Directory.GetDirectories(path);
         foreach (string directory in directories)
         {
             DirectoryInfo di = new DirectoryInfo(directory);
-            table.Add(new string[] { @"\" + di.Name, "0", di.LastWriteTime.ToString("MMM dd HH:mm") });
+            long size = 0;
+            foreach (var item in di.GetFiles())
+            {
+                size += item.Length;
+            }
+            table.Add(new string[] { @"\" + di.Name, size.ToString(), di.LastWriteTime.ToString("MMM dd HH:mm") });
         }
         //Files
         string[] files = Directory.GetFiles(path);
@@ -37,8 +49,6 @@ public class ListWindow : Window
             FileInfo fi = new FileInfo(file);
             table.Add(new string[] { fi.Name, fi.Length.ToString(), fi.LastWriteTime.ToString("MMM dd HH:mm") });
         }
-
-        this.table.RowSelected += Table_RowSelected;
     }
 
     private void Table_RowSelected(int index)
