@@ -23,10 +23,10 @@ public class ListWindow : Window
         //}
 
         ImportRows();
-
+        
         this.table.RowSelected += Table_RowSelected;
     }
-
+    
     void ImportRows()
     {
         string path = @"C:\Users\root\Desktop"; //@"C:\Users\root\Desktop\Example Folder"
@@ -59,6 +59,9 @@ public class ListWindow : Window
     public override void Draw()
     {
         this.table.Draw();
+        string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
+        var footer = new Footer(labels);
+        footer.Draw();
     }
 
     public override void HandleKey(ConsoleKeyInfo info)
