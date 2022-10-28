@@ -9,30 +9,78 @@ namespace MC_Clone;
 
 public class ListWindow : Window
 {
+<<<<<<< Updated upstream
     private FilePanel table;
     private FilePanel table2;
     int maxNameLength = 20;
     string path_config = @"C:\Users\root\Desktop\x"; //Config.FILE;
+=======
+    private FilePanel pane1; //useless?
+    private FilePanel pane2;
+    readonly List<FilePanel> _panels = new List<FilePanel>();
+    private int _activePanelIndex;
+    public delegate void OnKey(ConsoleKeyInfo key);
+    public event OnKey KeyPress;
+    int maxNameLength = 20;
+>>>>>>> Stashed changes
 
     public ListWindow()
     {
         FilesService service = new FilesService(Config.FILE);
         string[] staticHeader = new string[] { "Name", "Size", "Date" }; //chage me
 
+<<<<<<< Updated upstream
         this.table = new FilePanel(staticHeader, 0, 4); //service.Headers()
         this.table2 = new FilePanel(staticHeader, 55, 4); //table.LineLength() + 2 //55
+=======
+        this.pane1 = new FilePanel(staticHeader, 0, 4); //service.Headers()
+        this.pane2 = new FilePanel(staticHeader, 55, 4); //table.LineLength() + 2 //55
+        this._panels.Add(pane1);
+        this._panels.Add(pane2);
+>>>>>>> Stashed changes
 
         //foreach (string[] item in service.Data())
         //{
         //    table.Add(item);
         //}
 
+<<<<<<< Updated upstream
         ImportRows(table, path_config); //my
         ImportRows(table2, @"C:\Users\root\Desktop"); //my
 
         this.table.RowSelected += Table_RowSelected;
     }
     
+=======
+        foreach (var pane in _panels)
+        {
+            ImportRows(pane, Config.FOLDER);
+        }
+        _activePanelIndex = 0;
+        this._panels[this._activePanelIndex].Active = true;
+        KeyPress += this._panels[this._activePanelIndex].HandleKey;
+
+        //this.pane1.RowSelected += Table_RowSelected;
+    }
+
+    public void ChangeActivePanel()
+    {
+        this._panels[this._activePanelIndex].Active = false;
+        KeyPress -= this._panels[this._activePanelIndex].HandleKey;
+        //this._panels[this._activePanelIndex].UpdateContent(false);
+
+        this._activePanelIndex++;
+        if (this._activePanelIndex >= this._panels.Count)
+        {
+            this._activePanelIndex = 0;
+        }
+
+        this._panels[this._activePanelIndex].Active = true;
+        KeyPress += this._panels[this._activePanelIndex].HandleKey;
+        //this._panels[this._activePanelIndex].UpdateContent(false);
+    }
+
+>>>>>>> Stashed changes
     void ImportRows(FilePanel pane, string path)
     {
         //Directories
@@ -75,8 +123,13 @@ public class ListWindow : Window
 
     public override void Draw()
     {
+<<<<<<< Updated upstream
         this.table.Draw();
         this.table2.Draw();
+=======
+        this.pane1.Draw();
+        this.pane2.Draw();
+>>>>>>> Stashed changes
         string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         var footer = new Footer(labels);
         footer.Draw();
@@ -84,6 +137,31 @@ public class ListWindow : Window
 
     public override void HandleKey(ConsoleKeyInfo info)
     {
+<<<<<<< Updated upstream
         this.table.HandleKey(info);
+=======
+        if (info.Key == ConsoleKey.Tab)
+        {
+            ChangeActivePanel();
+        }
+        switch (info.Key)
+        {
+            case ConsoleKey.DownArrow:
+                goto case ConsoleKey.PageUp;
+            case ConsoleKey.UpArrow:
+                goto case ConsoleKey.PageUp;
+            case ConsoleKey.End:
+                goto case ConsoleKey.PageUp;
+            case ConsoleKey.Home:
+                goto case ConsoleKey.PageUp;
+            case ConsoleKey.PageDown:
+                goto case ConsoleKey.PageUp;
+            case ConsoleKey.PageUp:
+                this.KeyPress(info);
+                break;
+        }
+        //this.pane1.HandleKey(info);
+        
+>>>>>>> Stashed changes
     }
 }

@@ -8,7 +8,12 @@ namespace MC_Clone;
 public class Config
 {
     public const string FILE = @"C:\data.txt";
+<<<<<<< Updated upstream
     
+=======
+    public const string FOLDER = @"C:\Users\root\Desktop";
+
+>>>>>>> Stashed changes
     public const ConsoleColor FocusBackgroud = ConsoleColor.White;
     public const ConsoleColor FocusText = ConsoleColor.Black;
 

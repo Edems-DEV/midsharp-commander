@@ -27,6 +27,16 @@ public class FilePanel : IComponent
     int y = 0;
 
     //int lineLength;
+<<<<<<< Updated upstream
+=======
+    private bool _active;
+
+    public bool Active
+    {
+        get { return this._active; }
+        set { this._active = value; }
+    }
+>>>>>>> Stashed changes
 
     public FilePanel(string[] headers, int X = 0, int Y = 0)
     {
@@ -42,7 +52,11 @@ public class FilePanel : IComponent
         {
             //---------UPDATE---------
             case ConsoleKey.Tab:
+<<<<<<< Updated upstream
                 //ChangeActivePanel();
+=======
+                //ListWindow.ChangeActivePanel();
+>>>>>>> Stashed changes
                 break;
             case ConsoleKey.Enter:
                 //ChangeDirectoryOrRunProcess();
