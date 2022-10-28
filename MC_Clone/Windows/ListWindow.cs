@@ -115,23 +115,7 @@ public class ListWindow : Window
         {
             ChangeActivePanel();
         }
-        switch (info.Key)
-        {
-            case ConsoleKey.DownArrow:
-                goto case ConsoleKey.PageUp;
-            case ConsoleKey.UpArrow:
-                goto case ConsoleKey.PageUp;
-            case ConsoleKey.End:
-                goto case ConsoleKey.PageUp;
-            case ConsoleKey.Home:
-                goto case ConsoleKey.PageUp;
-            case ConsoleKey.PageDown:
-                goto case ConsoleKey.PageUp;
-            case ConsoleKey.PageUp:
-                this.KeyPress(info);
-                break;
-        }
-        //this.pane1.HandleKey(info);
-        
+
+        _panels[_activePanelIndex].HandleKey(info);
     }
 }
