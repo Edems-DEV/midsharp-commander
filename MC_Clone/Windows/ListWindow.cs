@@ -15,7 +15,7 @@ public class ListWindow : Window
     private int _activePanelIndex;
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
-    int maxNameLength = 20;
+    
 
     public ListWindow()
     {
@@ -27,20 +27,15 @@ public class ListWindow : Window
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 
-        //foreach (string[] item in service.Data())
-        //{
-        //    table.Add(item);
-        //}
-
         foreach (var pane in _panels)
         {
-            ImportRows(pane, Config.FOLDER);
+            pane.ImportRows(Config.FOLDER);
+            pane.RowSelected += Table_RowSelected;
+
         }
         _activePanelIndex = 0;
         this._panels[this._activePanelIndex].Active = true;
         KeyPress += this._panels[this._activePanelIndex].HandleKey;
-
-        //this.pane1.RowSelected += Table_RowSelected;
     }
 
     public void ChangeActivePanel()
@@ -58,41 +53,6 @@ public class ListWindow : Window
         this._panels[this._activePanelIndex].Active = true;
         KeyPress += this._panels[this._activePanelIndex].HandleKey;
         //this._panels[this._activePanelIndex].UpdateContent(false);
-    }
-
-    void ImportRows(FilePanel pane, string path)
-    {
-        //Directories
-        string[] directories = Directory.GetDirectories(path);
-        foreach (string directory in directories)
-        {
-            DirectoryInfo di = new DirectoryInfo(directory);
-            long size = 0;
-            foreach (var item in di.GetFiles())
-            {
-                size += item.Length;
-            }
-            pane.Add(new string[] { @"\" + Truncated(di.Name, maxNameLength - 1), size.ToString(), di.LastWriteTime.ToString("MMM dd HH:mm") });
-        }
-        //Files
-        string[] files = Directory.GetFiles(path);
-        foreach (string file in files)
-        {
-            FileInfo fi = new FileInfo(file);
-            pane.Add(new string[] { Truncated(fi.Name, maxNameLength), fi.Length.ToString(), fi.LastWriteTime.ToString("MMM dd HH:mm") });
-        }
-    }
-    string Truncated(string ts, int maxLength, string trun = "~")
-    {
-        if (ts.Length < maxLength)
-            return ts;
-
-        maxLength = maxLength - trun.Length;
-        int a = maxLength / 2 + maxLength % 2;
-        int b = maxLength / 2;
-        var truncated = ts.Substring(0, a) + trun + ts.Substring(ts.Length - b, b);
-
-        return truncated;
     }
 
     private void Table_RowSelected(int index)

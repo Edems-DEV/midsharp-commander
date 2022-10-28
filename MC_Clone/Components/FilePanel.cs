@@ -27,6 +27,7 @@ public class FilePanel : IComponent
     int y = 0;
 
     //int lineLength;
+    int maxNameLength = 20;
     private bool _active;
 
     public bool Active
@@ -202,6 +203,42 @@ public class FilePanel : IComponent
 
         rows.Add(new Row(data));
     }
+
+    public void ImportRows(string path)
+    {
+        //Directories
+        string[] directories = Directory.GetDirectories(path);
+        foreach (string directory in directories)
+        {
+            DirectoryInfo di = new DirectoryInfo(directory);
+            long size = 0;
+            foreach (var item in di.GetFiles())
+            {
+                size += item.Length;
+            }
+            Add(new string[] { @"\" + Truncated(di.Name, maxNameLength - 1), size.ToString(), di.LastWriteTime.ToString("MMM dd HH:mm") });
+        }
+        //Files
+        string[] files = Directory.GetFiles(path);
+        foreach (string file in files)
+        {
+            FileInfo fi = new FileInfo(file);
+            Add(new string[] { Truncated(fi.Name, maxNameLength), fi.Length.ToString(), fi.LastWriteTime.ToString("MMM dd HH:mm") });
+        }
+    }
+    string Truncated(string ts, int maxLength, string trun = "~")
+    {
+        if (ts.Length < maxLength)
+            return ts;
+
+        maxLength = maxLength - trun.Length;
+        int a = maxLength / 2 + maxLength % 2;
+        int b = maxLength / 2;
+        var truncated = ts.Substring(0, a) + trun + ts.Substring(ts.Length - b, b);
+
+        return truncated;
+    }
+
     #endregion
 
     #region HandleKey methods
