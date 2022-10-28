@@ -11,18 +11,35 @@ internal class Program
         int top = Console.WindowHeight;
         int left = Console.WindowWidth;
 
-        PopUp();
-        FootBar_ControlsPanel();
-        while (true)
-        {
-            if (top != Console.WindowHeight ||left != Console.WindowWidth) { 
-            Console.Clear();
-            PopUp();
-            FootBar_ControlsPanel();
-            top = Console.WindowHeight;
-            left = Console.WindowWidth;
-            }
-        }
+        //PopUp();
+        //FootBar_ControlsPanel();
+        //while (true)
+        //{
+        //    if (top != Console.WindowHeight ||left != Console.WindowWidth) { 
+        //    Console.Clear();
+        //    PopUp();
+        //    FootBar_ControlsPanel();
+        //    top = Console.WindowHeight;
+        //    left = Console.WindowWidth;
+        //    }
+        //}
+        
+        string a = "sheeeeeeeeeeeeeeesh";
+        Console.WriteLine(Truncated(a, 8));
+        
+    }
+
+    static string Truncated(string ts, int maxLength, string trun = "~")
+    {
+        if (ts.Length < maxLength)
+            return ts;
+
+        maxLength = maxLength - trun.Length;
+        int a = maxLength / 2 + maxLength % 2;
+        int b = maxLength / 2;
+        var truncated = ts.Substring(0, a) + trun + ts.Substring(ts.Length - b, b);
+
+        return truncated;
     }
 
     static void PopUp(){
