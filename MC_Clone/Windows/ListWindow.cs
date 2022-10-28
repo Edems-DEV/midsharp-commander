@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,12 @@ public class ListWindow : Window
     private int _activePanelIndex;
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
-    
+
+    FilePanel ActivePanel()
+    {
+
+        return _panels[_activePanelIndex];
+    }
 
     public ListWindow()
     {
@@ -34,15 +40,15 @@ public class ListWindow : Window
 
         }
         _activePanelIndex = 0;
-        this._panels[this._activePanelIndex].Active = true;
-        KeyPress += this._panels[this._activePanelIndex].HandleKey;
+        ActivePanel().Active = true;
+        KeyPress += ActivePanel().HandleKey;
     }
 
     public void ChangeActivePanel()
     {
-        this._panels[this._activePanelIndex].Active = false;
-        KeyPress -= this._panels[this._activePanelIndex].HandleKey;
-        //this._panels[this._activePanelIndex].UpdateContent(false);
+        ActivePanel().Active = false;
+        KeyPress -= ActivePanel().HandleKey;
+        //ActivePanel().UpdateContent(false);
 
         this._activePanelIndex++;
         if (this._activePanelIndex >= this._panels.Count)
@@ -50,9 +56,9 @@ public class ListWindow : Window
             this._activePanelIndex = 0;
         }
 
-        this._panels[this._activePanelIndex].Active = true;
-        KeyPress += this._panels[this._activePanelIndex].HandleKey;
-        //this._panels[this._activePanelIndex].UpdateContent(false);
+        ActivePanel().Active = true;
+        KeyPress += ActivePanel().HandleKey;
+        //ActivePanel().UpdateContent(false);
     }
 
     private void Table_RowSelected(int index)
