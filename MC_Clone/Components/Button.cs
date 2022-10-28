@@ -12,9 +12,6 @@ public class Button : IComponent
 
     public string Title { get; set; } = "";
 
-    ConsoleColor ascentColor = ConsoleColor.DarkCyan;
-
-
     public void Draw()
     {
         //Console.WriteLine($"[ {this.Title} ]");
@@ -22,7 +19,7 @@ public class Button : IComponent
         int asscentLetters = 1;
 
         Console.Write("[ ");
-        Console.ForegroundColor = ascentColor;
+        Console.ForegroundColor = Config.ascentColor;
         
         Console.Write(this.Title.Substring(0, asscentLetters));
         Console.ForegroundColor = a;
