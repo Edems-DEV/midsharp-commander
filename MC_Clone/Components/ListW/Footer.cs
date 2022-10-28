@@ -22,7 +22,7 @@ internal class Footer : IComponent
     {
         int top = Console.WindowHeight;
         int rowLength = Console.WindowWidth;
-        Console.SetCursorPosition(0, top - 1); //last visible row
+        Console.SetCursorPosition(0, top - 1 - 1); //last visible row - 1 (buggy scrool fix)
 
         int numberPad = 2;
 

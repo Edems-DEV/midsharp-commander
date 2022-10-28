@@ -67,9 +67,9 @@ public class Table : IComponent
     {
         List<int> widths = Widths();
 
-        DrawData(null, widths, '+', '-');
-        DrawData(headers, widths, '|', ' ');
-        DrawData(null, widths, '+', '=');
+        DrawData(null, widths, '┬', '─', '┌', '┐');
+        DrawData(headers, widths, '│', ' ');
+        DrawData(null, widths, '┼', '─', '├', '┤');
 
         for (int i = offset; i < offset + Math.Min(Count, this.rows.Count); i++)
         {
@@ -78,30 +78,35 @@ public class Table : IComponent
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
             }
-
-            DrawData(rows[i].Data, widths, '|', ' ');
+            
+            DrawData(rows[i].Data, widths, '│', ' ');
 
             Console.ResetColor();
         }
 
-        DrawData(null, widths, '+', '-');
+        DrawData(null, widths, '┴', '─', '└', '┘');
     }
 
-    private void DrawData(List<string>? data, List<int> widths, char sep, char pad)
+    private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
     {
+        char _start = start == 'ĉ' ? sep : start;
+        char _end = end == 'ĉ' ? sep : end;
+        
         int i = 0;
+
         foreach (int width in widths)
         {
             string value = data != null ? data[i] : "";
+            char b = i == 0 ? _start : sep;
 
-            Console.Write(sep);
+            Console.Write(b);
             Console.Write(pad);
             Console.Write(value.PadRight(widths[i] + 1, pad));
 
             i++;
         }
 
-        Console.WriteLine(sep);
+        Console.WriteLine(_end);
     }
 
     private List<int> Widths()

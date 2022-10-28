@@ -22,14 +22,14 @@ public class ListWindow : Window
         //    table.Add(item);
         //}
 
-        ImportRows();
+        ImportRows(); //my
         
         this.table.RowSelected += Table_RowSelected;
     }
     
     void ImportRows()
     {
-        string path = @"C:\Users\root\Desktop"; //@"C:\Users\root\Desktop\Example Folder"
+        string path = @"C:\Users\root\Desktop\Example Folder"; //@"C:\Users\root\Desktop\Example Folder"
         //Directories
         string[] directories = Directory.GetDirectories(path);
         foreach (string directory in directories)
