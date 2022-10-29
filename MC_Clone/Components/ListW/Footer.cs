@@ -54,6 +54,7 @@ internal class DebugConsole : IComponent
 {
     int ySize;
     int localY = 0;
+    string msg = "";
     public DebugConsole(int y)
     {
         localY = y;
@@ -67,15 +68,15 @@ internal class DebugConsole : IComponent
     }
     public void Log(string msg)
     {
-        CleanLine();
-        Console.SetCursorPosition(0, Console.WindowHeight - localY);
-        msg = $" > {msg}";
-        Console.Write(msg);
+        this.msg = msg;
     }
 
     public void Draw()
     {
-        Log("");
+        CleanLine();
+        Console.SetCursorPosition(0, Console.WindowHeight - localY -1);
+        msg = $" > {msg}";
+        Console.Write(msg);
     }
     public void HandleKey(ConsoleKeyInfo info)
     {

@@ -15,6 +15,7 @@ public class ListWindow : Window
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
     public int winWidth = 0;
+    public string logMSG = "";
 
     static void Test()
     {
@@ -105,7 +106,9 @@ public class ListWindow : Window
         {
             pane.Draw();
         }
-        //debugConsole.Draw(); // y -1 + (-1 footer)
+        var dC = new DebugConsole(1);
+        dC.Log(logMSG);
+        dC.Draw();
         string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         var footer = new Footer(labels);
         footer.Draw(); // y - 1 (from bottom)
