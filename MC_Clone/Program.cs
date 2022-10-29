@@ -5,6 +5,7 @@ internal class Program
     static void Main(string[] args)
     {
         Console.CursorVisible = false;
+        ConsoleBTN.disable_MaximizeBTN(); //when it is maximized, it only updates after some interaction //TODO: FIX a delete this
         Console.Title = "Midnight Depression";
 
         Application app = new Application();
