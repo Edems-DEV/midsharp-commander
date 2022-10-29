@@ -18,10 +18,8 @@ internal class Program
 
             while (!(Console.KeyAvailable))
             {
-                //System.Threading.Thread.Sleep(50);
-                if (a == Console.WindowHeight && b == Console.WindowWidth) { //window size is same
-                    //System.Threading.Thread.Sleep(1000);
-                    //Console.WriteLine(a + " / " + Console.BufferHeight + "||" + b + " / " + Console.BufferWidth);
+                //Update if window size was changed
+                if (a == Console.WindowHeight && b == Console.WindowWidth) {
                     continue;
                 }
                     

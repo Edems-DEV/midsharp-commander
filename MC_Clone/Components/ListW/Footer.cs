@@ -8,21 +8,18 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 internal class Footer : IComponent
 {
-    //public List<string> labels { get; set; }
     public string[] labels { get; set; }
 
-    //= { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
     public Footer(string[] Labels)
     {
         labels = Labels;
-        //labels = new List<string> { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
     }
 
     public void Draw()
     {
         int top = Console.WindowHeight;
         int rowLength = Console.WindowWidth;
-        Console.SetCursorPosition(0, top - 1); // -1 (last visible row) - 1 (buggy scrool fix)
+        Console.SetCursorPosition(0, top - 1); // -1 (last visible row) - 1 (buggy scrool fix -> from readkey?)
 
         int numberPad = 2;
 

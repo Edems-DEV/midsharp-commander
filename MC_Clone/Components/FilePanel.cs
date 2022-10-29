@@ -165,12 +165,16 @@ public class FilePanel : IComponent
         row2 += '└';
         row2 += new String('─', lineLength - 2);
         row2 += '┘';
-        Console.SetCursorPosition(x, y_temp);
-        Console.Write(row0);
-        Console.SetCursorPosition(x, y_temp + 1);
-        Console.Write(row1);
-        Console.SetCursorPosition(x, y_temp + 2);
-        Console.Write(row2);
+
+        string[] local_rows = { row0, row1, row2 };
+
+        int count = 0;
+        foreach (var local_row in local_rows)
+        {
+            Console.SetCursorPosition(x, y_temp + count);
+            Console.Write(local_row);
+            count++;
+        }
     }
 
     public void Draw()
