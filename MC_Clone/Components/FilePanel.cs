@@ -38,6 +38,11 @@ public class FilePanel : IComponent
 
     string statusBarLabel = "";
 
+    #region Static
+    char folderPrefix = '/';
+    //char verticalLine = '│'; //all frame chars here
+    #endregion
+
 
     #region Properties
     public bool Active
@@ -159,6 +164,10 @@ public class FilePanel : IComponent
         row0 += '┤';
         string row1 = "";
         row1 += '│';
+        if (label == "..")
+            label = "UP--DIR";
+        else if (!label.StartsWith(folderPrefix))
+            label = " " + label; 
         row1 += label; //modify for each file type
         row1 += new String(' ', lineLength - row1.Length - 1);
         row1 += '│';
@@ -328,7 +337,7 @@ public class FilePanel : IComponent
         {
             if (item == null)
             {
-                Add(new string[] { "..", "UP--DIR", "ToDo" });
+                Add(new string[] { folderPrefix + "..", "UP--DIR", "ToDo" });
                 continue;
             }
             string name = Truncated(item.Name, maxNameLength);
@@ -338,7 +347,7 @@ public class FilePanel : IComponent
             if (item is DirectoryInfo)
             {
                 if (!_discs)
-                    name = @"\" + name;
+                    name = folderPrefix + name;
                 local_maxNameLength -= 1;
                 DirectoryInfo a = item as DirectoryInfo;
                 try { //missing permision for low level folders

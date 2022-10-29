@@ -5,6 +5,7 @@ internal class Program
     static void Main(string[] args)
     {
         Console.CursorVisible = false;
+        Console.Title = "Midnight Depression";
 
         Application app = new Application();
 
