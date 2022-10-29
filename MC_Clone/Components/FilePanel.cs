@@ -168,7 +168,7 @@ public class FilePanel : IComponent
         row0 += '┤';
         string row1 = "";
         row1 += '│';
-        if (label == "..")
+        if (label == folderPrefix + "..")
             label = "UP--DIR";
         else if (!label.StartsWith(folderPrefix))
             label = " " + label; 
