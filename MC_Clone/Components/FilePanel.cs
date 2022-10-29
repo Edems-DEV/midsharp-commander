@@ -188,6 +188,8 @@ public class FilePanel : IComponent
         //TODO:
         // - use SizeConvertor() (+ this will show other sizes, no only GB )
         // - use SetDiscs(); -> dynamic disk select (at the moment it shows only disk[0] -> "C:\" )
+        //SetDiscs();
+        //SizeConvertor();
         string name = "";
         const double GB = 1073741824; //bytesToGb
 
@@ -202,6 +204,20 @@ public class FilePanel : IComponent
 
         return name;
     }
+    void activePath()
+    {
+        Console.SetCursorPosition(x, y_temp - 1);
+
+        string line = @$"┌<─";
+
+        Console.Write(line);
+        if (_active) {
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Gray;
+        }
+        Console.Write(_path);
+        Console.ResetColor();
+    }
 
     public void Draw()
     {
@@ -209,6 +225,7 @@ public class FilePanel : IComponent
         LineLength();
 
         DrawData(null, widths, '┬', '─', '┌', '┐');
+        activePath();
         DrawData(headers, widths, '│', ' ');
         DrawData(null, widths, '┼', '─', '├', '┤');
 
@@ -529,8 +546,8 @@ public class FilePanel : IComponent
         {
             if (fsInfo is DirectoryInfo)
             {
-                try{ Directory.GetDirectories(fsInfo.FullName); }
-                catch{ return; }
+                //try{ Directory.GetDirectories(fsInfo.FullName); } //uselles?
+                //catch{ return; }
 
                 Path = fsInfo.FullName;
                 SetLists();
