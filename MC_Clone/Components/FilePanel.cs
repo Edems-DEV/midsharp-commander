@@ -394,7 +394,7 @@ public class FilePanel : IComponent
         //Long row
         //TODO: find different solution
         string emptyLong = new String(' ', aaaa);
-        int asss = rows.Count - 8;
+        int asss = rows.Count + 8;
         for (int i = 0; i < Console.WindowHeight - asss; i++)
         {
             Add(new string[] { emptyLong, "", "" });
