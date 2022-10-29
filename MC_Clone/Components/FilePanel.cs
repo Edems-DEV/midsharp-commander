@@ -224,13 +224,18 @@ public class FilePanel : IComponent
         Console.SetCursorPosition(x, y_temp - 1);
 
         string line = @$"┌<─";
+        string label = "";
 
         Console.Write(line);
         if (_active) {
             Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.Gray;
         }
-        Console.Write(_path);
+        if (_discs)
+            label = " Drives: ";
+        else
+            label = $" {_path} ";
+        Console.Write(label);
         Console.ResetColor();
     }
 
