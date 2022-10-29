@@ -35,6 +35,8 @@ public class FilePanel : IComponent
     private bool _discs;
     private string _path = Config.FOLDER;
 
+    string statusBarLabel = "";
+
 
     #region Properties
     public bool Active
@@ -146,6 +148,30 @@ public class FilePanel : IComponent
                 break;
         }
     }
+    public void StatusLine(string label) //char vertical = '│'
+    {
+        
+
+        string row0 = ""; //need to overrite coners
+        row0 += '├';
+        row0 += new String('─', lineLength - 2);
+        row0 += '┤';
+        string row1 = "";
+        row1 += '│';
+        row1 += label; //modify for each file type
+        row1 += new String(' ', lineLength - row1.Length - 1);
+        row1 += '│';
+        string row2 = "";
+        row2 += '└';
+        row2 += new String('─', lineLength - 2);
+        row2 += '┘';
+        Console.SetCursorPosition(x, y_temp);
+        Console.Write(row0);
+        Console.SetCursorPosition(x, y_temp + 1);
+        Console.Write(row1);
+        Console.SetCursorPosition(x, y_temp + 2);
+        Console.Write(row2);
+    }
 
     public void Draw()
     {
@@ -162,6 +188,7 @@ public class FilePanel : IComponent
             {
                 Console.ForegroundColor = Config.FocusText;
                 Console.BackgroundColor = Config.FocusBackgroud;
+                statusBarLabel = rows[i].Data[0];
             }
             
             DrawData(rows[i].Data, widths, '│', ' ');
@@ -169,7 +196,8 @@ public class FilePanel : IComponent
             Console.ResetColor();
         }
 
-        DrawData(null, widths, '┴', '─', '└', '┘');
+        //DrawData(null, widths, '┴', '─', '└', '┘');
+        StatusLine(statusBarLabel);
         y_temp = y;
     }
     #region Draw methods
