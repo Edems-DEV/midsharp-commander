@@ -49,36 +49,3 @@ internal class Footer : IComponent
     {
     }
 }
-
-internal class DebugConsole : IComponent
-{
-    int ySize;
-    int localY = 0;
-    string msg = "";
-    public DebugConsole(int y)
-    {
-        localY = y;
-    }
-    public void CleanLine()
-    {
-        Console.SetCursorPosition(0, Console.WindowHeight - localY);
-        int winWidth = Console.WindowWidth;
-        string space = new String(' ', winWidth);
-        Console.Write(space);
-    }
-    public void Log(string msg)
-    {
-        this.msg = msg;
-    }
-
-    public void Draw()
-    {
-        CleanLine();
-        Console.SetCursorPosition(0, Console.WindowHeight - localY -1);
-        msg = $" > {msg}";
-        Console.Write(msg);
-    }
-    public void HandleKey(ConsoleKeyInfo info)
-    {
-    }
-}
