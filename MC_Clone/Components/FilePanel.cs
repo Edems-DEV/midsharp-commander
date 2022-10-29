@@ -13,7 +13,7 @@ public class FilePanel : IComponent
     public event Action<int> RowSelected; 
 
 
-    private List<string> headers;
+    private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
@@ -60,23 +60,22 @@ public class FilePanel : IComponent
     }
     #endregion
 
-    void Star(string[] headers, int X = 0, int Y = 0)
+    void Start(int X = 0, int Y = 0)
     {
-        this.headers = new List<string>(headers);
         x = X;
         y = Y;
         y_temp = y;
         LineLength();
     }
-    public FilePanel(string[] headers, int X = 0, int Y = 0)
+    public FilePanel(int X = 0, int Y = 0)
     {
-        Star(headers, X, Y);
+        Start(X, Y);
         SetDiscs();
     }
 
-    public FilePanel(string path, string[] headers, int X = 0, int Y = 0)
+    public FilePanel(string path, int X = 0, int Y = 0)
     {
-        Star(headers, X, Y);
+        Start(X, Y);
         SetLists();
     }
 

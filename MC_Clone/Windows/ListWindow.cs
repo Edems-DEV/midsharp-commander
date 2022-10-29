@@ -15,6 +15,38 @@ public class ListWindow : Window
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
     public int winWidth = 0;
+
+    static void Test()
+    {
+        //Elements Y size
+        int menu = 1;
+        int PANES;
+        int header = 3; int lasLine = 1;
+        PANES = header + lasLine;
+        int miniStatusBar = 2;
+        int DebugConsole = 1;
+        int footer = 1;
+
+        //Top
+        int winHeight = Console.BufferHeight;
+        int cursorFromTop = 0;
+        int cursorFromBottom = winHeight;
+
+        //Size
+        cursorFromTop += menu;
+        cursorFromTop += header;
+       
+        cursorFromBottom -= footer;
+        cursorFromBottom -= DebugConsole;
+        cursorFromBottom -= miniStatusBar;
+        cursorFromBottom -= lasLine;
+        int middleSpace = winHeight - (cursorFromTop + cursorFromBottom);
+
+        //Panel(X,Y)
+        int y = cursorFromTop;
+        int visible = middleSpace;
+    }
+    
     FilePanel ActivePanel()
     {
         return _panels[_activePanelIndex];
@@ -24,11 +56,9 @@ public class ListWindow : Window
     {
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
-        string[] staticHeader = new string[] { "Name", "Size", "Date" }; //chage me //{ "Name", "Size", "Date" }
-
         
-        FilePanel pane1 = new FilePanel(Config.FILE,staticHeader, 0, 4); //service.Headers()
-        FilePanel pane2 = new FilePanel(Config.FILE,staticHeader, winWidth, 4); //table.LineLength() + 2 //55
+        FilePanel pane1 = new FilePanel(Config.FILE, 0, 4); //service.Headers()
+        FilePanel pane2 = new FilePanel(Config.FILE, winWidth, 4); //table.LineLength() + 2 //55
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 
@@ -75,9 +105,10 @@ public class ListWindow : Window
         {
             pane.Draw();
         }
+        //debugConsole.Draw(); // y -1 + (-1 footer)
         string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         var footer = new Footer(labels);
-        footer.Draw();
+        footer.Draw(); // y - 1 (from bottom)
     }
 
     public override void HandleKey(ConsoleKeyInfo info)
