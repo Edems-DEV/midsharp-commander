@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,6 +16,7 @@ public class FilePanel : IComponent
     private List<string> headers;
 
     private List<Row> rows = new List<Row>();
+    private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
 
     private int offset = 0;
 
@@ -26,22 +28,56 @@ public class FilePanel : IComponent
     int y_temp = 0;
     int y = 0;
 
-    //int lineLength;
-    int maxNameLength = 20;
+    int lineLength = 0;
+    int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
+    int NameExtraPad = 0;
     private bool _active;
+    private bool _discs;
+    private string _path = Config.FOLDER;
 
+
+    #region Properties
     public bool Active
     {
         get { return this._active; }
         set { this._active = value; }
     }
+    public bool IsDiscs
+    {
+        get { return this._discs; }
+    }
+    public string Path
+    {
+        get { return this._path; }
+        set
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(value);
+            if (directoryInfo.Exists)
+                this._path = value;
+            else
+                throw new Exception(String.Format("Path {0} does not exist", value));
+        }
+    }
+    #endregion
 
-    public FilePanel(string[] headers, int X = 0, int Y = 0)
+    void Star(string[] headers, int X = 0, int Y = 0)
     {
         this.headers = new List<string>(headers);
         x = X;
         y = Y;
         y_temp = y;
+        LineLength();
+    }
+    public FilePanel(string[] headers, int X = 0, int Y = 0)
+    {
+        Star(headers, X, Y);
+        SetDiscs();
+    }
+
+    public FilePanel(string path, string[] headers, int X = 0, int Y = 0)
+    {
+        Star(headers, X, Y);
+        SetLists();
     }
 
     public void HandleKey(ConsoleKeyInfo info)
@@ -53,8 +89,8 @@ public class FilePanel : IComponent
                 //ListWindow.ChangeActivePanel();
                 break;
             case ConsoleKey.Enter:
-                //ChangeDirectoryOrRunProcess();
-                this.RowSelected(this.Selected);
+                ChangeDir();
+                //this.RowSelected(this.Selected);
                 break;
             //---------NAVIGATION---------
             case ConsoleKey.UpArrow:
@@ -77,9 +113,6 @@ public class FilePanel : IComponent
                 break;
             //------------------------
             //---------FOOTER---------
-            //case ConsoleKey.F4:
-            //    this.RowSelected(this.Selected);
-            //    break;
             case ConsoleKey.F1:
                 Help();
                 break;
@@ -102,14 +135,13 @@ public class FilePanel : IComponent
                 MkDir();
                 break;
             case ConsoleKey.F8:
-                MkDir();
+                Delete();
                 break;
             case ConsoleKey.F9:
                 PullDn();
                 break;
             case ConsoleKey.F10:
-                MkDir();
-                break;
+                goto case ConsoleKey.Escape;
             case ConsoleKey.Escape:
                 this.Quit();
                 break;
@@ -119,6 +151,7 @@ public class FilePanel : IComponent
     public void Draw()
     {
         List<int> widths = Widths();
+        LineLength();
 
         DrawData(null, widths, '┬', '─', '┌', '┐');
         DrawData(headers, widths, '│', ' ');
@@ -170,11 +203,20 @@ public class FilePanel : IComponent
         int lenght = 0;
         foreach (var item in Widths())
         {
-            lenght += item;
             lenght += 2;
+            lenght += item;
+            lenght += 1;
         }
+        lenght += 1;
+        int HalfWIn = Console.BufferWidth / 2;
+        if (lenght > 27)
+        {
+            maxNameLength = HalfWIn - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
+        }
+        lineLength = lenght;
         Console.SetCursorPosition(x, 1);
-        Console.WriteLine(lenght);
+        Console.WriteLine("HalfWIn= " + HalfWIn + "| lineLength=" + lineLength + "| maxNameLength=" + maxNameLength + "| pad= "  + (HalfWIn - lineLength));
+        var a = new Logs(lenght.ToString());
         return lenght;
     }
     private List<int> Widths()
@@ -204,33 +246,59 @@ public class FilePanel : IComponent
         rows.Add(new Row(data));
     }
 
-    public void ImportRows(string path)
+    public void ImportRows(string path = "")
     {
-        //Directories
-        string[] directories = Directory.GetDirectories(path);
-        foreach (string directory in directories)
+        if (rows != null)
+            rows.Clear();
+        foreach (var item in FS_Objects)
         {
-            DirectoryInfo di = new DirectoryInfo(directory);
-            long size = 0;
-            foreach (var item in di.GetFiles())
+            if (item == null)
             {
-                size += item.Length;
+                Add(new string[] { "..", "UP--DIR", "ToDo" });
+                continue;
             }
-            Add(new string[] { @"\" + Truncated(di.Name, maxNameLength - 1), size.ToString(), di.LastWriteTime.ToString("MMM dd HH:mm") });
-        }
-        //Files
-        string[] files = Directory.GetFiles(path);
-        foreach (string file in files)
-        {
-            FileInfo fi = new FileInfo(file);
-            Add(new string[] { Truncated(fi.Name, maxNameLength), fi.Length.ToString(), fi.LastWriteTime.ToString("MMM dd HH:mm") });
+            string name = Truncated(item.Name, maxNameLength);
+            int local_maxNameLength = maxNameLength;
+
+            long size = 0;
+            if (item is DirectoryInfo)
+            {
+                if (!_discs)
+                    name = @"\" + name;
+                local_maxNameLength -= 1;
+                DirectoryInfo a = item as DirectoryInfo;
+                try { //missing permision for low level folders
+                    foreach (var file in a.GetFiles()) //TODO: SubDir size
+                    {
+                        size += file.Length;
+                    }
+                }
+                catch { }
+                
+            }
+            else
+            {
+                FileInfo a = item as FileInfo;
+                size = a.Length;
+            }
+            
+            Truncated(item.Name, local_maxNameLength);
+            Add(new string[] { name, SizeConvertor(size), item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
     }
     string Truncated(string ts, int maxLength, string trun = "~")
     {
         if (ts.Length < maxLength)
+        {
+            //if (Console.BufferWidth > lineLength)
+            //{
+            //    int pad = (Console.BufferWidth - lineLength);
+            //    string space = new String(' ', pad);
+            //    return ts + space;
+            //}
             return ts;
-
+        }
+            
         maxLength = maxLength - trun.Length;
         int a = maxLength / 2 + maxLength % 2;
         int b = maxLength / 2;
@@ -238,9 +306,25 @@ public class FilePanel : IComponent
 
         return truncated;
     }
+    
+    string SizeConvertor(long Bytes) //max line zize  = 7 (123,45K)
+    {
+        double bytes = Bytes;
+        int r = 2;
+        if (bytes < 1000)
+            return bytes + "B";
+        if (bytes > 1000 && bytes < 1000000)
+            return Math.Round(bytes / 1000, r) + "K";
+        if (bytes > 1000000 && bytes < 1000000000)
+            return Math.Round(bytes / 1000000, r) + "M";
+        if (bytes > 1000000000 && bytes < 1000000000000)
+            return Math.Round(bytes / 1000000000, r) + "G";
+        if (bytes > 1000000000000)
+            return Math.Round(bytes / 1000000000000,r) + "T";
+        return " ";
+    }
 
     #endregion
-
     #region HandleKey methods
     #region Controls
     private void ScrollUp()
@@ -304,6 +388,7 @@ public class FilePanel : IComponent
     }
     private void Edit()
     {
+        this.RowSelected(this.Selected);
     }
     private void Copy()
     {
@@ -325,4 +410,116 @@ public class FilePanel : IComponent
     }
     #endregion
     #endregion
+    
+    
+    
+
+    public void SetLists()
+    {
+        if (this.FS_Objects.Count != 0)
+        {
+            this.FS_Objects.Clear();
+        }
+        this._discs = false;
+        DirectoryInfo levelUpDirectory = null;
+        this.FS_Objects.Add(levelUpDirectory);
+        //Directories
+        string[] directories = Directory.GetDirectories(this._path);
+        foreach (string directory in directories)
+        {
+            DirectoryInfo di = new DirectoryInfo(directory);
+            this.FS_Objects.Add(di);
+        }
+        //Files
+        string[] files = Directory.GetFiles(this._path);
+        foreach (string file in files)
+        {
+            FileInfo fi = new FileInfo(file);
+            this.FS_Objects.Add(fi);
+        }
+    }
+    public void SetDiscs()
+    {
+        if (this.FS_Objects.Count != 0)
+        {
+            this.FS_Objects.Clear();
+        }
+        this._discs = true;
+        DriveInfo[] discs = DriveInfo.GetDrives();
+        foreach (DriveInfo disc in discs)
+        {
+            if (disc.IsReady)
+            {
+                DirectoryInfo di = new DirectoryInfo(disc.Name);
+                this.FS_Objects.Add(di);
+            }
+        }
+    }
+
+    public FileSystemInfo GetActiveObject()
+    {
+        if (this.FS_Objects != null && this.FS_Objects.Count != 0)
+        {
+            return this.FS_Objects[this.Selected];
+        }
+        throw new Exception("The list of panel objects is empty");
+    }
+
+    private void ChangeDir()
+    {
+        FileSystemInfo fsInfo = this.FS_Objects[this.Selected]; //GetActiveObject();
+        if (fsInfo != null)
+        {
+            if (fsInfo is DirectoryInfo)
+            {
+                try{ Directory.GetDirectories(fsInfo.FullName); }
+                catch{ return; }
+
+                Path = fsInfo.FullName;
+                SetLists();
+                UpdatePanel();
+            }
+            //else
+            //    //file -> F4 edit
+        }
+        else
+        {
+            string currentPath = Path;
+            DirectoryInfo currentDirectory = new DirectoryInfo(currentPath);
+            DirectoryInfo upLevelDirectory = currentDirectory.Parent;
+
+            if (upLevelDirectory != null)
+            {
+                Path = upLevelDirectory.FullName;
+                SetLists();
+                UpdatePanel();
+            }
+
+            else
+            {
+                SetDiscs();
+                UpdatePanel();
+            }
+        }
+    }
+    public void UpdatePanel()
+    {
+        offset = 0;
+        Selected = 0;
+        Clear(); //change to something better (clear only that pane)
+        ImportRows();
+        this.Draw();
+    }
+
+    void Clear()
+    {
+        int rows = Visible + headers.Count + 1; //final line
+
+        string space = new String(' ', lineLength);
+        for (int i = 0; i < rows; i++)
+        {
+            Console.SetCursorPosition(x, y + i);
+            Console.WriteLine(space);
+        }
+    }
 }

@@ -10,31 +10,31 @@ namespace MC_Clone;
 
 public class ListWindow : Window
 {
-    private FilePanel pane1; //useless?
-    private FilePanel pane2;
     readonly List<FilePanel> _panels = new List<FilePanel>();
     private int _activePanelIndex;
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
-
+    public int winWidth = 0;
     FilePanel ActivePanel()
     {
-
         return _panels[_activePanelIndex];
     }
 
     public ListWindow()
     {
+        winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
-        string[] staticHeader = new string[] { "Name", "Size", "Date" }; //chage me
+        string[] staticHeader = new string[] { "Name", "Size", "Date" }; //chage me //{ "Name", "Size", "Date" }
 
-        this.pane1 = new FilePanel(staticHeader, 0, 4); //service.Headers()
-        this.pane2 = new FilePanel(staticHeader, 55, 4); //table.LineLength() + 2 //55
+        
+        FilePanel pane1 = new FilePanel(Config.FILE,staticHeader, 0, 4); //service.Headers()
+        FilePanel pane2 = new FilePanel(Config.FILE,staticHeader, winWidth, 4); //table.LineLength() + 2 //55
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 
         foreach (var pane in _panels)
         {
+            pane.LineLength();
             pane.ImportRows(Config.FOLDER);
             pane.RowSelected += Table_RowSelected;
 
@@ -68,8 +68,13 @@ public class ListWindow : Window
 
     public override void Draw()
     {
-        this.pane1.Draw();
-        this.pane2.Draw();
+        winWidth = Console.BufferWidth / 2;
+        Console.Write(new String('=', winWidth));
+        Console.Write(new String('|', winWidth));
+        foreach (var pane in _panels)
+        {
+            pane.Draw();
+        }
         string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         var footer = new Footer(labels);
         footer.Draw();
