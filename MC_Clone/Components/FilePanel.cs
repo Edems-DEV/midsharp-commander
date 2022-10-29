@@ -57,7 +57,7 @@ public class FilePanel : IComponent
     {
         get { return this._discs; }
     }
-    public string Path
+    public string Path_
     {
         get { return this._path; }
         set
@@ -133,6 +133,7 @@ public class FilePanel : IComponent
                 Menu();
                 break;
             case ConsoleKey.F3:
+                if (FS_Objects[Selected] is DirectoryInfo) { goto case ConsoleKey.Enter; break; }
                 View();
                 break;
             case ConsoleKey.F4:
@@ -513,10 +514,10 @@ public class FilePanel : IComponent
     }
     #endregion
     #region FunctionKeys
-    private void Help()
+    private void Help() //no
     {
     }
-    private void Menu()
+    private void Menu() //no
     {
     }
     private void View()
@@ -528,21 +529,155 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
+        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
+        try
+        {
+            FileSystemInfo fileObject = GetActiveObject();
+            FileInfo currentFile = fileObject as FileInfo;
+            if (currentFile != null)
+            {
+                string fileName = currentFile.Name;
+                string destName = Path.Combine(destPath, fileName);
+                File.Copy(currentFile.FullName, destName, true);
+            }
+            else
+            {
+                string currentDir = ((DirectoryInfo)fileObject).FullName;
+                string destDir = Path.Combine(destPath, ((DirectoryInfo)fileObject).Name);
+                CopyDirectory(currentDir, destDir);
+            }
+            SetLists();
+            ImportRows();
+            this.Draw();
+        }
+        catch (Exception e)
+        {
+            this.ShowMessage(e.Message);
+            return;
+        }
+    }
+    private void CopyDirectory(string sourceDirName, string destDirName)
+    {
+        DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+        DirectoryInfo[] dirs = dir.GetDirectories();
+        if (!Directory.Exists(destDirName))
+            Directory.CreateDirectory(destDirName);
+        FileInfo[] files = dir.GetFiles();
+        foreach (FileInfo file in files)
+        {
+            string temppath = Path.Combine(destDirName, file.Name);
+            file.CopyTo(temppath, true);
+        }
+        foreach (DirectoryInfo subdir in dirs)
+        {
+            string temppath = Path.Combine(destDirName, subdir.Name);
+            CopyDirectory(subdir.FullName, temppath);
+        }
     }
     private void RenMov()
     {
+        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
+        try
+        {
+            FileSystemInfo fileObject = GetActiveObject();
+            string objectName = fileObject.Name;
+            string destName = Path.Combine(destPath, objectName);
+            if (fileObject is FileInfo)
+                ((FileInfo)fileObject).MoveTo(destName);
+            else
+                ((DirectoryInfo)fileObject).MoveTo(destName);
+            SetLists();
+            ImportRows();
+            this.Draw();
+        }
+        catch (Exception e)
+        {
+            this.ShowMessage(e.Message);
+            return;
+        }
     }
     private void MkDir()
     {
+        if (IsDiscs)
+            return;
+        string destPath = Path_;
+        string dirName = this.AksName("Enter the folder name: "); //TODO: change to popUp
+        try
+        {
+            string dirFullName = Path.Combine(destPath, dirName);
+            DirectoryInfo dir = new DirectoryInfo(dirFullName);
+            if (!dir.Exists)
+                dir.Create();
+            else
+                this.ShowMessage("A catalog with that name already exists");
+            SetLists();
+            ImportRows();
+            this.Draw();
+        }
+        catch (Exception e)
+        {
+            this.ShowMessage(e.Message);
+        }
+    }
+
+    private string AksName(string message)
+    {
+        string name;
+        Console.CursorVisible = true;
+        do
+        {
+            this.ShowMessage(message);
+            name = Console.ReadLine();
+        } while (name.Length == 0);
+        Console.CursorVisible = false;
+        return name;
+    }
+
+    private void ShowMessage(string message)
+    {
+        PrintString(message, 0, Console.WindowHeight -2, ConsoleColor.Green, ConsoleColor.Black);
+    }
+
+    public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)
+    {
+        Console.ForegroundColor = text;
+        Console.BackgroundColor = background;
+
+        Console.SetCursorPosition(X, Y);
+        Console.Write(str);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.BackgroundColor = ConsoleColor.Black;
     }
     private void Delete()
     {
+        if (IsDiscs)
+            return;
+        FileSystemInfo fileObject = GetActiveObject();
+        try
+        {
+            if (fileObject is DirectoryInfo)
+                ((DirectoryInfo)fileObject).Delete(true);
+            else
+                ((FileInfo)fileObject).Delete();
+            SetLists();
+            ImportRows();
+            Selected -= 1;
+            this.Draw();
+        }
+        catch (Exception e)
+        {
+            //this.ShowMessage(e.Message);
+            return;
+        }
     }
     private void PullDn()
     {
     }
     private void Quit()
     {
+        Console.Clear();
+        Environment.Exit(0);
     }
     #endregion
     #endregion
@@ -611,7 +746,7 @@ public class FilePanel : IComponent
                 //try{ Directory.GetDirectories(fsInfo.FullName); } //uselles?
                 //catch{ return; }
 
-                Path = fsInfo.FullName;
+                Path_ = fsInfo.FullName;
                 SetLists();
                 UpdatePanel();
             }
@@ -620,13 +755,13 @@ public class FilePanel : IComponent
         }
         else
         {
-            string currentPath = Path;
+            string currentPath = Path_;
             DirectoryInfo currentDirectory = new DirectoryInfo(currentPath);
             DirectoryInfo upLevelDirectory = currentDirectory.Parent;
 
             if (upLevelDirectory != null)
             {
-                Path = upLevelDirectory.FullName;
+                Path_ = upLevelDirectory.FullName;
                 SetLists();
                 UpdatePanel();
             }
