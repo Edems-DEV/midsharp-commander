@@ -22,7 +22,7 @@ internal class Footer : IComponent
     {
         int top = Console.WindowHeight;
         int rowLength = Console.WindowWidth;
-        Console.SetCursorPosition(0, top - 1 - 1); //last visible row - 1 (buggy scrool fix)
+        Console.SetCursorPosition(0, top - 1); // -1 (last visible row) - 1 (buggy scrool fix)
 
         int numberPad = 2;
 
@@ -44,7 +44,8 @@ internal class Footer : IComponent
             count++;
         }
         Console.ResetColor();
-        Console.WriteLine();
+        Console.CursorVisible = false;
+        Console.SetCursorPosition(0,0);
     }
 
     public void HandleKey(ConsoleKeyInfo info)

@@ -28,7 +28,7 @@ public class ListWindow : Window
         int footer = 1;
 
         //Top
-        int winHeight = Console.BufferHeight;
+        int winHeight = Console.WindowHeight;
         int cursorFromTop = 0;
         int cursorFromBottom = winHeight;
 
@@ -98,7 +98,7 @@ public class ListWindow : Window
 
     public override void Draw()
     {
-        winWidth = Console.BufferWidth / 2;
+        winWidth = Console.WindowWidth / 2;
         Console.Write(new String('=', winWidth));
         Console.Write(new String('|', winWidth));
         foreach (var pane in _panels)
