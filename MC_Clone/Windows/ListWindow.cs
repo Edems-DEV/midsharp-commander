@@ -56,9 +56,10 @@ public class ListWindow : Window
     {
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
-        
-        FilePanel pane1 = new FilePanel(Config.FILE, 0, 4); //service.Headers()
-        FilePanel pane2 = new FilePanel(Config.FILE, winWidth, 4); //table.LineLength() + 2 //55
+
+        int paneY = 1; //where +1?
+        FilePanel pane1 = new FilePanel(Config.FILE, 0, paneY); //service.Headers()
+        FilePanel pane2 = new FilePanel(Config.FILE, winWidth, paneY); //table.LineLength() + 2 //55
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 

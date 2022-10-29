@@ -237,6 +237,8 @@ public class FilePanel : IComponent
     {
         List<int> widths = Widths();
         LineLength();
+        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 -1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
+        var a = new Logs(Visible.ToString());
 
 
         MenuBar.Draw();
