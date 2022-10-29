@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MC_Clone;
 
@@ -175,6 +176,31 @@ public class FilePanel : IComponent
             Console.Write(local_row);
             count++;
         }
+        string diskInfo = freeSpace();
+        int currentLeftCursor = Console.CursorLeft;
+        Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
+        Console.Write(diskInfo);
+
+    }
+
+    string freeSpace() // 52G/58G (89%)
+    {
+        //TODO:
+        // - use SizeConvertor() (+ this will show other sizes, no only GB )
+        // - use SetDiscs(); -> dynamic disk select (at the moment it shows only disk[0] -> "C:\" )
+        string name = "";
+        const double GB = 1073741824; //bytesToGb
+
+        DriveInfo[] allDrives = DriveInfo.GetDrives();
+        var ActiveDrive = allDrives[0];
+
+        double freeSpacePerc = Math.Round((ActiveDrive.AvailableFreeSpace / (float)ActiveDrive.TotalSize) * 100, 0);
+        int Total = Convert.ToInt32(ActiveDrive.TotalSize / GB);
+        int Free = Convert.ToInt32(ActiveDrive.TotalFreeSpace / GB);
+
+        name = $" {Free}G/{Total}G ({freeSpacePerc}%) ";
+
+        return name;
     }
 
     public void Draw()
@@ -544,7 +570,7 @@ public class FilePanel : IComponent
 
     void Clear()
     {
-        int rows = Visible + headers.Count + 1; //final line
+        int rows = Visible + headers.Count + 1 + 2; //final line + 2 Menu
 
         string space = new String(' ', lineLength);
         for (int i = 0; i < rows; i++)
