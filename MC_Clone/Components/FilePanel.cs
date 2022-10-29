@@ -42,6 +42,7 @@ public class FilePanel : IComponent
     #region Static
     char folderPrefix = '/';
     //char verticalLine = '│'; //all frame chars here
+    int haldWindow = 0;
     #endregion
 
 
@@ -75,6 +76,7 @@ public class FilePanel : IComponent
         y = Y;
         y_temp = y;
         LineLength();
+        haldWindow = Console.WindowWidth / 2;
 
     }
     public FilePanel(int X = 0, int Y = 0)
@@ -160,8 +162,6 @@ public class FilePanel : IComponent
     }
     public void StatusLine(string label) //char vertical = '│'
     {
-        
-
         string row0 = ""; //need to overrite coners
         row0 += '├';
         row0 += new String('─', lineLength - 2);
@@ -235,10 +235,17 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
+        ImportRows(); //update long row (laggy)
         List<int> widths = Widths();
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 -1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
-        var a = new Logs(Visible.ToString());
+        //var a = new Logs(Visible.ToString());
+        haldWindow = Console.WindowWidth / 2;
+
+        if (x != 0)
+        {
+            x = haldWindow;
+        }
 
 
         MenuBar.Draw();
@@ -309,7 +316,7 @@ public class FilePanel : IComponent
         lineLength = lenght;
         Console.SetCursorPosition(x, 1);
         Console.WriteLine("HalfWIn= " + HalfWIn + "| lineLength=" + lineLength + "| maxNameLength=" + maxNameLength + "| pad= "  + (HalfWIn - lineLength));
-        var a = new Logs(lenght.ToString());
+        //var a = new Logs(lenght.ToString());
         return lenght;
     }
     private List<int> Widths()
@@ -341,6 +348,12 @@ public class FilePanel : IComponent
 
     public void ImportRows(string path = "")
     {
+        int aaaa = 5;
+        if (haldWindow >= 29) //need to update
+        {
+            aaaa = ((haldWindow) - 27 - 2);
+        }
+
         if (rows != null)
             rows.Clear();
         foreach (var item in FS_Objects)
@@ -350,7 +363,7 @@ public class FilePanel : IComponent
                 Add(new string[] { folderPrefix + "..", "UP--DIR", "ToDo" });
                 continue;
             }
-            string name = Truncated(item.Name, maxNameLength);
+            string name = Truncated(item.Name, aaaa);
             int local_maxNameLength = maxNameLength;
 
             long size = 0;
@@ -378,6 +391,15 @@ public class FilePanel : IComponent
             Truncated(item.Name, local_maxNameLength);
             Add(new string[] { name, SizeConvertor(size), item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
+        //Long row
+        //TODO: find different solution
+        string emptyLong = new String(' ', aaaa);
+        int asss = rows.Count - 8;
+        for (int i = 0; i < Console.WindowHeight - asss; i++)
+        {
+            Add(new string[] { emptyLong, "", "" });
+        }
+        
     }
     string Truncated(string ts, int maxLength, string trun = "~")
     {

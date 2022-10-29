@@ -14,6 +14,7 @@ internal class Program
         
         while (true)
         {
+            Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
             Console.SetCursorPosition(0, 0);
             app.Draw();
 
