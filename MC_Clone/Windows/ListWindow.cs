@@ -103,7 +103,7 @@ public class ListWindow : Window
         {
             pane.Draw();
         }
-        string[] labels = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
+        string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         var footer = new Footer(labels);
         footer.Draw(); // y - 1 (from bottom)
     }

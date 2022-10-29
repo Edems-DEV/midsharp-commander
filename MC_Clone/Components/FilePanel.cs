@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -127,10 +128,10 @@ public class FilePanel : IComponent
             //------------------------
             //---------FOOTER---------
             case ConsoleKey.F1:
-                Help();
+                Drives();
                 break;
             case ConsoleKey.F2:
-                Menu();
+                CreateFile();
                 break;
             case ConsoleKey.F3:
                 if (FS_Objects[Selected] is DirectoryInfo) { goto case ConsoleKey.Enter; break; }
@@ -514,11 +515,41 @@ public class FilePanel : IComponent
     }
     #endregion
     #region FunctionKeys
-    private void Help() //no
+    private void Drives() //Help
     {
+        SetDiscs();
+        ImportRows();
+        this.Draw();
     }
-    private void Menu() //no
+    private void CreateFile() //Menu
     {
+        if (IsDiscs)
+            return;
+        string destPath = Path_;
+        string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
+        if (!fileName.Contains('.'))
+        {
+            fileName = fileName + ".txt";
+        }
+        try
+        {
+            string fileFullPath = Path_ + @"\" +  fileName;
+            DirectoryInfo dir = new DirectoryInfo(fileFullPath);
+            if (!File.Exists(fileFullPath))
+            {
+                using (FileStream fs = File.Create(fileFullPath));
+            }
+                //dir.Create();
+            else
+                this.ShowMessage("A catalog with that name already exists");
+            SetLists();
+            ImportRows();
+            this.Draw();
+        }
+        catch (Exception e)
+        {
+            this.ShowMessage(e.Message);
+        }
     }
     private void View()
     {
