@@ -43,6 +43,7 @@ public class FilePanel : IComponent
     char folderPrefix = '/';
     //char verticalLine = '│'; //all frame chars here
     int haldWindow = 0;
+    int deadRows = 0;
     #endregion
 
 
@@ -348,6 +349,7 @@ public class FilePanel : IComponent
 
     public void ImportRows(string path = "")
     {
+        deadRows = 0;
         int aaaa = 5;
         if (haldWindow >= 29) //need to update
         {
@@ -398,6 +400,7 @@ public class FilePanel : IComponent
         for (int i = 0; i < Console.WindowHeight - asss; i++)
         {
             Add(new string[] { emptyLong, "", "" });
+            deadRows++;
         }
         
     }
@@ -454,7 +457,7 @@ public class FilePanel : IComponent
     }
     private void ScrollDown()
     {
-        if (Selected >= rows.Count - 1)
+        if (Selected >= rows.Count - 1 - deadRows)
             return;
 
         Selected++;
