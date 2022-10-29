@@ -18,6 +18,7 @@ public class FilePanel : IComponent
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
+    MenuBar MenuBar = new MenuBar();
 
     private int offset = 0;
 
@@ -74,6 +75,7 @@ public class FilePanel : IComponent
         y = Y;
         y_temp = y;
         LineLength();
+
     }
     public FilePanel(int X = 0, int Y = 0)
     {
@@ -89,15 +91,16 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
+        if (MenuBar.active)
+        {
+            MenuBar.HandleKey(info);
+            return;
+        }
         switch (info.Key)
         {
             //---------UPDATE---------
-            case ConsoleKey.Tab:
-                //ListWindow.ChangeActivePanel();
-                break;
             case ConsoleKey.Enter:
                 ChangeDir();
-                //this.RowSelected(this.Selected);
                 break;
             //---------NAVIGATION---------
             case ConsoleKey.UpArrow:
@@ -145,6 +148,7 @@ public class FilePanel : IComponent
                 Delete();
                 break;
             case ConsoleKey.F9:
+                MenuBar.active = true;
                 PullDn();
                 break;
             case ConsoleKey.F10:
@@ -187,7 +191,8 @@ public class FilePanel : IComponent
         }
         string diskInfo = freeSpace();
         int currentLeftCursor = Console.CursorLeft;
-        Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
+        if (currentLeftCursor > (diskInfo.Length + 2))
+            Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
         Console.Write(diskInfo);
 
     }
@@ -232,6 +237,9 @@ public class FilePanel : IComponent
     {
         List<int> widths = Widths();
         LineLength();
+
+
+        MenuBar.Draw();
 
         DrawData(null, widths, '┬', '─', '┌', '┐');
         activePath();

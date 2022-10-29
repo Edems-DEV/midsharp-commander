@@ -35,7 +35,7 @@ internal class Footer : IComponent
             Console.Write(number.PadLeft(numberPad));
 
             Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.Write(label.PadRight(totalPad));
 
             count++;

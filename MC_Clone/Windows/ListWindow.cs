@@ -98,9 +98,6 @@ public class ListWindow : Window
 
     public override void Draw()
     {
-        winWidth = Console.WindowWidth / 2;
-        Console.Write(new String('=', winWidth));
-        Console.Write(new String('|', winWidth));
         foreach (var pane in _panels)
         {
             pane.Draw();
