@@ -7,18 +7,32 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Config
 {
-    
-    public const string FOLDER = @"C:\Users\root\Desktop";
-    public const string Path_LeftPane = @"C:\Users\root\Desktop";
+    public const string Path_LeftPane = @"C:\Users\root\Desktop"; //change to dynamic desktop path
     public const string Path_RightPane = @".";
 
+    //------------------Color schemes------------------
+    public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,
+                                                    ConsoleColor.DarkCyan , ConsoleColor.Black ,
+                                                    ConsoleColor.Gray     , ConsoleColor.Black};
+
+    public static ConsoleColor[] CScheme_Original = { ConsoleColor.DarkBlue , ConsoleColor.White ,
+                                                      ConsoleColor.DarkCyan , ConsoleColor.Black ,
+                                                      ConsoleColor.Gray     , ConsoleColor.Black};
+    
+    public static ConsoleColor[] CScheme_White = { ConsoleColor.White   , ConsoleColor.Black,
+                                                   ConsoleColor.DarkGray, ConsoleColor.Gray,
+                                                   ConsoleColor.Black   , ConsoleColor.DarkGray };
+
+    public static ConsoleColor[] CSchemesMaster = CScheme_Original;
+
     //------------------Color scheme------------------
-    public static ConsoleColor Primary_BackgroundColor = ConsoleColor.DarkBlue;
-    public static ConsoleColor Primary_ForegroundColor = ConsoleColor.White;
-    public static ConsoleColor Secondary_BackgroundColor = ConsoleColor.DarkCyan;
-    public static ConsoleColor Secondary_ForegroundColor = ConsoleColor.Black;
-    public static ConsoleColor Accent_BackgroundColor = ConsoleColor.Gray;
-    public static ConsoleColor Accent_ForegroundColor = ConsoleColor.Black;
+    public static ConsoleColor Primary_BackgroundColor = CSchemesMaster[0];
+    public static ConsoleColor Primary_ForegroundColor = CSchemesMaster[1];
+    public static ConsoleColor Secondary_BackgroundColor = CSchemesMaster[2];
+    public static ConsoleColor Secondary_ForegroundColor = CSchemesMaster[3];
+    public static ConsoleColor Accent_BackgroundColor = CSchemesMaster[4];
+    public static ConsoleColor Accent_ForegroundColor = CSchemesMaster[5];
+
 
 
     //------------------Elements specific------------------
@@ -45,6 +59,30 @@ public class Config
 
     public static ConsoleColor AdditionalMsgBoxBackgroundColor = ConsoleColor.Red;
     public static ConsoleColor TextBoxBackgroundColor          = ConsoleColor.Gray;
+
+
+
+
+    public static void ChangeColorScheme(ConsoleColor[] colors) ////static cannot be changed ? 
+    {
+        Primary_BackgroundColor = ConsoleColor.Black; //colors[0];
+        Primary_ForegroundColor = colors[1];
+        Secondary_BackgroundColor = colors[2];
+        Secondary_ForegroundColor = colors[3];
+        Accent_BackgroundColor = colors[4];
+        Accent_ForegroundColor = colors[5];
+    }
+
+    public static void ChangeColorScheme() //debug
+    {
+        Primary_BackgroundColor = ConsoleColor.Magenta;
+        Primary_ForegroundColor = ConsoleColor.Magenta;
+        Secondary_BackgroundColor = ConsoleColor.Magenta;
+        Secondary_ForegroundColor = ConsoleColor.Magenta;
+        Accent_BackgroundColor = ConsoleColor.Magenta;
+        Accent_ForegroundColor = ConsoleColor.Magenta;
+    }
+
 
 
     //Legacy (TODO: delete)

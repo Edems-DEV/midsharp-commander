@@ -66,7 +66,7 @@ public class ListWindow : Window
         foreach (var pane in _panels)
         {
             pane.LineLength();
-            pane.ImportRows(Config.FOLDER);
+            pane.ImportRows(pane.Path_); //useless?
             pane.RowSelected += Table_RowSelected;
 
         }
