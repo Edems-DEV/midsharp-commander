@@ -406,7 +406,7 @@ public class FilePanel : IComponent
         int asss = rows.Count + 8;
         for (int i = 0; i < Console.WindowHeight - asss; i++)
         {
-            Add(new string[] { emptyLong, "", "" });
+            Add(new string[] { emptyLong, "", "            " });
             deadRows++;
         }
         
