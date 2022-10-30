@@ -36,7 +36,7 @@ public class FilePanel : IComponent
     int NameExtraPad = 0;
     private bool _active;
     private bool _discs;
-    private string _path = Config.FOLDER;
+    private string _path = "";
 
     string statusBarLabel = "";
 
@@ -89,7 +89,9 @@ public class FilePanel : IComponent
 
     public FilePanel(string path, int X = 0, int Y = 0)
     {
+        Path_ = path;
         Start(X, Y);
+        if (path == ".") { SetDiscs(); return; }
         SetLists();
     }
 
@@ -677,7 +679,7 @@ public class FilePanel : IComponent
 
     private void ShowMessage(string message)
     {
-        PrintString(message, 0, Console.WindowHeight -2, Config.Green, Config.Black);
+        PrintString(message, 0, Console.WindowHeight -2, Config.MsgBoxForegroundColor, Config.MsgBoxBackgroundColor);
     }
 
     public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)

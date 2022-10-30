@@ -58,8 +58,8 @@ public class ListWindow : Window
         FilesService service = new FilesService(Config.FILE);
 
         int paneY = 1; //where +1?
-        FilePanel pane1 = new FilePanel(Config.FILE, 0, paneY); //service.Headers()
-        FilePanel pane2 = new FilePanel(Config.FILE, winWidth, paneY); //table.LineLength() + 2 //55
+        FilePanel pane1 = new FilePanel(Config.Path_LeftPane, 0, paneY); //service.Headers()
+        FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY); //table.LineLength() + 2 //55
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 

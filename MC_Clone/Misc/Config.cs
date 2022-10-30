@@ -7,35 +7,10 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Config
 {
-    public const string FILE = @"C:\data.txt";
+    
     public const string FOLDER = @"C:\Users\root\Desktop";
-
-    public const ConsoleColor FocusBackgroud = Config.White;
-    public const ConsoleColor FocusText = Config.Black;
-
-    public const ConsoleColor ascentColor = Config.DarkCyan;
-
-    public const ConsoleColor Green = ConsoleColor.Green;
-    public const ConsoleColor Black = ConsoleColor.Black;
-    public const ConsoleColor Gray = ConsoleColor.Gray;
-
-    public const ConsoleColor DarkCyan = ConsoleColor.DarkCyan;
-    public const ConsoleColor DarkGray = ConsoleColor.DarkGray;
-    public const ConsoleColor White = ConsoleColor.White;
-    public const ConsoleColor Red = ConsoleColor.Red; //edit window
-
-
-    //Primary [Dominant]          -> 
-    //Secondary [Complementary]   ->
-    //Accent                      -> active, focus
-
-    //Elements
-    //ListWindow:
-    // - Header: (labels)
-    // - FKeys: (Cout + Label)
-    // - Table: Text, Focus
-    // - inputField: 
-
+    public const string Path_LeftPane = @"C:\Users\root\Desktop";
+    public const string Path_RightPane = @".";
 
     // Color scheme
     public static ConsoleColor Primary_BackgroundColor = ConsoleColor.DarkBlue;
@@ -73,6 +48,21 @@ public class Config
 
     public static ConsoleColor AdditionalMsgBoxBackgroundColor = ConsoleColor.Red;
     public static ConsoleColor TextBoxBackgroundColor          = ConsoleColor.Gray;
-    public static string Path_LeftPane = @".";
-    public static string Path_RightPane = @".";
+
+
+    //Legacy (TODO: delete)
+    public const string FILE = @"C:\data.txt";
+
+    #region Notes
+    //Primary [Dominant]          -> 
+    //Secondary [Complementary]   ->
+    //Accent                      -> active, focus
+
+    //Elements
+    //ListWindow:
+    // - Header: (labels)
+    // - FKeys: (Cout + Label)
+    // - Table: Text, Focus
+    // - inputField: 
+    #endregion
 }
