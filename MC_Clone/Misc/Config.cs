@@ -12,7 +12,7 @@ public class Config
     public const string Path_LeftPane = @"C:\Users\root\Desktop";
     public const string Path_RightPane = @".";
 
-    // Color scheme
+    //------------------Color scheme------------------
     public static ConsoleColor Primary_BackgroundColor = ConsoleColor.DarkBlue;
     public static ConsoleColor Primary_ForegroundColor = ConsoleColor.White;
     public static ConsoleColor Secondary_BackgroundColor = ConsoleColor.DarkCyan;
@@ -21,26 +21,23 @@ public class Config
     public static ConsoleColor Accent_ForegroundColor = ConsoleColor.Black;
 
 
-
-    //Elements specific
-    //Focus
-    public static ConsoleColor Table_Path_BackgroundColor = Primary_BackgroundColor;
-    public static ConsoleColor Table_Path_ForegroundColor = Primary_ForegroundColor;
-    public static ConsoleColor Table_Path_ACTIVE_BackgroundColor = Accent_BackgroundColor;
-    public static ConsoleColor Table_Path_ACTIVE_ForegroundColor = Accent_ForegroundColor;
-    public static ConsoleColor Table_Line_BackgroundColor = Secondary_BackgroundColor;
-    public static ConsoleColor Table_Line_ForegroundColor = Secondary_ForegroundColor;
+    //------------------Elements specific------------------
+    //ListWindow - Elements
+    public static ConsoleColor Table_BackgroundColor             = Primary_BackgroundColor;
+    public static ConsoleColor Table_ForegroundColor             = Primary_ForegroundColor;
+    public static ConsoleColor Table_Line_BackgroundColor        = Secondary_BackgroundColor;
+    public static ConsoleColor Table_Line_ForegroundColor        = Secondary_ForegroundColor;
     public static ConsoleColor Table_Line_ACTIVE_BackgroundColor = Secondary_BackgroundColor;
     public static ConsoleColor Table_Line_ACTIVE_ForegroundColor = Secondary_ForegroundColor;
-    //Other
+    public static ConsoleColor Table_Path_BackgroundColor        = Primary_BackgroundColor;
+    public static ConsoleColor Table_Path_ForegroundColor        = Primary_ForegroundColor;
+    public static ConsoleColor Table_Path_ACTIVE_BackgroundColor = Accent_BackgroundColor;
+    public static ConsoleColor Table_Path_ACTIVE_ForegroundColor = Accent_ForegroundColor;
+
     public static ConsoleColor Labels_BackgroundColor = Secondary_BackgroundColor;
     public static ConsoleColor Labels_ForegroundColor = Secondary_ForegroundColor;
-    public static ConsoleColor Cout_BackgroundColor = ConsoleColor.Black;
-    public static ConsoleColor Cout_ForegroundColor = ConsoleColor.White;
-
-    public static ConsoleColor Table_BackgroundColor = Primary_BackgroundColor;
-    public static ConsoleColor Table_ForegroundColor = Primary_ForegroundColor;
-
+    public static ConsoleColor Cout_BackgroundColor   = ConsoleColor.Black;
+    public static ConsoleColor Cout_ForegroundColor   = ConsoleColor.White;
 
     public static ConsoleColor MsgBoxBackgroundColor           = ConsoleColor.White;
     public static ConsoleColor MsgBoxForegroundColor           = ConsoleColor.Black;
