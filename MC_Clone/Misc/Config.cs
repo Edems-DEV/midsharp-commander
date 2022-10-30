@@ -5,6 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
+
+internal static class l
+{
+    public static char topLeft = '┌';
+    public static char topRight = '┐';
+    public static char bottomLeft = '└';
+    public static char bottomRight = '┘';
+    public static char lineX = '─';
+    public static char lineY = '│';
+    public static char upRight = '├';
+    public static char upleft = '┤';
+    public static char down = '┬';
+    public static char cross = '┼';
+    public static char up = '┴';
+    public static char arrowRight = '<';
+
+    //public static char topLeft = '╔';
+    //public static char topRight = '╗';
+    //public static char bottomLeft = '╚';
+    //public static char bottomRight = '╝';
+    //public static char lineX = '═';
+    //public static char lineY = '║';
+    //public static char upRight = '╠';
+    //public static char upleft = '╣';
+    //public static char down = '╦';
+    //public static char cross = '╬';
+    //public static char up = '╩';
+    //public static char arrowRight = '◄';
+
+}
+
 public class Config
 {
     public const string Path_LeftPane = @"C:\Users\root\Desktop"; //change to dynamic desktop path

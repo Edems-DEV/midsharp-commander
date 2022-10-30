@@ -42,7 +42,7 @@ public class FilePanel : IComponent
 
     #region Static
     char folderPrefix = '/';
-    //char verticalLine = '│'; //all frame chars here
+    //char verticalLine = l.lineY; //all frame chars here
     int haldWindow = 0;
     int deadRows = 0;
     #endregion
@@ -165,25 +165,25 @@ public class FilePanel : IComponent
                 break;
         }
     }
-    public void StatusLine(string label) //char vertical = '│'
+    public void StatusLine(string label) //char vertical = l.lineY
     {
         string row0 = ""; //need to overrite coners
-        row0 += '├';
-        row0 += new String('─', lineLength - 2);
-        row0 += '┤';
+        row0 += l.upRight;
+        row0 += new String(l.lineX, lineLength - 2);
+        row0 += l.upleft;
         string row1 = "";
-        row1 += '│';
+        row1 += l.lineY;
         if (label == folderPrefix + "..")
             label = "UP--DIR";
         else if (!label.StartsWith(folderPrefix))
             label = " " + label; 
         row1 += label; //modify for each file type
         row1 += new String(' ', lineLength - row1.Length - 1);
-        row1 += '│';
+        row1 += l.lineY;
         string row2 = "";
-        row2 += '└';
-        row2 += new String('─', lineLength - 2);
-        row2 += '┘';
+        row2 += l.bottomLeft;
+        row2 += new String(l.lineX, lineLength - 2);
+        row2 += l.bottomRight;
 
         string[] local_rows = { row0, row1, row2 };
 
@@ -231,7 +231,7 @@ public class FilePanel : IComponent
 
         Console.SetCursorPosition(x, y_temp - 1);
 
-        string line = @$"┌<─";
+        string line = @$"{l.topLeft}{l.arrowRight}{l.lineX}"; //@$"┌<─";
         string label = "";
 
         Console.Write(line);
@@ -269,10 +269,10 @@ public class FilePanel : IComponent
         Console.ForegroundColor = Config.Table_ForegroundColor;
         Console.BackgroundColor = Config.Table_BackgroundColor;
 
-        DrawData(null, widths, '┬', '─', '┌', '┐');
+        DrawData(null, widths, l.down, l.lineX, l.topLeft, l.topRight);
         activePath();
-        DrawData(headers, widths, '│', ' ');
-        DrawData(null, widths, '┼', '─', '├', '┤');
+        DrawData(headers, widths, l.lineY, ' ');
+        DrawData(null, widths, l.cross, l.lineX, l.upRight, l.upleft);
 
         for (int i = offset; i < offset + Math.Min(Visible, this.rows.Count); i++)
         {
@@ -283,14 +283,14 @@ public class FilePanel : IComponent
                 statusBarLabel = rows[i].Data[0];
             }
             
-            DrawData(rows[i].Data, widths, '│', ' ');
+            DrawData(rows[i].Data, widths, l.lineY, ' ');
 
             //Console.ResetColor();
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
         }
 
-        //DrawData(null, widths, '┴', '─', '└', '┘');
+        //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
         y_temp = y;
     }
