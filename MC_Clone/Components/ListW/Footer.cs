@@ -30,12 +30,12 @@ internal class Footer : IComponent
         foreach (var label in labels)
         {
             string number = count.ToString();
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = Config.Cout_BackgroundColor;
+            Console.ForegroundColor = Config.Cout_ForegroundColor;
             Console.Write(number.PadLeft(numberPad));
 
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = Config.Labels_BackgroundColor;
+            Console.ForegroundColor = Config.Labels_ForegroundColor;
             Console.Write(label.PadRight(totalPad));
 
             count++;

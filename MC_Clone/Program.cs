@@ -15,6 +15,7 @@ internal class Program
         
         while (true)
         {
+            Console.BackgroundColor = Config.Primary_BackgroundColor;
             Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
             Console.SetCursorPosition(0, 0);
             app.Draw();
@@ -28,6 +29,7 @@ internal class Program
                     
                 a = Console.WindowHeight; //změni na event
                 b = Console.WindowWidth;
+                Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
                 Console.Clear();
                 Console.SetCursorPosition(0, 0);
                 app.Draw();

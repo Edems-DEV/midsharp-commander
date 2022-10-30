@@ -223,6 +223,10 @@ public class FilePanel : IComponent
     }
     void activePath()
     {
+        ConsoleColor oldTextColor = Console.ForegroundColor;
+        ConsoleColor oldBackColor = Console.BackgroundColor;
+
+
         Console.SetCursorPosition(x, y_temp - 1);
 
         string line = @$"┌<─";
@@ -230,15 +234,17 @@ public class FilePanel : IComponent
 
         Console.Write(line);
         if (_active) {
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = Config.Table_Path_ACTIVE_ForegroundColor;
+            Console.BackgroundColor = Config.Table_Path_ACTIVE_BackgroundColor;
         }
         if (_discs)
             label = " Drives: ";
         else
             label = $" {_path} ";
         Console.Write(label);
-        Console.ResetColor();
+        //Console.ResetColor();
+        Console.ForegroundColor = oldTextColor;
+        Console.BackgroundColor = oldBackColor;
     }
 
     public void Draw()
@@ -258,6 +264,9 @@ public class FilePanel : IComponent
 
         MenuBar.Draw();
 
+        Console.ForegroundColor = Config.Table_ForegroundColor;
+        Console.BackgroundColor = Config.Table_BackgroundColor;
+
         DrawData(null, widths, '┬', '─', '┌', '┐');
         activePath();
         DrawData(headers, widths, '│', ' ');
@@ -267,14 +276,16 @@ public class FilePanel : IComponent
         {
             if (i == Selected)
             {
-                Console.ForegroundColor = Config.FocusText;
-                Console.BackgroundColor = Config.FocusBackgroud;
+                Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
+                Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
                 statusBarLabel = rows[i].Data[0];
             }
             
             DrawData(rows[i].Data, widths, '│', ' ');
 
-            Console.ResetColor();
+            //Console.ResetColor();
+            Console.ForegroundColor = Config.Table_ForegroundColor;
+            Console.BackgroundColor = Config.Table_BackgroundColor;
         }
 
         //DrawData(null, widths, '┴', '─', '└', '┘');
@@ -323,7 +334,7 @@ public class FilePanel : IComponent
         }
         lineLength = lenght;
         Console.SetCursorPosition(x, 1);
-        Console.WriteLine("HalfWIn= " + HalfWIn + "| lineLength=" + lineLength + "| maxNameLength=" + maxNameLength + "| pad= "  + (HalfWIn - lineLength));
+        //Console.WriteLine("HalfWIn= " + HalfWIn + "| lineLength=" + lineLength + "| maxNameLength=" + maxNameLength + "| pad= "  + (HalfWIn - lineLength));
         //var a = new Logs(lenght.ToString());
         return lenght;
     }
@@ -666,7 +677,7 @@ public class FilePanel : IComponent
 
     private void ShowMessage(string message)
     {
-        PrintString(message, 0, Console.WindowHeight -2, ConsoleColor.Green, ConsoleColor.Black);
+        PrintString(message, 0, Console.WindowHeight -2, Config.Green, Config.Black);
     }
 
     public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)
@@ -677,8 +688,8 @@ public class FilePanel : IComponent
         Console.SetCursorPosition(X, Y);
         Console.Write(str);
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = Config.MsgBoxForegroundColor;
+        Console.BackgroundColor = Config.MsgBoxBackgroundColor;
     }
     private void Delete()
     {

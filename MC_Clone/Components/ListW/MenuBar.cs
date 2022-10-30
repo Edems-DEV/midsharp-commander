@@ -19,12 +19,12 @@ internal class MenuBar : IComponent
 
         foreach (var label in labels)
         {
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = Config.Labels_BackgroundColor;
+            Console.ForegroundColor = Config.Labels_ForegroundColor;
             //if (label.active)
             //{
-            //    Console.BackgroundColor = ConsoleColor.Black;
-            //    Console.ForegroundColor = ConsoleColor.White;
+            //    Console.BackgroundColor = Config.Black;
+            //    Console.ForegroundColor = Config.White;
             //}
             string a = $"    {label}      "; //TODO: dynamic -> smaller window
             length += a.Length;
