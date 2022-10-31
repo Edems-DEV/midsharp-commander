@@ -10,6 +10,47 @@ internal class Misc
 {
 }
 
+
+internal class myPath
+{
+    public static string project(string file = "", int up = 4)
+    {
+        string startupPath = Environment.CurrentDirectory; // ...\Project\bin\Debug\net6.0
+        string[] paths = startupPath.Split(@"\");
+        string path = "";
+        for (int i = 0; i < paths.Length - up; i++)
+        {
+            path += paths[i];
+            if (i != paths.Length - (up + 1))
+                path += @"\";
+        }
+        path += @"\" + file;
+
+        return path;
+    }
+
+    public static string desktop(string file = "", string folder = @"")
+    {
+        if (folder != "")
+            folder += $@"\{folder}\";
+
+        string dekstop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string path = dekstop + folder + file;
+        //@"C:\Users\user\Desktop\test.csv";
+
+        return path;
+    }
+
+    public static void fileCheck(string path) //create file if doesnt exist
+    {
+        if (!File.Exists(path))
+        {
+            Console.WriteLine("Soubor nebyl nalezen");
+            return;
+        }
+    }
+}
+
 internal class ConsoleBTN
 {
     private const int MF_BYCOMMAND = 0x00000000;
