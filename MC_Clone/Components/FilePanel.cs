@@ -205,7 +205,7 @@ public class FilePanel : IComponent
             Console.Write(local_row);
             count++;
         }
-        string diskInfo = freeSpace();
+        string diskInfo = FM.freeSpace();
         int currentLeftCursor = Console.CursorLeft;
         if (currentLeftCursor > (diskInfo.Length + 2))
             Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
@@ -213,27 +213,7 @@ public class FilePanel : IComponent
 
     }
 
-    string freeSpace() // 52G/58G (89%)
-    {
-        //TODO:
-        // - use SizeConvertor() (+ this will show other sizes, no only GB )
-        // - use SetDiscs(); -> dynamic disk select (at the moment it shows only disk[0] -> "C:\" )
-        //SetDiscs();
-        //SizeConvertor();
-        string name = "";
-        const double GB = 1073741824; //bytesToGb
-
-        DriveInfo[] allDrives = DriveInfo.GetDrives();
-        var ActiveDrive = allDrives[0];
-
-        double freeSpacePerc = Math.Round((ActiveDrive.AvailableFreeSpace / (float)ActiveDrive.TotalSize) * 100, 0);
-        int Total = Convert.ToInt32(ActiveDrive.TotalSize / GB);
-        int Free = Convert.ToInt32(ActiveDrive.TotalFreeSpace / GB);
-
-        name = $" {Free}G/{Total}G ({freeSpacePerc}%) ";
-
-        return name;
-    }
+   
     void activePath()
     {
         ConsoleColor oldTextColor = Console.ForegroundColor;
@@ -391,7 +371,7 @@ public class FilePanel : IComponent
                 Add(new string[] { folderPrefix + "..", "UP--DIR", "ToDo" });
                 continue;
             }
-            string name = Truncated(item.Name, aaaa);
+            string name = FM.Truncated(item.Name, aaaa);
             int local_maxNameLength = maxNameLength;
 
             long size = 0;
@@ -416,7 +396,7 @@ public class FilePanel : IComponent
                 size = a.Length;
             }
             
-            Truncated(item.Name, local_maxNameLength);
+            FM.Truncated(item.Name, local_maxNameLength);
             Add(new string[] { name, FM.SizeConvertor(size).PadLeft(7), item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
         //Long row
@@ -430,26 +410,7 @@ public class FilePanel : IComponent
         }
         
     }
-    string Truncated(string ts, int maxLength, string trun = "~")
-    {
-        if (ts.Length < maxLength)
-        {
-            //if (Console.BufferWidth > lineLength)
-            //{
-            //    int pad = (Console.BufferWidth - lineLength);
-            //    string space = new String(' ', pad);
-            //    return ts + space;
-            //}
-            return ts;
-        }
-            
-        maxLength = maxLength - trun.Length;
-        int a = maxLength / 2 + maxLength % 2;
-        int b = maxLength / 2;
-        var truncated = ts.Substring(0, a) + trun + ts.Substring(ts.Length - b, b);
-
-        return truncated;
-    }
+    
 
     #endregion
     #region HandleKey methods
