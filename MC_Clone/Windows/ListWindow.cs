@@ -15,6 +15,11 @@ public class ListWindow : Window
     public delegate void OnKey(ConsoleKeyInfo key);
     public event OnKey KeyPress;
     public int winWidth = 0;
+    Footer footer;
+    MenuBar MenuBar;
+
+
+
 
     static void Test()
     {
@@ -62,7 +67,11 @@ public class ListWindow : Window
         FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY); //table.LineLength() + 2 //55
         this._panels.Add(pane1);
         this._panels.Add(pane2);
-
+        
+        string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
+        footer = new Footer(labels);
+        MenuBar = new MenuBar();
+        
         foreach (var pane in _panels)
         {
             pane.LineLength();
@@ -99,12 +108,13 @@ public class ListWindow : Window
 
     public override void Draw()
     {
+        MenuBar.Draw();
+        
         foreach (var pane in _panels)
         {
             pane.Draw();
         }
-        string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
-        var footer = new Footer(labels);
+
         footer.Draw(); // y - 1 (from bottom)
     }
 

@@ -136,7 +136,8 @@ public class FilePanel : IComponent
                 CreateFile();
                 break;
             case ConsoleKey.F3:
-                if (FS_Objects[Selected] is DirectoryInfo) { goto case ConsoleKey.Enter; break; }
+                if (FS_Objects[Selected] is DirectoryInfo) 
+                    { ChangeDir(); ; break; }
                 View();
                 break;
             case ConsoleKey.F4:
@@ -159,7 +160,6 @@ public class FilePanel : IComponent
                 PullDn();
                 break;
             case ConsoleKey.F10:
-                goto case ConsoleKey.Escape;
             case ConsoleKey.Escape:
                 this.Quit();
                 break;
