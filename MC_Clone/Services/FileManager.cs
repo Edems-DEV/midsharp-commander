@@ -206,28 +206,34 @@ internal class FileManager
     #endregion
     #endregion
 
+    public DriveInfo ActiveDrive(string path)
+    {
+        //C:\Users\...
+        if (path.Length < 3)
+            throw new ArgumentException($"Path is too short: {path} - {path.Length} chars");
+            
+        string activeDisk = path.Substring(0, 3);
+        DriveInfo[] allDrives = DriveInfo.GetDrives();
+        
+        foreach (var drive in allDrives)
+        {
+            if (drive.Name != activeDisk)
+                continue;
+            
+            return drive;
+        }
+
+        return null; //?
+    }
 
     #region Calc
-    public string freeSpace() // 52G/58G (89%)
+    public string freeSpace(DriveInfo ActiveDrive) // 52G/58G (89%)
     {
-        //TODO:
-        // - use SizeConvertor() (+ this will show other sizes, no only GB )
-        // - use SetDiscs(); -> dynamic disk select (at the moment it shows only disk[0] -> "C:\" )
-        //SetDiscs();
-        //SizeConvertor();
-        string name = "";
-        const double GB = 1073741824; //bytesToGb
-
-        DriveInfo[] allDrives = DriveInfo.GetDrives();
-        var ActiveDrive = allDrives[0];
-
         double freeSpacePerc = Math.Round((ActiveDrive.AvailableFreeSpace / (float)ActiveDrive.TotalSize) * 100, 0);
-        int Total = Convert.ToInt32(ActiveDrive.TotalSize / GB);
-        int Free = Convert.ToInt32(ActiveDrive.TotalFreeSpace / GB);
+        string total = Truncate.Size(ActiveDrive.TotalSize, 0, false);
+        string free = Truncate.Size(ActiveDrive.TotalFreeSpace, 0, false);
 
-        name = $" {Free}G/{Total}G ({freeSpacePerc}%) ";
-
-        return name;
+        return $" {free}/{total} ({freeSpacePerc}%) ";
     }
     #endregion
 }

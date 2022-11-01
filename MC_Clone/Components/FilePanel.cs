@@ -219,7 +219,10 @@ public class FilePanel : IComponent
             Console.Write(local_row);
             count++;
         }
-        string diskInfo = FM.freeSpace();
+        string diskInfo = "";
+        if (Path_.Length > 3)
+            diskInfo = FM.freeSpace(FM.ActiveDrive(Path_));
+        
         int currentLeftCursor = Console.CursorLeft;
         if (currentLeftCursor > (diskInfo.Length + 2))
             Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);

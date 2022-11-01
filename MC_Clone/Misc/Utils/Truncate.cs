@@ -21,7 +21,7 @@ internal static class Truncate
         return truncated;
     }
 
-    public static string Size(double bytes)
+    public static string Size(double bytes, int round = 0, bool space = true)
     {
         string[] sizes = { "B", "KB", "MB", "GB", "TB" };
         int order = 0;
@@ -30,6 +30,12 @@ internal static class Truncate
             order++;
             bytes = bytes / 1024;
         }
-        return String.Format("{0:0} {1}", bytes, sizes[order]);
+        string result = "";
+        result += Math.Round(bytes, round).ToString();
+        if (space)
+            result += " ";
+        result += sizes[order];
+
+        return result;
     }
 }
