@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -12,15 +13,14 @@ namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
-    public event Action<int> RowSelected; 
+    public event Action<int> RowSelected;
 
 
     private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-    
-    //MenuBar MenuBar = new MenuBar();
+
     FileManager FM;
 
     private int offset = 0;
@@ -44,7 +44,6 @@ public class FilePanel : IComponent
 
     #region Static
     char folderPrefix = '/';
-    //char verticalLine = l.lineY; //all frame chars here
     int haldWindow = 0;
     int deadRows = 0;
     #endregion
@@ -75,17 +74,42 @@ public class FilePanel : IComponent
     #endregion
 
     #region Model Wrappers
-    void SetDiscs()
+    private void SetDiscs()
     {
         _discs = true;
         FS_Objects = FM.SetDiscs();
     }
-    void SetLists(string path)
+    private void SetLists(string path)
     {
         _discs = false;
         FS_Objects = FM.SetLists(path);
     }
     #endregion
+
+    private void ChangeColor(string type, string text) //idea - bad
+    {
+        ConsoleColor t = Console.ForegroundColor;
+        ConsoleColor b = Console.BackgroundColor;
+
+        switch (type)
+        {
+            case "primary":
+                t = Config.Primary_ForegroundColor;
+                b = Config.Primary_ForegroundColor;
+                break;
+            default:
+                break;
+        }
+
+        ConsoleColor old_TextColor = Console.ForegroundColor;
+        ConsoleColor old_BackgroudColor = Console.BackgroundColor;
+        //just 
+        Console.ForegroundColor = t;
+        Console.BackgroundColor = b;
+        Console.WriteLine(text);
+        Console.ForegroundColor = old_TextColor;
+        Console.BackgroundColor = old_BackgroudColor;
+    }
     
     void Start(int X = 0, int Y = 0)
     {
@@ -176,9 +200,33 @@ public class FilePanel : IComponent
                 break;
         }
     }
-    public void StatusLine(string label) //char vertical = l.lineY
+    
+    private string[] Generete_StatusLine(string label)
     {
-        string row0 = ""; //need to overrite coners
+        string row0 = "";
+        row0 += l.upRight;
+        row0 += new String(l.lineX, lineLength - 2);
+        row0 += l.upleft;
+        string row1 = "";
+        row1 += l.lineY;
+        if (label == folderPrefix + "..")
+            label = "UP--DIR";
+        else if (!label.StartsWith(folderPrefix))
+            label = " " + label;
+        row1 += label; //modify for each file type
+        row1 += new String(' ', lineLength - row1.Length - 1);
+        row1 += l.lineY;
+        string row2 = "";
+        row2 += l.bottomLeft;
+        row2 += new String(l.lineX, lineLength - 2);
+        row2 += l.bottomRight;
+        string[] local_rows = { row0, row1, row2 };
+
+        return local_rows;
+    }
+    public void StatusLine(string label) //char vertical = l.lineY //new element?
+    {
+        string row0 = "";
         row0 += l.upRight;
         row0 += new String(l.lineX, lineLength - 2);
         row0 += l.upleft;
@@ -307,7 +355,8 @@ public class FilePanel : IComponent
         Console.WriteLine(_end);
     }
 
-    public int LineLength()
+    #region Calc
+    public int LineLength() //TODO: refactor
     {
         int lenght = 0;
         foreach (var item in Widths())
@@ -345,6 +394,9 @@ public class FilePanel : IComponent
 
         return widths;
     }
+    #endregion
+
+    #region Prepere data
     public void Add(string[] data)
     {
         if (data.Length != headers.Count)
@@ -371,7 +423,7 @@ public class FilePanel : IComponent
                 Add(new string[] { folderPrefix + "..", "UP--DIR", "ToDo" });
                 continue;
             }
-            string name = FM.Truncated(item.Name, aaaa);
+            string name = Truncate.Text(item.Name, aaaa);
             int local_maxNameLength = maxNameLength;
 
             long size = 0;
@@ -396,8 +448,8 @@ public class FilePanel : IComponent
                 size = a.Length;
             }
             
-            FM.Truncated(item.Name, local_maxNameLength);
-            Add(new string[] { name, FM.SizeConvertor(size).PadLeft(7), item.LastWriteTime.ToString("MMM dd HH:mm") });
+            Truncate.Text(item.Name, local_maxNameLength);
+            Add(new string[] { name, Truncate.Size(size).PadLeft(7), item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
         //Long row
         //TODO: find different solution
@@ -408,9 +460,9 @@ public class FilePanel : IComponent
             Add(new string[] { emptyLong, "", "            " });
             deadRows++;
         }
-        
     }
-    
+    #endregion
+
 
     #endregion
     #region HandleKey methods
@@ -484,7 +536,7 @@ public class FilePanel : IComponent
         ImportRows();
         Draw();
     }
-    private void CreateFile() //Menu
+    private void CreateFile() //Menu //TODO: move
     {
         if (IsDiscs)
             return;
@@ -550,7 +602,7 @@ public class FilePanel : IComponent
             return;
         }
     }
-    private void CopyDirectory(string sourceDirName, string destDirName)
+    private void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
     {
         DirectoryInfo dir = new DirectoryInfo(sourceDirName);
         DirectoryInfo[] dirs = dir.GetDirectories();
@@ -676,16 +728,9 @@ public class FilePanel : IComponent
     #endregion
     #endregion
 
-    public FileSystemInfo GetActiveObject()
-    {
-        if (this.FS_Objects != null && this.FS_Objects.Count != 0)
-        {
-            return this.FS_Objects[this.Selected];
-        }
-        throw new Exception("The list of panel objects is empty");
-    }
 
-    private void ChangeDir()
+
+    private void ChangeDir() //TODO: move
     {
         FileSystemInfo fsInfo = this.FS_Objects[this.Selected]; //GetActiveObject();
         if (fsInfo != null)
@@ -694,7 +739,7 @@ public class FilePanel : IComponent
             {
                 Path_ = fsInfo.FullName;
                 SetLists(Path_);
-                UpdatePanel();
+                RefreshPanel();
             }
             //else
             //    //file -> F4 edit
@@ -709,24 +754,43 @@ public class FilePanel : IComponent
             {
                 Path_ = upLevelDirectory.FullName;
                 SetLists(Path_);
-                UpdatePanel();
+                RefreshPanel();
             }
 
             else
             {
                 SetDiscs();
-                UpdatePanel();
+                RefreshPanel();
             }
         }
     }
-    public void UpdatePanel()
+
+
+
+
+    #region Misc
+    public FileSystemInfo GetActiveObject()
+    {
+        if (this.FS_Objects != null && this.FS_Objects.Count != 0)
+        {
+            return this.FS_Objects[this.Selected];
+        }
+        throw new Exception("The list of panel objects is empty");
+    }
+
+    public void RefreshPanel()
     {
         offset = 0;
         Selected = 0;
+        UpdatePanel();
+    }
+    public void UpdatePanel()
+    {
         Clear(); //change to something better (clear only that pane)
         ImportRows();
         Draw();
     }
+
 
     void Clear()
     {
@@ -739,4 +803,5 @@ public class FilePanel : IComponent
             Console.WriteLine(space);
         }
     }
+    #endregion
 }

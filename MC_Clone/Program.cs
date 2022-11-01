@@ -24,7 +24,7 @@ internal class Program
 
             while (!(Console.KeyAvailable))
             {
-                //Update if window size was changed
+                //Updates if window size was changed
                 if (a == Console.WindowHeight && b == Console.WindowWidth) {
                     continue;
                 }
