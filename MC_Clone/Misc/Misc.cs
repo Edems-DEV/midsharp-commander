@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class Misc
+internal class Misc //koncepty
 {
 }
 
@@ -37,5 +37,41 @@ internal class ConsoleBTN
     public static void disable_MinimizeBTN()
     {
         DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_MINIMIZE, MF_BYCOMMAND); 
+    }
+}
+
+internal class MyColor
+{
+    [Flags]
+    public enum Dockings
+    {
+        Accent = 0,
+        Primary = 1,
+        Secondary = 2,
+    }
+    
+    public static void Recolor(string type, string text) //idea - bad
+    {
+        ConsoleColor t = Console.ForegroundColor;
+        ConsoleColor b = Console.BackgroundColor;
+
+        switch (type)
+        {
+            case "primary":
+                t = Config.Primary_ForegroundColor;
+                b = Config.Primary_ForegroundColor;
+                break;
+            default:
+                break;
+        }
+
+        ConsoleColor old_TextColor = Console.ForegroundColor;
+        ConsoleColor old_BackgroudColor = Console.BackgroundColor;
+        //just 
+        Console.ForegroundColor = t;
+        Console.BackgroundColor = b;
+        Console.WriteLine(text);
+        Console.ForegroundColor = old_TextColor;
+        Console.BackgroundColor = old_BackgroudColor;
     }
 }

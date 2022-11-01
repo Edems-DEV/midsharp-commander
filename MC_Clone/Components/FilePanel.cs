@@ -44,7 +44,7 @@ public class FilePanel : IComponent
 
     #region Static
     char folderPrefix = '/';
-    int haldWindow = 0;
+    int halfWindow = 0;
     int deadRows = 0;
     #endregion
 
@@ -87,43 +87,20 @@ public class FilePanel : IComponent
     
     private void ChangeDir()
     {
-        FS_Objects = FM.ChangeDir(Path_, FS_Objects[Selected]);
+        FS_Objects = FM.ChangeDir(Path_, GetActiveObject());
         RefreshPanel();
     }
     #endregion
 
-    private void ChangeColor(string type, string text) //idea - bad
-    {
-        ConsoleColor t = Console.ForegroundColor;
-        ConsoleColor b = Console.BackgroundColor;
 
-        switch (type)
-        {
-            case "primary":
-                t = Config.Primary_ForegroundColor;
-                b = Config.Primary_ForegroundColor;
-                break;
-            default:
-                break;
-        }
-
-        ConsoleColor old_TextColor = Console.ForegroundColor;
-        ConsoleColor old_BackgroudColor = Console.BackgroundColor;
-        //just 
-        Console.ForegroundColor = t;
-        Console.BackgroundColor = b;
-        Console.WriteLine(text);
-        Console.ForegroundColor = old_TextColor;
-        Console.BackgroundColor = old_BackgroudColor;
-    }
-    
+    #region Constructor
     void Start(int X = 0, int Y = 0)
     {
         x = X;
         y = Y;
         y_temp = y;
         LineLength();
-        haldWindow = Console.WindowWidth / 2;
+        halfWindow = Console.WindowWidth / 2;
         FM = new FileManager();
 
     }
@@ -140,6 +117,7 @@ public class FilePanel : IComponent
         if (path == ".") { SetDiscs(); return; }
         SetLists(Path_);
     }
+    #endregion
 
     public void HandleKey(ConsoleKeyInfo info)
     {
@@ -177,7 +155,7 @@ public class FilePanel : IComponent
                 CreateFile();
                 break;
             case ConsoleKey.F3:
-                if (FS_Objects[Selected] is DirectoryInfo) 
+                if (GetActiveObject() is DirectoryInfo) 
                     { ChangeDir(); ; break; }
                 View();
                 break;
@@ -283,11 +261,11 @@ public class FilePanel : IComponent
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 -1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
-        haldWindow = Console.WindowWidth / 2;
+        halfWindow = Console.WindowWidth / 2;
 
         if (x != 0)
         {
-            x = haldWindow;
+            x = halfWindow;
         }
 
         Console.ForegroundColor = Config.Table_ForegroundColor;
@@ -397,9 +375,9 @@ public class FilePanel : IComponent
     {
         deadRows = 0;
         int aaaa = 5;
-        if (haldWindow >= 29) //need to update
+        if (halfWindow >= 29) //need to update
         {
-            aaaa = ((haldWindow) - 27 - 2);
+            aaaa = ((halfWindow) - 27 - 2);
         }
 
         if (rows != null)
@@ -722,20 +700,20 @@ public class FilePanel : IComponent
     #region Misc
     public FileSystemInfo GetActiveObject()
     {
-        if (this.FS_Objects != null && this.FS_Objects.Count != 0)
+        if (FS_Objects != null && FS_Objects.Count != 0)
         {
-            return this.FS_Objects[this.Selected];
+            return FS_Objects[Selected];
         }
         throw new Exception("The list of panel objects is empty");
     }
 
-    public void RefreshPanel()
+    private void RefreshPanel()
     {
         offset = 0;
         Selected = 0;
         UpdatePanel();
     }
-    public void UpdatePanel()
+    private void UpdatePanel()
     {
         Clear(); //change to something better (clear only that pane)
         ImportRows();
@@ -743,7 +721,7 @@ public class FilePanel : IComponent
     }
 
 
-    void Clear()
+    private void Clear()
     {
         int rows = Visible + headers.Count + 1 + 2; //final line + 2 Menu
 
