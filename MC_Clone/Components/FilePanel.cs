@@ -226,25 +226,7 @@ public class FilePanel : IComponent
     }
     public void StatusLine(string label) //char vertical = l.lineY //new element?
     {
-        string row0 = "";
-        row0 += l.upRight;
-        row0 += new String(l.lineX, lineLength - 2);
-        row0 += l.upleft;
-        string row1 = "";
-        row1 += l.lineY;
-        if (label == folderPrefix + "..")
-            label = "UP--DIR";
-        else if (!label.StartsWith(folderPrefix))
-            label = " " + label; 
-        row1 += label; //modify for each file type
-        row1 += new String(' ', lineLength - row1.Length - 1);
-        row1 += l.lineY;
-        string row2 = "";
-        row2 += l.bottomLeft;
-        row2 += new String(l.lineX, lineLength - 2);
-        row2 += l.bottomRight;
-
-        string[] local_rows = { row0, row1, row2 };
+        string[] local_rows = Generete_StatusLine(label);
 
         int count = 0;
         foreach (var local_row in local_rows)
