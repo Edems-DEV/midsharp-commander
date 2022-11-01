@@ -26,7 +26,6 @@ public class FilePanel : IComponent
     private int y  = 0;
     private int y_temp  = 0;
 
-    
     private int deadRows = 0;
     private int lineLength = 0;
     private int halfWindowSize = 0;
@@ -187,78 +186,6 @@ public class FilePanel : IComponent
                 break;
         }
     }
-    
-    private string[] Generete_StatusLine(string label)
-    {
-        string row0 = "";
-        row0 += l.upRight;
-        row0 += new String(l.lineX, lineLength - 2);
-        row0 += l.upleft;
-        string row1 = "";
-        row1 += l.lineY;
-        if (label == folderPrefix + "..")
-            label = "UP--DIR";
-        else if (!label.StartsWith(folderPrefix))
-            label = " " + label;
-        row1 += label; //modify for each file type
-        row1 += new String(' ', lineLength - row1.Length - 1);
-        row1 += l.lineY;
-        string row2 = "";
-        row2 += l.bottomLeft;
-        row2 += new String(l.lineX, lineLength - 2);
-        row2 += l.bottomRight;
-        string[] local_rows = { row0, row1, row2 };
-
-        return local_rows;
-    }
-    public void StatusLine(string label) //char vertical = l.lineY //new element?
-    {
-        string[] local_rows = Generete_StatusLine(label);
-
-        int count = 0;
-        foreach (var local_row in local_rows)
-        {
-            Console.SetCursorPosition(x, y_temp + count);
-            Console.Write(local_row);
-            count++;
-        }
-        string diskInfo = "";
-        if (Path_.Length >= 3)
-            diskInfo = FM.FreeSpace(FM.ActiveDrive(Path_));
-        
-        int currentLeftCursor = Console.CursorLeft;
-        if (currentLeftCursor > (diskInfo.Length + 2))
-            Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
-        Console.Write(diskInfo);
-
-    }
-
-   
-    void ActivePath()
-    {
-        ConsoleColor oldTextColor = Console.ForegroundColor;
-        ConsoleColor oldBackColor = Console.BackgroundColor;
-
-
-        Console.SetCursorPosition(x, y_temp - 1);
-
-        string line = @$"{l.topLeft}{l.arrowRight}{l.lineX}"; //@$"┌<─";
-        string label = "";
-
-        Console.Write(line);
-        if (_isActive) {
-            Console.ForegroundColor = Config.Table_Path_ACTIVE_ForegroundColor;
-            Console.BackgroundColor = Config.Table_Path_ACTIVE_BackgroundColor;
-        }
-        if (_isDiscs)
-            label = " Drives: ";
-        else
-            label = $" {_path} ";
-        Console.Write(label);
-        //Console.ResetColor();
-        Console.ForegroundColor = oldTextColor;
-        Console.BackgroundColor = oldBackColor;
-    }
 
     public void Draw()
     {
@@ -327,6 +254,78 @@ public class FilePanel : IComponent
         Console.WriteLine(_end);
     }
 
+    private void ActivePath()
+    {
+        ConsoleColor oldTextColor = Console.ForegroundColor;
+        ConsoleColor oldBackColor = Console.BackgroundColor;
+
+
+        Console.SetCursorPosition(x, y_temp - 1);
+
+        string line = @$"{l.topLeft}{l.arrowRight}{l.lineX}"; //@$"┌<─";
+        string label = "";
+
+        Console.Write(line);
+        if (_isActive)
+        {
+            Console.ForegroundColor = Config.Table_Path_ACTIVE_ForegroundColor;
+            Console.BackgroundColor = Config.Table_Path_ACTIVE_BackgroundColor;
+        }
+        if (_isDiscs)
+            label = " Drives: ";
+        else
+            label = $" {_path} ";
+        Console.Write(label);
+        //Console.ResetColor();
+        Console.ForegroundColor = oldTextColor;
+        Console.BackgroundColor = oldBackColor;
+    }
+
+    private void StatusLine(string label) //char vertical = l.lineY //new element?
+    {
+        string[] local_rows = Generete_StatusLine(label);
+
+        int count = 0;
+        foreach (var local_row in local_rows)
+        {
+            Console.SetCursorPosition(x, y_temp + count);
+            Console.Write(local_row);
+            count++;
+        }
+        string diskInfo = "";
+        if (Path_.Length >= 3)
+            diskInfo = FM.FreeSpace(FM.ActiveDrive(Path_));
+
+        int currentLeftCursor = Console.CursorLeft;
+        if (currentLeftCursor > (diskInfo.Length + 2))
+            Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
+        Console.Write(diskInfo);
+
+    }
+    private string[] Generete_StatusLine(string label)
+    {
+        string row0 = "";
+        row0 += l.upRight;
+        row0 += new String(l.lineX, lineLength - 2);
+        row0 += l.upleft;
+        string row1 = "";
+        row1 += l.lineY;
+        if (label == folderPrefix + "..")
+            label = "UP--DIR";
+        else if (!label.StartsWith(folderPrefix))
+            label = " " + label;
+        row1 += label; //modify for each file type
+        row1 += new String(' ', lineLength - row1.Length - 1);
+        row1 += l.lineY;
+        string row2 = "";
+        row2 += l.bottomLeft;
+        row2 += new String(l.lineX, lineLength - 2);
+        row2 += l.bottomRight;
+        string[] local_rows = { row0, row1, row2 };
+
+        return local_rows;
+    }
+
     #region Calc
     public int LineLength() //TODO: refactor
     {
@@ -369,14 +368,6 @@ public class FilePanel : IComponent
     #endregion
 
     #region Prepere data
-    public void Add(string[] data)
-    {
-        if (data.Length != headers.Count)
-            throw new ArgumentException("Invalid columns count");
-
-        rows.Add(new Row(data));
-    }
-
     public void ImportRows(string path = "")
     {
         deadRows = 0;
@@ -408,7 +399,6 @@ public class FilePanel : IComponent
                 //try { //missing permision for low level folders
                 //    size = FM.DirSize(item as DirectoryInfo);
                 //} catch { }
-                
             }
             else
             {
@@ -416,7 +406,7 @@ public class FilePanel : IComponent
                 size = a.Length;
             }
             
-            Truncate.Text(item.Name, local_maxNameLength);
+            Truncate.Text(item.Name, local_maxNameLength); //TODO: clearMe
             
             string sizeStr = "";
             if (size != 0)
@@ -433,6 +423,13 @@ public class FilePanel : IComponent
             Add(new string[] { emptyLong, "", "            " });
             deadRows++;
         }
+    }
+    public void Add(string[] data)
+    {
+        if (data.Length != headers.Count)
+            throw new ArgumentException("Invalid columns count");
+
+        rows.Add(new Row(data));
     }
     #endregion
 
@@ -716,8 +713,7 @@ public class FilePanel : IComponent
 
     private void RefreshPanel()
     {
-        Offset = 0;
-        Selected = 0;
+        GoBegin();
         UpdatePanel();
     }
     private void UpdatePanel()
