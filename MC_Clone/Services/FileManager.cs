@@ -96,6 +96,7 @@ internal class FileManager
             else
             {
                 SetDiscs();
+                return null;
             }
         }
         //return FS_Objects; //List<FileSystemInfo>
