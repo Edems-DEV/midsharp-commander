@@ -422,7 +422,12 @@ public class FilePanel : IComponent
             }
             
             Truncate.Text(item.Name, local_maxNameLength);
-            Add(new string[] { name, Truncate.Size(size).PadLeft(7), item.LastWriteTime.ToString("MMM dd HH:mm") });
+            
+            string sizeStr = "";
+            if (size != 0)
+                sizeStr = Truncate.Size(size).PadLeft(7);
+
+            Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
         //Long row
         //TODO: find different solution
