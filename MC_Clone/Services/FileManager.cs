@@ -9,7 +9,10 @@ namespace MC_Clone;
 internal class FileManager
 {
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-
+    //public FileSystemInfo fileObject = FileSystemInfo(); //FilePanelControll
+    //private string _path = ""; //mění se jenom pří ChangeDir
+    //nebo static
+    
     public FileManager() //can be static?
     {
     }
@@ -65,13 +68,13 @@ internal class FileManager
     #endregion
     #region Fuction
     //Function
-    private List<FileSystemInfo> ChangeDir(FileSystemInfo fsInfo, string Path_) //TODO: move
+    public List<FileSystemInfo> ChangeDir(string Path_, FileSystemInfo fileObject) //TODO: move
     {
-        if (fsInfo != null)
+        if (fileObject != null)
         {
-            if (fsInfo is DirectoryInfo)
+            if (fileObject is DirectoryInfo)
             {
-                Path_ = fsInfo.FullName;
+                Path_ = fileObject.FullName;
                 SetLists(Path_);
                 //UpdatePanel();
             }
@@ -88,13 +91,11 @@ internal class FileManager
             {
                 Path_ = upLevelDirectory.FullName;
                 SetLists(Path_);
-                //RefreshPanel();
             }
 
             else
             {
                 SetDiscs();
-                //RefreshPanel();
             }
         }
         return FS_Objects;

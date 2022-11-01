@@ -10,6 +10,9 @@ internal static class Truncate
 {
     public static string Text(string ts, int maxLength, string trun = "~")
     {
+        if (ts.Length < maxLength)
+            return ts;
+
         maxLength = maxLength - trun.Length;
         int a = maxLength / 2 + maxLength % 2;
         int b = maxLength / 2;

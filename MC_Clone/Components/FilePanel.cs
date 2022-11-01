@@ -84,6 +84,12 @@ public class FilePanel : IComponent
         _discs = false;
         FS_Objects = FM.SetLists(path);
     }
+    
+    private void ChangeDir()
+    {
+        FS_Objects = FM.ChangeDir(Path_, FS_Objects[Selected]);
+        RefreshPanel();
+    }
     #endregion
 
     private void ChangeColor(string type, string text) //idea - bad
@@ -709,43 +715,6 @@ public class FilePanel : IComponent
     }
     #endregion
     #endregion
-
-
-
-    private void ChangeDir() //TODO: move
-    {
-        FileSystemInfo fsInfo = this.FS_Objects[this.Selected]; //GetActiveObject();
-        if (fsInfo != null)
-        {
-            if (fsInfo is DirectoryInfo)
-            {
-                Path_ = fsInfo.FullName;
-                SetLists(Path_);
-                RefreshPanel();
-            }
-            //else
-            //    //file -> F4 edit
-        }
-        else
-        {
-            string currentPath = Path_;
-            DirectoryInfo currentDirectory = new DirectoryInfo(currentPath);
-            DirectoryInfo upLevelDirectory = currentDirectory.Parent;
-
-            if (upLevelDirectory != null)
-            {
-                Path_ = upLevelDirectory.FullName;
-                SetLists(Path_);
-                RefreshPanel();
-            }
-
-            else
-            {
-                SetDiscs();
-                RefreshPanel();
-            }
-        }
-    }
 
 
 
