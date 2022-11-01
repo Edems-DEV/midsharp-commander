@@ -29,21 +29,15 @@ internal static class Truncate
         return truncated;
     }
 
-    public static string Size(long Bytes)
+    public static string Size(double bytes)
     {
-        //TODO - change to loop
-        double bytes = Bytes;
-        int r = 2;
-        if (bytes < 1000)
-            return bytes + "B";
-        if (bytes > 1000 && bytes < 1000000)
-            return Math.Round(bytes / 1000, r) + "K";
-        if (bytes > 1000000 && bytes < 1000000000)
-            return Math.Round(bytes / 1000000, r) + "M";
-        if (bytes > 1000000000 && bytes < 1000000000000)
-            return Math.Round(bytes / 1000000000, r) + "G";
-        if (bytes > 1000000000000)
-            return Math.Round(bytes / 1000000000000, r) + "T";
-        return " ";
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        int order = 0;
+        while (bytes >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            bytes = bytes / 1024;
+        }
+        return String.Format("{0:0} {1}", bytes, sizes[order]);
     }
 }
