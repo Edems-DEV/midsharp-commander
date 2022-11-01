@@ -25,7 +25,6 @@ internal class FileManager
             this.FS_Objects.Clear();
         }
         
-        //_discs = false;
         DirectoryInfo levelUpDirectory = null;
         this.FS_Objects.Add(levelUpDirectory);
         //Directories
@@ -33,23 +32,23 @@ internal class FileManager
         foreach (string directory in directories)
         {
             DirectoryInfo di = new DirectoryInfo(directory);
-            this.FS_Objects.Add(di);
+            FS_Objects.Add(di);
         }
         //Files
         string[] files = Directory.GetFiles(path);
         foreach (string file in files)
         {
             FileInfo fi = new FileInfo(file);
-            this.FS_Objects.Add(fi);
+            FS_Objects.Add(fi);
         }
 
-        return this.FS_Objects;
+        return FS_Objects;
     }
     public List<FileSystemInfo> SetDiscs()
     {
-        if (this.FS_Objects.Count != 0)
+        if (FS_Objects.Count != 0)
         {
-            this.FS_Objects.Clear();
+            FS_Objects.Clear();
         }
 
         //_discs = true;
@@ -67,8 +66,7 @@ internal class FileManager
     }
     #endregion
     #region Fuction
-    //Function
-    public string ChangeDir(string Path_, FileSystemInfo fileObject) //TODO: move
+    public string ChangeDir(string Path_, FileSystemInfo fileObject)
     {
         if (fileObject != null)
         {
@@ -76,7 +74,6 @@ internal class FileManager
             {
                 Path_ = fileObject.FullName;
                 SetLists(Path_);
-                //UpdatePanel();
             }
             //else
             //    //file -> F4 edit
@@ -99,7 +96,6 @@ internal class FileManager
                 return null;
             }
         }
-        //return FS_Objects; //List<FileSystemInfo>
         return Path_;
     }
     #region Function Keys
