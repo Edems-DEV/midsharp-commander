@@ -98,6 +98,24 @@ internal class FileManager
         }
         return Path_;
     }
+
+    public long DirSize(DirectoryInfo d) //static?
+    {
+        long size = 0;
+        // Add file sizes.
+        FileInfo[] fis = d.GetFiles();
+        foreach (FileInfo fi in fis)
+        {
+            size += fi.Length;
+        }
+        // Add subdirectory sizes.
+        DirectoryInfo[] dis = d.GetDirectories();
+        foreach (DirectoryInfo di in dis)
+        {
+            size += DirSize(di);
+        }
+        return size;
+    }
     #region Function Keys
     //TODO: delete in FilePanel
     private void CreateFile(string Path_, string fileName) //Menu

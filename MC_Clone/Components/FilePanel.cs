@@ -409,12 +409,9 @@ public class FilePanel : IComponent
                 if (!_discs)
                     name = folderPrefix + name;
                 local_maxNameLength -= 1;
-                DirectoryInfo a = item as DirectoryInfo;
+                
                 try { //missing permision for low level folders
-                    foreach (var file in a.GetFiles()) //TODO: SubDir size
-                    {
-                        size += file.Length;
-                    }
+                    size = FM.DirSize(item as DirectoryInfo);
                 }
                 catch { }
                 
