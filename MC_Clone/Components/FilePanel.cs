@@ -410,10 +410,9 @@ public class FilePanel : IComponent
                     name = folderPrefix + name;
                 local_maxNameLength -= 1;
                 
-                try { //missing permision for low level folders
-                    size = FM.DirSize(item as DirectoryInfo);
-                }
-                catch { }
+                //try { //missing permision for low level folders
+                //    size = FM.DirSize(item as DirectoryInfo);
+                //} catch { }
                 
             }
             else
