@@ -15,49 +15,44 @@ public class FilePanel : IComponent
 {
     public event Action<int> RowSelected;
 
-
-    private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
+    FileManager FM;
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
+    private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
-    FileManager FM;
+    #region Atributes
+    private int x  = 0;
+    private int y  = 0;
+    private int y_temp  = 0;
 
-    private int offset = 0;
+    
+    private int deadRows = 0;
+    private int lineLength = 0;
+    private int halfWindowSize = 0;
+    private int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
+    private int nameExtraPad = 0;
+    private string statusBarLabel = "";
+    char folderPrefix = '/';
 
-    public int Selected { get; set; } = 0;
-
-    public int Visible { get; set; } = 10;
-
-    int x = 0;
-    int y_temp = 0;
-    int y = 0;
-
-    int lineLength = 0;
-    int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
-    int NameExtraPad = 0;
-    private bool _active;
-    private bool _discs;
+    private bool _isActive;
+    private bool _isDiscs;
     private string _path = "";
 
-    string statusBarLabel = "";
-
-    #region Static
-    char folderPrefix = '/';
-    int halfWindow = 0;
-    int deadRows = 0;
+    private int Offset { get; set; } = 0;
+    public int Selected { get; set; } = 0;
+    public int Visible { get; set; } = 10;
     #endregion
 
-
     #region Properties
-    public bool Active
+    public bool IsActive
     {
-        get { return this._active; }
-        set { this._active = value; }
+        get { return this._isActive; }
+        set { this._isActive = value; }
     }
     public bool IsDiscs
     {
-        get { return this._discs; }
+        get { return this._isDiscs; }
     }
     public string Path_
     {
@@ -76,12 +71,12 @@ public class FilePanel : IComponent
     #region Model Wrappers
     private void SetDiscs()
     {
-        _discs = true;
+        _isDiscs = true;
         FS_Objects = FM.SetDiscs();
     }
     private void SetLists(string path)
     {
-        _discs = false;
+        _isDiscs = false;
         FS_Objects = FM.SetLists(path);
     }
     
@@ -89,11 +84,11 @@ public class FilePanel : IComponent
     {
         string path = FM.ChangeDir(Path_, GetActiveObject());
         if (path == null) 
-            _discs = true;
+            _isDiscs = true;
         else
         {
             Path_ = path;
-            _discs = false;
+            _isDiscs = false;
         }
         
         RefreshPanel();
@@ -108,7 +103,7 @@ public class FilePanel : IComponent
         y = Y;
         y_temp = y;
         LineLength();
-        halfWindow = Console.WindowWidth / 2;
+        halfWindowSize = Console.WindowWidth / 2;
         FM = new FileManager();
 
     }
@@ -251,11 +246,11 @@ public class FilePanel : IComponent
         string label = "";
 
         Console.Write(line);
-        if (_active) {
+        if (_isActive) {
             Console.ForegroundColor = Config.Table_Path_ACTIVE_ForegroundColor;
             Console.BackgroundColor = Config.Table_Path_ACTIVE_BackgroundColor;
         }
-        if (_discs)
+        if (_isDiscs)
             label = " Drives: ";
         else
             label = $" {_path} ";
@@ -272,11 +267,11 @@ public class FilePanel : IComponent
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 -1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
-        halfWindow = Console.WindowWidth / 2;
+        halfWindowSize = Console.WindowWidth / 2;
 
         if (x != 0)
         {
-            x = halfWindow;
+            x = halfWindowSize;
         }
 
         Console.ForegroundColor = Config.Table_ForegroundColor;
@@ -287,7 +282,7 @@ public class FilePanel : IComponent
         DrawData(headers, widths, l.lineY, ' ');
         DrawData(null, widths, l.cross, l.lineX, l.upRight, l.upleft);
 
-        for (int i = offset; i < offset + Math.Min(Visible, this.rows.Count); i++)
+        for (int i = Offset; i < Offset + Math.Min(Visible, this.rows.Count); i++)
         {
             if (i == Selected)
             {
@@ -386,9 +381,9 @@ public class FilePanel : IComponent
     {
         deadRows = 0;
         int aaaa = 5;
-        if (halfWindow >= 29) //need to update
+        if (halfWindowSize >= 29) //need to update
         {
-            aaaa = ((halfWindow) - 27 - 2);
+            aaaa = ((halfWindowSize) - 27 - 2);
         }
 
         if (rows != null)
@@ -406,7 +401,7 @@ public class FilePanel : IComponent
             long size = 0;
             if (item is DirectoryInfo)
             {
-                if (!_discs)
+                if (!_isDiscs)
                     name = folderPrefix + name;
                 local_maxNameLength -= 1;
                 
@@ -452,8 +447,8 @@ public class FilePanel : IComponent
 
         Selected--;
 
-        if (Selected == offset - 1)
-            offset--;
+        if (Selected == Offset - 1)
+            Offset--;
     }
     private void ScrollDown()
     {
@@ -462,13 +457,13 @@ public class FilePanel : IComponent
 
         Selected++;
 
-        if (Selected == offset + Math.Min(Visible, this.rows.Count))
-            offset++;
+        if (Selected == Offset + Math.Min(Visible, this.rows.Count))
+            Offset++;
     }
     private void GoBegin()
     {
         Selected = 0;
-        offset = 0;
+        Offset = 0;
     }
     private void GoEnd()
     {
@@ -486,7 +481,7 @@ public class FilePanel : IComponent
         //offset = rowsCout - Visible;
 
         //Selected = rows.Count - 1;
-        offset = rows.Count - Visible; //dead Rows never exist when offset is
+        Offset = rows.Count - Visible; //dead Rows never exist when offset is
     }
     private void PageUp()
     {
@@ -495,7 +490,7 @@ public class FilePanel : IComponent
         //    return;
 
         Selected = Selected - Visible;
-        offset = offset - Visible;
+        Offset = Offset - Visible;
     }
     private void PageDown()
     {
@@ -504,7 +499,7 @@ public class FilePanel : IComponent
         //    return;
 
         Selected = Selected + Visible;
-        offset = offset + Visible;
+        Offset = Offset + Visible;
     }
     #endregion
     #region FunctionKeys
@@ -721,7 +716,7 @@ public class FilePanel : IComponent
 
     private void RefreshPanel()
     {
-        offset = 0;
+        Offset = 0;
         Selected = 0;
         UpdatePanel();
     }

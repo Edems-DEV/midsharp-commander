@@ -80,13 +80,13 @@ public class ListWindow : Window
 
         }
         _activePanelIndex = 0;
-        ActivePanel().Active = true;
+        ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
     }
 
     public void ChangeActivePanel()
     {
-        ActivePanel().Active = false;
+        ActivePanel().IsActive = false;
         KeyPress -= ActivePanel().HandleKey;
         //ActivePanel().UpdateContent(false);
 
@@ -96,7 +96,7 @@ public class ListWindow : Window
             this._activePanelIndex = 0;
         }
 
-        ActivePanel().Active = true;
+        ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
         //ActivePanel().UpdateContent(false);
     }
