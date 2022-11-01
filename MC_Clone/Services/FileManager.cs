@@ -66,28 +66,28 @@ internal class FileManager
     }
     #endregion
     #region Fuction
-    public string ChangeDir(string Path_, FileSystemInfo fileObject)
+    public string ChangeDir(string path, FileSystemInfo fileObject)
     {
         if (fileObject != null)
         {
             if (fileObject is DirectoryInfo)
             {
-                Path_ = fileObject.FullName;
-                SetLists(Path_);
+                path = fileObject.FullName;
+                SetLists(path);
             }
             //else
             //    //file -> F4 edit
         }
         else
         {
-            string currentPath = Path_;
+            string currentPath = path;
             DirectoryInfo currentDirectory = new DirectoryInfo(currentPath);
             DirectoryInfo upLevelDirectory = currentDirectory.Parent;
 
             if (upLevelDirectory != null)
             {
-                Path_ = upLevelDirectory.FullName;
-                SetLists(Path_);
+                path = upLevelDirectory.FullName;
+                SetLists(path);
             }
 
             else
@@ -96,33 +96,17 @@ internal class FileManager
                 return null;
             }
         }
-        return Path_;
+        return path;
     }
 
-    public long DirSize(DirectoryInfo d) //static?
-    {
-        long size = 0;
-        // Add file sizes.
-        FileInfo[] fis = d.GetFiles();
-        foreach (FileInfo fi in fis)
-        {
-            size += fi.Length;
-        }
-        // Add subdirectory sizes.
-        DirectoryInfo[] dis = d.GetDirectories();
-        foreach (DirectoryInfo di in dis)
-        {
-            size += DirSize(di);
-        }
-        return size;
-    }
+
     #region Function Keys
     //TODO: delete in FilePanel
-    private void CreateFile(string Path_, string fileName) //Menu
+    private void CreateFile(string path, string fileName) //Menu
     {
         //if (IsDiscs)
         //    return;
-        string destPath = Path_;
+        string destPath = path;
         //string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
         if (!fileName.Contains('.'))
         {
@@ -130,7 +114,7 @@ internal class FileManager
         }
         try
         {
-            string fileFullPath = Path_ + @"\" + fileName;
+            string fileFullPath = path + @"\" + fileName;
             DirectoryInfo dir = new DirectoryInfo(fileFullPath);
             if (!File.Exists(fileFullPath))
             {
@@ -242,7 +226,25 @@ internal class FileManager
     }
 
     #region Calc
-    public string freeSpace(DriveInfo ActiveDrive) // 52G/58G (89%)
+    public long DirSize(DirectoryInfo dir) //static?
+    {
+        long size = 0;
+        // Add file sizes.
+        FileInfo[] files = dir.GetFiles();
+        foreach (FileInfo file in files)
+        {
+            size += file.Length;
+        }
+        // Add subdirectory sizes.
+        DirectoryInfo[] folders = dir.GetDirectories();
+        foreach (DirectoryInfo folder in folders)
+        {
+            size += DirSize(folder);
+        }
+        return size;
+    }
+    
+    public string FreeSpace(DriveInfo ActiveDrive) // 52G/58G (89%)
     {
         double freeSpacePerc = Math.Round((ActiveDrive.AvailableFreeSpace / (float)ActiveDrive.TotalSize) * 100, 0);
         string total = Truncate.Size(ActiveDrive.TotalSize, 0, false);

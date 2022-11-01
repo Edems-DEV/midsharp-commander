@@ -228,8 +228,8 @@ public class FilePanel : IComponent
             count++;
         }
         string diskInfo = "";
-        if (Path_.Length > 3)
-            diskInfo = FM.freeSpace(FM.ActiveDrive(Path_));
+        if (Path_.Length >= 3)
+            diskInfo = FM.FreeSpace(FM.ActiveDrive(Path_));
         
         int currentLeftCursor = Console.CursorLeft;
         if (currentLeftCursor > (diskInfo.Length + 2))
@@ -239,7 +239,7 @@ public class FilePanel : IComponent
     }
 
    
-    void activePath()
+    void ActivePath()
     {
         ConsoleColor oldTextColor = Console.ForegroundColor;
         ConsoleColor oldBackColor = Console.BackgroundColor;
@@ -283,7 +283,7 @@ public class FilePanel : IComponent
         Console.BackgroundColor = Config.Table_BackgroundColor;
 
         DrawData(null, widths, l.down, l.lineX, l.topLeft, l.topRight);
-        activePath();
+        ActivePath();
         DrawData(headers, widths, l.lineY, ' ');
         DrawData(null, widths, l.cross, l.lineX, l.upRight, l.upleft);
 
