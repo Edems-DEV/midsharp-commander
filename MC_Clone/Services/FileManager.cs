@@ -68,7 +68,7 @@ internal class FileManager
     #endregion
     #region Fuction
     //Function
-    public List<FileSystemInfo> ChangeDir(string Path_, FileSystemInfo fileObject) //TODO: move
+    public string ChangeDir(string Path_, FileSystemInfo fileObject) //TODO: move
     {
         if (fileObject != null)
         {
@@ -98,7 +98,8 @@ internal class FileManager
                 SetDiscs();
             }
         }
-        return FS_Objects;
+        //return FS_Objects; //List<FileSystemInfo>
+        return Path_;
     }
     #region Function Keys
     //TODO: delete in FilePanel

@@ -87,7 +87,7 @@ public class FilePanel : IComponent
     
     private void ChangeDir()
     {
-        FS_Objects = FM.ChangeDir(Path_, GetActiveObject());
+        Path_ = FM.ChangeDir(Path_, GetActiveObject());
         RefreshPanel();
     }
     #endregion
