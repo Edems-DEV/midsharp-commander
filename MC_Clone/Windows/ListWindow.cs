@@ -18,9 +18,6 @@ public class ListWindow : Window
     Footer footer;
     MenuBar MenuBar;
 
-
-
-
     static void Test()
     {
         //Elements Y size

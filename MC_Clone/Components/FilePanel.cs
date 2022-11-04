@@ -383,7 +383,10 @@ public class FilePanel : IComponent
         {
             if (item == null)
             {
-                Add(new string[] { folderPrefix + "..", "UP--DIR", "ToDo" });
+                LineLength();
+                string upDirName = folderPrefix + "..";
+                string space = new String(' ', lineLength - upDirName.Length);
+                Add(new string[] { upDirName + space, "UP--DIR", "ToDo" });
                 continue;
             }
             string name = Truncate.Text(item.Name, aaaa);
@@ -697,10 +700,6 @@ public class FilePanel : IComponent
     }
     #endregion
     #endregion
-
-
-
-
     #region Misc
     public FileSystemInfo GetActiveObject()
     {
@@ -722,7 +721,6 @@ public class FilePanel : IComponent
         ImportRows();
         Draw();
     }
-
 
     private void Clear()
     {
