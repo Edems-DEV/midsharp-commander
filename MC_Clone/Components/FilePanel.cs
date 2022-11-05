@@ -22,31 +22,61 @@ public class FilePanel : IComponent
     private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
     #region Atributes
-    private int x = 0;
-    private int y = 0;
-    private int y_temp = 0;
-
     private int deadRows = 0;
     private int lineLength = 0;
     private int halfWindowSize = 0;
     private int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
-    private int nameExtraPad = 0;
     private string statusBarLabel = "";
     char folderPrefix = '/';
+
+
+    private int _x = 0;
+    private int _y = 0;
+    private int y_temp = 0;
 
     private bool _isActive;
     private bool _isDiscs;
     private string _path = "";
 
     private int _offset = 0;
-    //private int Offset { get; set; } = 0;
     private int _selected = 0;
-    //public int Selected { get; set; } = 0;
-    public int Visible { get; set; } = 10;
+    private int _visible = 10;
     #endregion
 
     #region Properties
-    private int Offset
+    public int Y
+    {
+        get { return _y; }
+        set
+        {
+            if (value < 0)
+                throw new Exception(String.Format($"Y < 0 (val: {value})"));
+            _y = value;
+        }
+    }
+    
+    public int X
+    {
+        get { return _x; }
+        set
+        {
+            if (value < 0)
+                throw new Exception(String.Format($"X < 0 (val: {value})"));
+            _x = value;
+        }
+    }
+
+    public int Visible
+    {
+        get { return _visible; }
+        set
+        {
+            if (value < 0)
+                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
+            _visible = value;
+        }
+    }
+    public int Offset
     {
         get { return _offset; }
         set
@@ -57,7 +87,6 @@ public class FilePanel : IComponent
             _offset = value;
         }
     }
-
     public int Selected
     {
         get { return _selected; }
@@ -91,55 +120,27 @@ public class FilePanel : IComponent
     }
     #endregion
 
-    #region Model Wrappers
-    private void SetDiscs()
-    {
-        _isDiscs = true;
-        FS_Objects = FM.SetDiscs();
-    }
-    private void SetLists(string path)
-    {
-        _isDiscs = false;
-        FS_Objects = FM.SetLists(path);
-    }
-
-    private void ChangeDir()
-    {
-        string path = FM.ChangeDir(Path_, GetActiveObject());
-        if (path == null)
-            _isDiscs = true;
-        else
-        {
-            Path_ = path;
-            _isDiscs = false;
-        }
-
-        RefreshPanel();
-    }
-    #endregion
-
-
     #region Constructor
-    void Start(int X = 0, int Y = 0)
+    void Start(int x = 0, int y = 0)
     {
-        x = X;
-        y = Y;
+        X = x;
+        Y = y;
         y_temp = y;
         LineLength();
         halfWindowSize = Console.WindowWidth / 2;
         FM = new FileManager();
 
     }
-    public FilePanel(int X = 0, int Y = 0)
+    public FilePanel(int x = 0, int y = 0)
     {
-        Start(X, Y);
+        Start(x, y);
         SetDiscs();
     }
 
-    public FilePanel(string path, int X = 0, int Y = 0)
+    public FilePanel(string path, int x = 0, int y = 0)
     {
         Path_ = path;
-        Start(X, Y);
+        Start(x, y);
         if (path == ".") { SetDiscs(); return; }
         SetLists(Path_);
     }
@@ -173,7 +174,7 @@ public class FilePanel : IComponent
                 PageDown();
                 break;
             //------------------------
-            //---------FOOTER---------
+            //---------FUNCTION---------
             case ConsoleKey.F1:
                 Drives();
                 break;
@@ -220,9 +221,9 @@ public class FilePanel : IComponent
         //var a = new Logs(Visible.ToString());
         halfWindowSize = Console.WindowWidth / 2;
 
-        if (x != 0)
+        if (X != 0)
         {
-            x = halfWindowSize;
+            X = halfWindowSize;
         }
 
         Console.ForegroundColor = Config.Table_ForegroundColor;
@@ -251,7 +252,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = y;
+        y_temp = Y;
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
@@ -261,7 +262,7 @@ public class FilePanel : IComponent
 
         int i = 0;
         //y = Console.CursorTop;
-        Console.SetCursorPosition(x, y_temp);
+        Console.SetCursorPosition(X, y_temp);
         y_temp++;
         foreach (int width in widths)
         {
@@ -284,7 +285,7 @@ public class FilePanel : IComponent
         ConsoleColor oldBackColor = Console.BackgroundColor;
 
 
-        Console.SetCursorPosition(x, y_temp - 1);
+        Console.SetCursorPosition(X, y_temp - 1);
 
         string line = @$"{l.topLeft}{l.arrowRight}{l.lineX}"; //@$"┌<─";
         string label = "";
@@ -312,7 +313,7 @@ public class FilePanel : IComponent
         int count = 0;
         foreach (var local_row in local_rows)
         {
-            Console.SetCursorPosition(x, y_temp + count);
+            Console.SetCursorPosition(X, y_temp + count);
             Console.Write(local_row);
             count++;
         }
@@ -367,7 +368,7 @@ public class FilePanel : IComponent
             maxNameLength = HalfWIn - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
         }
         lineLength = lenght;
-        Console.SetCursorPosition(x, 1);
+        Console.SetCursorPosition(X, 1);
         return lenght;
     }
     private List<int> Widths()
@@ -598,6 +599,32 @@ public class FilePanel : IComponent
     }
     #endregion
     #endregion
+    #region Model Wrappers
+    private void SetDiscs()
+    {
+        _isDiscs = true;
+        FS_Objects = FM.SetDiscs();
+    }
+    private void SetLists(string path)
+    {
+        _isDiscs = false;
+        FS_Objects = FM.SetLists(path);
+    }
+
+    private void ChangeDir()
+    {
+        string path = FM.ChangeDir(Path_, GetActiveObject());
+        if (path == null)
+            _isDiscs = true;
+        else
+        {
+            Path_ = path;
+            _isDiscs = false;
+        }
+
+        RefreshPanel();
+    }
+    #endregion
     #region Misc
     public FileSystemInfo GetActiveObject()
     {
@@ -632,7 +659,7 @@ public class FilePanel : IComponent
         string space = new String(' ', lineLength);
         for (int i = 0; i < rows; i++)
         {
-            Console.SetCursorPosition(x, y + i);
+            Console.SetCursorPosition(X, Y + i);
             Console.WriteLine(space);
         }
     }
