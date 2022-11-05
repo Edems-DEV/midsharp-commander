@@ -217,7 +217,7 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        ImportRows(); //update long row (laggy)
+        ImportRows(); //update long row
         List<int> widths = Widths();
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
@@ -247,7 +247,6 @@ public class FilePanel : IComponent
 
             DrawData(rows[i].Data, widths, l.lineY, ' ');
 
-            //Console.ResetColor();
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
         }
@@ -263,7 +262,6 @@ public class FilePanel : IComponent
         char _end = end == 'ĉ' ? sep : end;
 
         int i = 0;
-        //y = Console.CursorTop;
         Console.SetCursorPosition(X, y_temp);
         y_temp++;
         foreach (int width in widths)
@@ -303,7 +301,7 @@ public class FilePanel : IComponent
         else
             label = $" {_path} ";
         Console.Write(label);
-        //Console.ResetColor();
+
         Console.ForegroundColor = oldTextColor;
         Console.BackgroundColor = oldBackColor;
     }
