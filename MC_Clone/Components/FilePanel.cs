@@ -486,24 +486,15 @@ public class FilePanel : IComponent
     private void GoEnd()
     {
         Selected = FS_Objects.Count - 1;
-
         Offset = FS_Objects.Count - Visible;
     }
     private void PageUp()
     {
-        //TODO: Opravit podmíky - (out of range)
-        //if (offset > Visible)
-        //    return;
-
         Selected = Selected - Visible;
         Offset = Offset - Visible;
     }
     private void PageDown()
     {
-        //TODO: Opravit podmíky - (out of range)
-        //if (rows.Count < offset + Visible)
-        //    return;
-
         Selected = Selected + Visible;
         Offset = Offset + Visible;
     }
