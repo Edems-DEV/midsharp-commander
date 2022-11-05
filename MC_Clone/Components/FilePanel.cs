@@ -485,21 +485,9 @@ public class FilePanel : IComponent
     }
     private void GoEnd()
     {
-        int rowsCout = rows.Count;
-        if (deadRows > 0 && deadRows < rows.Count)
-        {
-            rowsCout -= deadRows;
+        Selected = FS_Objects.Count - 1;
 
-            if (rowsCout - 1 < 0 && rowsCout - Visible < 0)
-            {
-                rowsCout = rows.Count;
-            }
-        }
-        Selected = rowsCout - 1;
-        //offset = rowsCout - Visible;
-
-        //Selected = rows.Count - 1;
-        Offset = rows.Count - Visible; //dead Rows never exist when offset is
+        Offset = FS_Objects.Count - Visible;
     }
     private void PageUp()
     {
