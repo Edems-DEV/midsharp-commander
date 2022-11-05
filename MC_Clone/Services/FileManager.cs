@@ -101,8 +101,7 @@ internal class FileManager
 
 
     #region Function Keys
-    //TODO: delete in FilePanel
-    private void CreateFile(string path, string fileName) //Menu
+    public void CreateFile(string path, string fileName) //Menu
     {
         //if (IsDiscs)
         //    return;
@@ -131,7 +130,7 @@ internal class FileManager
         }
     }
 
-    private void RenMov(string destPath, FileSystemInfo fileObject)
+    public void RenMov(string destPath, FileSystemInfo fileObject)
     {
         //string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
         try
@@ -153,7 +152,53 @@ internal class FileManager
         }
     }
 
-    private void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
+    public void MkDir(string destPath, string dirName)
+    {
+        //if (IsDiscs)
+        //    return;
+        //string destPath = Path_;
+        //string dirName = this.AksName("Enter the folder name: "); //TODO: change to popUp
+        try
+        {
+            string dirFullName = Path.Combine(destPath, dirName);
+            DirectoryInfo dir = new DirectoryInfo(dirFullName);
+            if (!dir.Exists)
+                dir.Create();
+            //else
+            //    this.ShowMessage("A catalog with that name already exists");
+            //SetLists(Path_);
+            //ImportRows();
+            //this.Draw();
+        }
+        catch (Exception e)
+        {
+            //this.ShowMessage(e.Message);
+        }
+    }
+    public void Delete(FileSystemInfo fileObject)
+    {
+        //if (IsDiscs)
+        //    return;
+        //FileSystemInfo fileObject = GetActiveObject();
+        try
+        {
+            if (fileObject is DirectoryInfo)
+                ((DirectoryInfo)fileObject).Delete(true);
+            else
+                ((FileInfo)fileObject).Delete();
+            //SetLists(Path_);
+            //ImportRows();
+            //Selected -= 1;
+            //this.Draw();
+        }
+        catch (Exception e)
+        {
+            //this.ShowMessage(e.Message);
+            return;
+        }
+    }
+
+    public void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
     {
         DirectoryInfo dir = new DirectoryInfo(sourceDirName);
         DirectoryInfo[] dirs = dir.GetDirectories();
@@ -172,7 +217,7 @@ internal class FileManager
         }
     }
 
-    private void Copy(string destPath, FileSystemInfo fileObject)
+    public void Copy(string destPath, FileSystemInfo fileObject)
     {
         //string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
         try

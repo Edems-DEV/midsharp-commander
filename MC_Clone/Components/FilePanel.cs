@@ -510,31 +510,9 @@ public class FilePanel : IComponent
     {
         if (IsDiscs)
             return;
-        string destPath = Path_;
         string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        if (!fileName.Contains('.'))
-        {
-            fileName = fileName + ".txt";
-        }
-        try
-        {
-            string fileFullPath = Path_ + @"\" +  fileName;
-            DirectoryInfo dir = new DirectoryInfo(fileFullPath);
-            if (!File.Exists(fileFullPath))
-            {
-                using (FileStream fs = File.Create(fileFullPath));
-            }
-                //dir.Create();
-            else
-                this.ShowMessage("A catalog with that name already exists");
-            SetLists(Path_);
-            ImportRows();
-            this.Draw();
-        }
-        catch (Exception e)
-        {
-            this.ShowMessage(e.Message);
-        }
+        FM.CreateFile(Path_, fileName);
+        RestartPanel();
     }
     private void View()
     {
@@ -546,71 +524,20 @@ public class FilePanel : IComponent
     private void Copy()
     {
         string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        try
-        {
-            FileSystemInfo fileObject = GetActiveObject();
-            FileInfo currentFile = fileObject as FileInfo;
-            if (currentFile != null)
-            {
-                string fileName = currentFile.Name;
-                string destName = Path.Combine(destPath, fileName);
-                File.Copy(currentFile.FullName, destName, true);
-            }
-            else
-            {
-                string currentDir = ((DirectoryInfo)fileObject).FullName;
-                string destDir = Path.Combine(destPath, ((DirectoryInfo)fileObject).Name);
-                CopyDirectory(currentDir, destDir);
-            }
-            SetLists(Path_);
-            ImportRows();
-            this.Draw();
-        }
-        catch (Exception e)
-        {
-            this.ShowMessage(e.Message);
-            return;
-        }
+        FM.Copy(destPath, GetActiveObject());
+        RestartPanel();
     }
     private void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
     {
-        DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-        DirectoryInfo[] dirs = dir.GetDirectories();
-        if (!Directory.Exists(destDirName))
-            Directory.CreateDirectory(destDirName);
-        FileInfo[] files = dir.GetFiles();
-        foreach (FileInfo file in files)
-        {
-            string temppath = Path.Combine(destDirName, file.Name);
-            file.CopyTo(temppath, true);
-        }
-        foreach (DirectoryInfo subdir in dirs)
-        {
-            string temppath = Path.Combine(destDirName, subdir.Name);
-            CopyDirectory(subdir.FullName, temppath);
-        }
+        FM.CopyDirectory(sourceDirName, destDirName);
+        RestartPanel();
     }
     private void RenMov()
     {
         string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        try
-        {
-            FileSystemInfo fileObject = GetActiveObject();
-            string objectName = fileObject.Name;
-            string destName = Path.Combine(destPath, objectName);
-            if (fileObject is FileInfo)
-                ((FileInfo)fileObject).MoveTo(destName);
-            else
-                ((DirectoryInfo)fileObject).MoveTo(destName);
-            SetLists(Path_);
-            ImportRows();
-            this.Draw();
-        }
-        catch (Exception e)
-        {
-            this.ShowMessage(e.Message);
-            return;
-        }
+        FM.RenMov(destPath, GetActiveObject());
+        SetLists(Path_);
+        RestartPanel();
     }
     private void MkDir()
     {
@@ -618,24 +545,11 @@ public class FilePanel : IComponent
             return;
         string destPath = Path_;
         string dirName = this.AksName("Enter the folder name: "); //TODO: change to popUp
-        try
-        {
-            string dirFullName = Path.Combine(destPath, dirName);
-            DirectoryInfo dir = new DirectoryInfo(dirFullName);
-            if (!dir.Exists)
-                dir.Create();
-            else
-                this.ShowMessage("A catalog with that name already exists");
-            SetLists(Path_);
-            ImportRows();
-            this.Draw();
-        }
-        catch (Exception e)
-        {
-            this.ShowMessage(e.Message);
-        }
+        FM.MkDir(destPath, dirName);
+        RestartPanel();
     }
 
+    #region lidlPopUp
     private string AksName(string message)
     {
         string name;
@@ -665,27 +579,14 @@ public class FilePanel : IComponent
         Console.ForegroundColor = Config.MsgBoxForegroundColor;
         Console.BackgroundColor = Config.MsgBoxBackgroundColor;
     }
+    #endregion
     private void Delete()
     {
         if (IsDiscs)
             return;
-        FileSystemInfo fileObject = GetActiveObject();
-        try
-        {
-            if (fileObject is DirectoryInfo)
-                ((DirectoryInfo)fileObject).Delete(true);
-            else
-                ((FileInfo)fileObject).Delete();
-            SetLists(Path_);
-            ImportRows();
-            Selected -= 1;
-            this.Draw();
-        }
-        catch (Exception e)
-        {
-            //this.ShowMessage(e.Message);
-            return;
-        }
+        FM.Delete(GetActiveObject());
+        Selected -= 1;
+        RestartPanel();
     }
     private void PullDn()
     {
@@ -707,6 +608,11 @@ public class FilePanel : IComponent
         throw new Exception("The list of panel objects is empty");
     }
 
+    private void RestartPanel()
+    {
+        SetLists(Path_);
+        UpdatePanel();
+    }
     private void RefreshPanel()
     {
         GoBegin();
