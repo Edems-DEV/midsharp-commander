@@ -39,11 +39,22 @@ public class FilePanel : IComponent
     private string _path = "";
 
     private int Offset { get; set; } = 0;
-    public int Selected { get; set; } = 0;
+    private int _selected = 0;
+    //public int Selected { get; set; } = 0;
     public int Visible { get; set; } = 10;
     #endregion
 
     #region Properties
+    public int Selected
+    {
+        get { return _selected; }
+        set
+        {
+            if (value < 0){ return; }
+            if (value >= rows.Count - deadRows) { return; }
+            _selected = value;
+        }
+    }
     public bool IsActive
     {
         get { return this._isActive; }
@@ -442,9 +453,6 @@ public class FilePanel : IComponent
     #region Controls
     private void ScrollUp()
     {
-        if (Selected <= 0)
-            return;
-
         Selected--;
 
         if (Selected == Offset - 1)
@@ -452,9 +460,6 @@ public class FilePanel : IComponent
     }
     private void ScrollDown()
     {
-        if (Selected >= rows.Count - 1 - deadRows)
-            return;
-
         Selected++;
 
         if (Selected == Offset + Math.Min(Visible, this.rows.Count))
