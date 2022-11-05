@@ -38,13 +38,26 @@ public class FilePanel : IComponent
     private bool _isDiscs;
     private string _path = "";
 
-    private int Offset { get; set; } = 0;
+    private int _offset = 0;
+    //private int Offset { get; set; } = 0;
     private int _selected = 0;
     //public int Selected { get; set; } = 0;
     public int Visible { get; set; } = 10;
     #endregion
 
     #region Properties
+    private int Offset
+    {
+        get { return _offset; }
+        set
+        {
+            if (value < 0) { _offset = 0; return; }
+            if (FS_Objects.Count <= Visible){return;}
+            if (value >= FS_Objects.Count - Visible) { _offset = FS_Objects.Count - Visible; _selected = FS_Objects.Count - 1; return; }
+            _offset = value;
+        }
+    }
+
     public int Selected
     {
         get { return _selected; }
