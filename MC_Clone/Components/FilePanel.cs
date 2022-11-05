@@ -22,9 +22,9 @@ public class FilePanel : IComponent
     private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
     #region Atributes
-    private int x  = 0;
-    private int y  = 0;
-    private int y_temp  = 0;
+    private int x = 0;
+    private int y = 0;
+    private int y_temp = 0;
 
     private int deadRows = 0;
     private int lineLength = 0;
@@ -52,7 +52,7 @@ public class FilePanel : IComponent
         set
         {
             if (value < 0) { _offset = 0; return; }
-            if (FS_Objects.Count <= Visible){return;}
+            if (FS_Objects.Count <= Visible) { return; }
             if (value >= FS_Objects.Count - Visible) { _offset = FS_Objects.Count - Visible; _selected = FS_Objects.Count - 1; return; }
             _offset = value;
         }
@@ -63,7 +63,7 @@ public class FilePanel : IComponent
         get { return _selected; }
         set
         {
-            if (value < 0){ return; }
+            if (value < 0) { return; }
             if (value >= rows.Count - deadRows) { return; }
             _selected = value;
         }
@@ -102,18 +102,18 @@ public class FilePanel : IComponent
         _isDiscs = false;
         FS_Objects = FM.SetLists(path);
     }
-    
+
     private void ChangeDir()
     {
         string path = FM.ChangeDir(Path_, GetActiveObject());
-        if (path == null) 
+        if (path == null)
             _isDiscs = true;
         else
         {
             Path_ = path;
             _isDiscs = false;
         }
-        
+
         RefreshPanel();
     }
     #endregion
@@ -128,6 +128,7 @@ public class FilePanel : IComponent
         LineLength();
         halfWindowSize = Console.WindowWidth / 2;
         FM = new FileManager();
+
     }
     public FilePanel(int X = 0, int Y = 0)
     {
@@ -180,8 +181,8 @@ public class FilePanel : IComponent
                 CreateFile();
                 break;
             case ConsoleKey.F3:
-                if (GetActiveObject() is DirectoryInfo) 
-                    { ChangeDir(); ; break; }
+                if (GetActiveObject() is DirectoryInfo)
+                { ChangeDir(); ; break; }
                 View();
                 break;
             case ConsoleKey.F4:
@@ -215,7 +216,7 @@ public class FilePanel : IComponent
         ImportRows(); //update long row (laggy)
         List<int> widths = Widths();
         LineLength();
-        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 -1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
+        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
         halfWindowSize = Console.WindowWidth / 2;
 
@@ -231,7 +232,6 @@ public class FilePanel : IComponent
         ActivePath();
         DrawData(headers, widths, l.lineY, ' ');
         DrawData(null, widths, l.cross, l.lineX, l.upRight, l.upleft);
-            
 
         for (int i = Offset; i < Offset + Math.Min(Visible, this.rows.Count); i++)
         {
@@ -241,7 +241,7 @@ public class FilePanel : IComponent
                 Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
                 statusBarLabel = rows[i].Data[0];
             }
-            
+
             DrawData(rows[i].Data, widths, l.lineY, ' ');
 
             //Console.ResetColor();
@@ -422,7 +422,7 @@ public class FilePanel : IComponent
                 if (!_isDiscs)
                     name = folderPrefix + name;
                 local_maxNameLength -= 1;
-                
+
                 //try { //missing permision for low level folders
                 //    size = FM.DirSize(item as DirectoryInfo);
                 //} catch { }
@@ -432,9 +432,9 @@ public class FilePanel : IComponent
                 FileInfo a = item as FileInfo;
                 size = a.Length;
             }
-            
+
             Truncate.Text(item.Name, local_maxNameLength); //TODO: clearMe
-            
+
             string sizeStr = "";
             if (size != 0)
                 sizeStr = Truncate.Size(size).PadLeft(7);
@@ -565,7 +565,7 @@ public class FilePanel : IComponent
 
     private void ShowMessage(string message)
     {
-        PrintString(message, 0, Console.WindowHeight -2, Config.MsgBoxForegroundColor, Config.MsgBoxBackgroundColor);
+        PrintString(message, 0, Console.WindowHeight - 2, Config.MsgBoxForegroundColor, Config.MsgBoxBackgroundColor);
     }
 
     public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)
