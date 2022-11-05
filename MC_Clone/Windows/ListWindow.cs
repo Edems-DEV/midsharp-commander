@@ -122,6 +122,6 @@ public class ListWindow : Window
             ChangeActivePanel();
         }
 
-        _panels[_activePanelIndex].HandleKey(info);
+        ActivePanel().HandleKey(info);
     }
 }

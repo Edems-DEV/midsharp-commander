@@ -364,10 +364,9 @@ public class FilePanel : IComponent
             lenght += 1;
         }
         lenght += 1;
-        int HalfWIn = Console.BufferWidth / 2;
         if (lenght > 27)
         {
-            maxNameLength = HalfWIn - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
+            maxNameLength = X - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
         }
         lineLength = lenght;
         Console.SetCursorPosition(X, 1);

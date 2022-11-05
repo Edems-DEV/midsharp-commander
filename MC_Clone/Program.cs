@@ -31,13 +31,18 @@ internal class Program
                     
                 a = Console.WindowHeight; //změni na event
                 b = Console.WindowWidth;
-                Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
-                Console.Clear();
-                Console.SetCursorPosition(0, 0);
+                ClearConsole();
                 app.Draw();
             }
             ConsoleKeyInfo info = Console.ReadKey(); //stuck here //new line (footer problem?)
             app.HandleKey(info);
         }
+    }
+    
+    private static void ClearConsole()
+    {
+        Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
+        Console.Clear();
+        Console.SetCursorPosition(0, 0);
     }
 }
