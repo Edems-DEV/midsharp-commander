@@ -24,7 +24,6 @@ public class FilePanel : IComponent
     #region Atributes
     private int deadRows = 0;
     private int lineLength = 0;
-    private int halfWindowSize = 0;
     private int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
     private string statusBarLabel = "";
     char folderPrefix = '/';
@@ -44,6 +43,11 @@ public class FilePanel : IComponent
     #endregion
 
     #region Properties
+    private int halfWindowSize
+    {
+        get { return Console.WindowWidth / 2; } //always calcul -> performance? (fixed buggy size?)
+    }
+    
     public int Y
     {
         get { return _y; }
@@ -127,7 +131,6 @@ public class FilePanel : IComponent
         Y = y;
         y_temp = y;
         LineLength();
-        halfWindowSize = Console.WindowWidth / 2;
         FM = new FileManager();
 
     }
@@ -219,7 +222,6 @@ public class FilePanel : IComponent
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
-        halfWindowSize = Console.WindowWidth / 2;
 
         if (X != 0)
         {
