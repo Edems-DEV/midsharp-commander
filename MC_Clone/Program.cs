@@ -14,7 +14,7 @@ internal class Program
 
         int a = Console.WindowHeight;
         int b = Console.WindowWidth;
-        
+
         while (true)
         {
             Console.BackgroundColor = Config.Primary_BackgroundColor;
@@ -25,24 +25,20 @@ internal class Program
             while (!(Console.KeyAvailable))
             {
                 //Updates if window size was changed
-                if (a == Console.WindowHeight && b == Console.WindowWidth) {
+                if (a == Console.WindowHeight && b == Console.WindowWidth)
+                {
                     continue;
                 }
-                    
+
                 a = Console.WindowHeight; //změni na event
                 b = Console.WindowWidth;
-                ClearConsole();
+                Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
+                Console.Clear();
+                Console.SetCursorPosition(0, 0);
                 app.Draw();
             }
             ConsoleKeyInfo info = Console.ReadKey(); //stuck here //new line (footer problem?)
             app.HandleKey(info);
         }
-    }
-    
-    private static void ClearConsole()
-    {
-        Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
-        Console.Clear();
-        Console.SetCursorPosition(0, 0);
     }
 }

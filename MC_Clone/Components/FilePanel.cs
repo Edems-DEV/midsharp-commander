@@ -47,7 +47,7 @@ public class FilePanel : IComponent
     {
         get { return Console.WindowWidth / 2; } //always calcul -> performance? (fixed buggy size?)
     }
-    
+
     public int Y
     {
         get { return _y; }
@@ -58,7 +58,7 @@ public class FilePanel : IComponent
             _y = value;
         }
     }
-    
+
     public int X
     {
         get { return _x; }
@@ -217,7 +217,7 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        ImportRows(); //update long row
+        ImportRows(); //update long row (laggy)
         List<int> widths = Widths();
         LineLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
@@ -247,6 +247,7 @@ public class FilePanel : IComponent
 
             DrawData(rows[i].Data, widths, l.lineY, ' ');
 
+            //Console.ResetColor();
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
         }
@@ -262,6 +263,7 @@ public class FilePanel : IComponent
         char _end = end == 'ĉ' ? sep : end;
 
         int i = 0;
+        //y = Console.CursorTop;
         Console.SetCursorPosition(X, y_temp);
         y_temp++;
         foreach (int width in widths)
@@ -301,7 +303,7 @@ public class FilePanel : IComponent
         else
             label = $" {_path} ";
         Console.Write(label);
-
+        //Console.ResetColor();
         Console.ForegroundColor = oldTextColor;
         Console.BackgroundColor = oldBackColor;
     }
@@ -362,9 +364,10 @@ public class FilePanel : IComponent
             lenght += 1;
         }
         lenght += 1;
+        int HalfWIn = Console.BufferWidth / 2;
         if (lenght > 27)
         {
-            maxNameLength = X - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
+            maxNameLength = HalfWIn - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
         }
         lineLength = lenght;
         Console.SetCursorPosition(X, 1);
