@@ -11,17 +11,15 @@ using System.Xml.Linq;
 
 namespace MC_Clone;
 
-public class FilePanel : Table
+public class FilePanel : IComponent
 {
     public event Action<int> RowSelected;
 
     FileManager FM;
 
-    //private List<Row> rows = new List<Row>();
+    private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-    //base.headers =  new List<string>(new string[] { "Name", "Size", "Date" });
-    //private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
-
+    private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
 
     #region Atributes
     private int x  = 0;
@@ -124,8 +122,6 @@ public class FilePanel : Table
     #region Constructor
     void Start(int X = 0, int Y = 0)
     {
-        base.headers = new List<string>(new string[] { "Name", "Size", "Date" });
-        
         x = X;
         y = Y;
         y_temp = y;
@@ -260,9 +256,26 @@ public class FilePanel : Table
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
     {
+        char _start = start == 'ĉ' ? sep : start;
+        char _end = end == 'ĉ' ? sep : end;
+
+        int i = 0;
+        //y = Console.CursorTop;
         Console.SetCursorPosition(x, y_temp);
         y_temp++;
-        base.DrawData(data, widths, sep, pad, start, end);
+        foreach (int width in widths)
+        {
+            string value = data != null ? data[i] : "";
+            char b = i == 0 ? _start : sep;
+
+            Console.Write(b);
+            Console.Write(pad);
+            Console.Write(value.PadRight(widths[i] + 1, pad));
+
+            i++;
+        }
+
+        Console.WriteLine(_end);
     }
 
     private void ActivePath()
@@ -357,6 +370,25 @@ public class FilePanel : Table
         Console.SetCursorPosition(x, 1);
         return lenght;
     }
+    private List<int> Widths()
+    {
+        List<int> widths = new List<int>();
+
+        for (int i = 0; i < headers.Count; i++)
+        {
+            int width = headers[i].Length;
+
+            foreach (Row item in rows)
+            {
+                if (item.Data[i].Length > width)
+                    width = item.Data[i].Length;
+            }
+
+            widths.Add(width);
+        }
+
+        return widths;
+    }
     #endregion
 
     #region Prepere data
@@ -419,7 +451,13 @@ public class FilePanel : Table
             deadRows++;
         }
     }
+    public void Add(string[] data)
+    {
+        if (data.Length != headers.Count)
+            throw new ArgumentException("Invalid columns count");
 
+        rows.Add(new Row(data));
+    }
     #endregion
 
 
