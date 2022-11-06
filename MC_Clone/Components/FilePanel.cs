@@ -1,4 +1,6 @@
-﻿namespace MC_Clone;
+﻿using System.ComponentModel;
+
+namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
@@ -409,6 +411,13 @@ public class FilePanel : IComponent
 
         if (rows != null)
             rows.Clear();
+
+        AddFormatedRows();
+
+        AddDeadRows();
+    }
+    private void AddFormatedRows()
+    {
         foreach (var item in FS_Objects)
         {
             if (item == null)
@@ -437,7 +446,7 @@ public class FilePanel : IComponent
             {
                 FileInfo a = item as FileInfo;
                 size = a.Length;
-            } 
+            }
 
             string sizeStr = "";
             if (size != 0)
@@ -445,10 +454,8 @@ public class FilePanel : IComponent
 
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
-
-        
     }
-
+    
     private void AddDeadRows()
     {
         int yElementsSize = 8; // Menu, Header, StatusLine, ... //TODO: global atribut
@@ -458,7 +465,8 @@ public class FilePanel : IComponent
             Add(new string[] { "", "", "" });
             deadRows++;
         }
-    }    
+    }
+
     public void Add(string[] data)
     {
         if (data.Length != headers.Count)
