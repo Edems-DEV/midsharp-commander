@@ -19,7 +19,8 @@ public class FilePanel : IComponent
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-    private List<string> headers = new List<string>(new string[] { "Name", "Size", "Date" });
+    
+    private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size",7), Misc.PadBoth("Date", 12) });
 
     #region Atributes
     private int deadRows = 0;
@@ -45,7 +46,7 @@ public class FilePanel : IComponent
     #region Properties
     private int halfWindowSize
     {
-        get { return Console.WindowWidth / 2; } //always calcul -> performance? (fixed buggy size?)
+        get { return Console.BufferWidth / 2; } //always calcul -> performance? (fixed buggy size?)
     }
 
     public int Y
@@ -397,12 +398,8 @@ public class FilePanel : IComponent
     #region Prepere data
     public void ImportRows(string path = "")
     {
+        LongLine();
         deadRows = 0;
-        int aaaa = 5;
-        if (halfWindowSize >= 29) //need to update
-        {
-            aaaa = ((halfWindowSize) - 27 - 2);
-        }
 
         if (rows != null)
             rows.Clear();
@@ -412,11 +409,10 @@ public class FilePanel : IComponent
             {
                 LineLength();
                 string upDirName = folderPrefix + "..";
-                string space = new String(' ', lineLength - upDirName.Length);
-                Add(new string[] { upDirName + space, "UP--DIR", "ToDo" });
+                Add(new string[] { upDirName, "UP--DIR", "ToDo" });
                 continue;
             }
-            string name = Truncate.Text(item.Name, aaaa);
+            string name = Truncate.Text(item.Name, GetMaxNameLength());
             int local_maxNameLength = maxNameLength;
 
             long size = 0;
@@ -446,7 +442,7 @@ public class FilePanel : IComponent
         }
         //Long row
         //TODO: find different solution
-        string emptyLong = new String(' ', aaaa);
+        string emptyLong = "";//new String(' ', aaaa);
         int asss = rows.Count + 8;
         for (int i = 0; i < Console.WindowHeight - asss; i++)
         {
@@ -460,6 +456,36 @@ public class FilePanel : IComponent
             throw new ArgumentException("Invalid columns count");
 
         rows.Add(new Row(data));
+    }
+
+    private void LongLine()
+    {
+        headers[0] = FillToLong("name");
+    }
+
+    private string FillToLong(string text)
+    {
+        LineLength();
+
+        string emptyLong = "";
+        int maxE = GetMaxNameLength() - text.Length;
+        if (0 < maxE)
+        {
+            emptyLong = new String(' ', maxE);
+        }
+        
+        return Misc.PadBoth(text, maxE);
+    }
+
+    private int GetMaxNameLength()
+    {
+        int aaaa = 5;
+        int ikd = 16 + 11 + 2;
+        if (halfWindowSize >= ikd) //need to update
+        {
+            aaaa = ((halfWindowSize) - ikd);
+        }
+        return aaaa;
     }
     #endregion
 

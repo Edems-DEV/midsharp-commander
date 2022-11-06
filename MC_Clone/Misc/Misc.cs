@@ -8,7 +8,17 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 internal class Misc //koncepty
 {
+    public static string PadBoth(string source, int length)
+    {
+        int spaces = length - source.Length;
+        int padLeft = spaces / 2 + source.Length;
+        if (length < 0)
+            return source;
+        return source.PadLeft(padLeft).PadRight(length);
+
+    }
 }
+
 
 internal class ConsoleBTN
 {

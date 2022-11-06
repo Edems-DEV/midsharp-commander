@@ -9,11 +9,15 @@ internal class Program
         Console.CursorVisible = false;
         ConsoleBTN.disable_MaximizeBTN(); //when it is maximized, it only updates after some interaction //TODO: FIX a delete this
         Console.Title = "Midnight Depression";
+        //Console.
 
         Application app = new Application();
 
         int a = Console.WindowHeight;
         int b = Console.WindowWidth;
+
+        int MinHeight = 10;
+        int MinWidth = 60;
 
         while (true)
         {
@@ -24,11 +28,17 @@ internal class Program
 
             while (!(Console.KeyAvailable))
             {
+
                 //Updates if window size was changed
                 if (a == Console.WindowHeight && b == Console.WindowWidth)
                 {
                     continue;
                 }
+                if (Console.WindowHeight < MinHeight || Console.WindowWidth < MinWidth)
+                {
+                    //Console.SetWindowSize(a, b); //broken
+                }
+
 
                 a = Console.WindowHeight; //změni na event
                 b = Console.WindowWidth;

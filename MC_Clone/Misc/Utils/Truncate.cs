@@ -13,10 +13,12 @@ internal static class Truncate
         if (ts.Length < maxLength)
             return ts;
 
-        maxLength = maxLength - trun.Length;
+        maxLength = maxLength - trun.Length - 5;
         int a = maxLength / 2 + maxLength % 2;
         int b = maxLength / 2;
-        var truncated = ts.Substring(0, a) + trun + ts.Substring(ts.Length - b, b);
+        if (a < 0){ return trun; }
+        var truncated = ts.Substring(0, a) + trun;
+        if (ts.Length - b > 0){ truncated  += ts.Substring(ts.Length - b, b); }
 
         return truncated;
     }
