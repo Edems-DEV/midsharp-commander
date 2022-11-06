@@ -10,7 +10,7 @@ public class FilePanel : IComponent
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-                                                     // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
+                                                   // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
     private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
     #region Atributes
@@ -407,8 +407,6 @@ public class FilePanel : IComponent
         UpdateMaxLengths();
         LongLine();
         
-        deadRows = 0;
-
         if (rows != null)
             rows.Clear();
 
@@ -458,6 +456,8 @@ public class FilePanel : IComponent
     
     private void AddDeadRows()
     {
+        deadRows = 0;
+        
         int yElementsSize = 8; // Menu, Header, StatusLine, ... //TODO: global atribut
         int occupiedSpace = rows.Count + yElementsSize;
         for (int i = 0; i < Console.WindowHeight - occupiedSpace; i++)

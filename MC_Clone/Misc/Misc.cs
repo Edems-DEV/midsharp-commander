@@ -59,7 +59,7 @@ internal class ConsoleBTN
 internal class MyColor
 {
     [Flags]
-    public enum Dockings
+    public enum Ć
     {
         Accent = 0,
         Primary = 1,

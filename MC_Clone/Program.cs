@@ -4,7 +4,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        //Config.ChangeColorScheme(); //static :)
+        //Config.ChangeColorScheme(); //TODO: update config (no more static)
 
         Console.CursorVisible = false;
         ConsoleBTN.disable_MaximizeBTN(); //when it is maximized, it only updates after some interaction //TODO: FIX a delete this
@@ -22,7 +22,7 @@ internal class Program
         {
             Console.BackgroundColor = Config.Primary_BackgroundColor;
             Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
-            
+
             app.Draw();
 
             while (!(Console.KeyAvailable))
@@ -38,7 +38,7 @@ internal class Program
                     //Console.SetWindowSize(a, b); //broken
                 }
 
-                a = Console.WindowHeight; //změnit na event
+                a = Console.WindowHeight;
                 b = Console.WindowWidth;
                 Misc.ClearConsole();
                 app.Draw();
@@ -47,6 +47,4 @@ internal class Program
             app.HandleKey(info);
         }
     }
-
-
 }

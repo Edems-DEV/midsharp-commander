@@ -59,9 +59,9 @@ public class ListWindow : Window
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
 
-        int paneY = 1; //where +1?
-        FilePanel pane1 = new FilePanel(Config.Path_LeftPane, 0, paneY); //service.Headers()
-        FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY); //table.LineLength() + 2 //55
+        int paneY = 1;
+        FilePanel pane1 = new FilePanel(Config.Path_LeftPane, 0, paneY);
+        FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
         
@@ -84,7 +84,6 @@ public class ListWindow : Window
     {
         ActivePanel().IsActive = false;
         KeyPress -= ActivePanel().HandleKey;
-        //ActivePanel().UpdateContent(false);
 
         this._activePanelIndex++;
         if (this._activePanelIndex >= this._panels.Count)
@@ -94,7 +93,6 @@ public class ListWindow : Window
 
         ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
-        //ActivePanel().UpdateContent(false);
     }
 
     private void Table_RowSelected(int index)

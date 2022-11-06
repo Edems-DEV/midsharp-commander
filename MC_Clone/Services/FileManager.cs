@@ -9,13 +9,6 @@ namespace MC_Clone;
 internal class FileManager
 {
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-    //public FileSystemInfo fileObject = FileSystemInfo(); //FilePanelControll
-    //private string _path = ""; //mění se jenom pří ChangeDir
-    //nebo static
-    
-    public FileManager() //can be static?
-    {
-    }
 
     #region Import
     public List<FileSystemInfo> SetLists(string path)
@@ -98,7 +91,6 @@ internal class FileManager
         }
         return path;
     }
-
 
     #region Function Keys
     public void CreateFile(string path, string fileName) //Menu
@@ -249,7 +241,6 @@ internal class FileManager
 
     #endregion
     #endregion
-
     public DriveInfo ActiveDrive(string path)
     {
         //C:\Users\...
