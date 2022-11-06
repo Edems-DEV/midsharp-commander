@@ -13,7 +13,7 @@ internal static class Truncate
         if (ts.Length < maxLength)
             return ts;
 
-        maxLength = maxLength - trun.Length - 5;
+        maxLength = maxLength - trun.Length - 2; //-5; //why?
         int a = maxLength / 2 + maxLength % 2;
         int b = maxLength / 2;
         if (a < 0){ return trun; }

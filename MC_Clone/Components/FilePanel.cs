@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace MC_Clone;
+﻿namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
@@ -19,13 +8,13 @@ public class FilePanel : IComponent
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-    
-    private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size",7), Misc.PadBoth("Date", 12) });
+
+    private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
     #region Atributes
     private int deadRows = 0;
-    private int lineLength = 0;
-    private int maxNameLength = 20; // lineLength - 26(Size + Date + |) - 1(first '|')
+    private int lineLength = 0; //used in: Clear(), Generete_StatusLine()
+    private int maxNameLength = 20; // used in: Truncate.name [lineLength - 26(Size + Date + |) - 1(first '|')]
     private string statusBarLabel = "";
     char folderPrefix = '/';
 
@@ -131,7 +120,7 @@ public class FilePanel : IComponent
         X = x;
         Y = y;
         y_temp = y;
-        LineLength();
+        CalcMaxLength();
         FM = new FileManager();
 
     }
@@ -211,7 +200,7 @@ public class FilePanel : IComponent
                 break;
             case ConsoleKey.F10:
             case ConsoleKey.Escape:
-                this.Quit();
+                Quit();
                 break;
         }
     }
@@ -220,7 +209,7 @@ public class FilePanel : IComponent
     {
         ImportRows(); //update long row (laggy)
         List<int> widths = Widths();
-        LineLength();
+        CalcMaxLength();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
 
@@ -355,7 +344,26 @@ public class FilePanel : IComponent
     }
 
     #region Calc
-    public int LineLength() //TODO: refactor
+    public void CalcMaxLength() // why? So I don't have to calculate that for each line - PERFORMANCE?
+    {
+        GetMaxLineLength();
+        GetMaxNameLength();
+    }
+
+    private int GetMaxLineLength(int startIndex = 0)
+    {
+        lineLength = halfWindowSize;
+        return halfWindowSize;
+    }
+    private int GetMaxNameLength()
+    {
+        int local_maxNameLength = halfWindowSize;
+        local_maxNameLength -= 1; // first |
+        local_maxNameLength -= 26; // | Size | Date |
+
+        return local_maxNameLength;
+    }
+    private int old_MaxLineLength()
     {
         int lenght = 0;
         foreach (var item in Widths())
@@ -365,15 +373,34 @@ public class FilePanel : IComponent
             lenght += 1;
         }
         lenght += 1;
-        int HalfWIn = Console.BufferWidth / 2;
-        if (lenght > 27)
-        {
-            maxNameLength = HalfWIn - 26 - 1 - 2; // lineLength - 26(Size + Date + |) - 1(first '|')
-        }
         lineLength = lenght;
-        Console.SetCursorPosition(X, 1);
         return lenght;
     }
+    private int new_MaxNameLength()
+    {
+        int local_maxNameLength;
+        local_maxNameLength = halfWindowSize;
+        local_maxNameLength -= 1; // first |
+        local_maxNameLength -= 1; // first |
+        for (int i = 1; i < headers.Count; i++)
+        {
+            local_maxNameLength -= headers[i].Length;
+            local_maxNameLength -= 1; // '|'
+        }
+        maxNameLength = local_maxNameLength;
+        return local_maxNameLength;
+    }
+    private int odlGetMaxNameLength()
+    {
+        int aaaa = 5;
+        int ikd = 16 + 11;
+        if (halfWindowSize >= ikd) //need to update
+        {
+            aaaa = ((halfWindowSize) - ikd);
+        }
+        return aaaa;
+    }
+
     private List<int> Widths()
     {
         List<int> widths = new List<int>();
@@ -407,8 +434,9 @@ public class FilePanel : IComponent
         {
             if (item == null)
             {
-                LineLength();
+                CalcMaxLength();
                 string upDirName = folderPrefix + "..";
+                upDirName = Truncate.Text(upDirName, GetMaxNameLength());
                 Add(new string[] { upDirName, "UP--DIR", "ToDo" });
                 continue;
             }
@@ -440,13 +468,12 @@ public class FilePanel : IComponent
 
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
-        //Long row
-        //TODO: find different solution
-        string emptyLong = "";//new String(' ', aaaa);
-        int asss = rows.Count + 8;
+
+        int yElementsSize = 8;
+        int asss = rows.Count + yElementsSize;
         for (int i = 0; i < Console.WindowHeight - asss; i++)
         {
-            Add(new string[] { emptyLong, "", "            " });
+            Add(new string[] { "", "", "" });
             deadRows++;
         }
     }
@@ -460,33 +487,24 @@ public class FilePanel : IComponent
 
     private void LongLine()
     {
-        headers[0] = FillToLong("name");
+        headers[0] = Truncate.Text(FillToLong("name"), GetMaxNameLength());
     }
 
     private string FillToLong(string text)
     {
-        LineLength();
+        CalcMaxLength();
 
         string emptyLong = "";
-        int maxE = GetMaxNameLength() - text.Length;
+        int maxE = GetMaxNameLength() - text.Length + 2; //+2 fixed GetMaxNameLength() too short (idk why)
         if (0 < maxE)
         {
             emptyLong = new String(' ', maxE);
         }
-        
+
         return Misc.PadBoth(text, maxE);
     }
 
-    private int GetMaxNameLength()
-    {
-        int aaaa = 5;
-        int ikd = 16 + 11 + 2;
-        if (halfWindowSize >= ikd) //need to update
-        {
-            aaaa = ((halfWindowSize) - ikd);
-        }
-        return aaaa;
-    }
+
     #endregion
 
 
@@ -535,7 +553,7 @@ public class FilePanel : IComponent
         ImportRows();
         Draw();
     }
-    private void CreateFile() //Menu //TODO: move
+    private void CreateFile() //Menu
     {
         if (IsDiscs)
             return;
