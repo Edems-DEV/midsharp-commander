@@ -17,6 +17,12 @@ internal class Misc //koncepty
         return source.PadLeft(padLeft).PadRight(length);
 
     }
+    public static void ClearConsole()
+    {
+        Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
+        Console.Clear();
+        Console.SetCursorPosition(0, 0);
+    }
 }
 
 

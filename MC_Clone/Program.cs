@@ -9,7 +9,6 @@ internal class Program
         Console.CursorVisible = false;
         ConsoleBTN.disable_MaximizeBTN(); //when it is maximized, it only updates after some interaction //TODO: FIX a delete this
         Console.Title = "Midnight Depression";
-        //Console.
 
         Application app = new Application();
 
@@ -23,7 +22,7 @@ internal class Program
         {
             Console.BackgroundColor = Config.Primary_BackgroundColor;
             Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
-            Console.SetCursorPosition(0, 0);
+            
             app.Draw();
 
             while (!(Console.KeyAvailable))
@@ -39,16 +38,15 @@ internal class Program
                     //Console.SetWindowSize(a, b); //broken
                 }
 
-
-                a = Console.WindowHeight; //změni na event
+                a = Console.WindowHeight; //změnit na event
                 b = Console.WindowWidth;
-                Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
-                Console.Clear();
-                Console.SetCursorPosition(0, 0);
+                Misc.ClearConsole();
                 app.Draw();
             }
-            ConsoleKeyInfo info = Console.ReadKey(); //stuck here //new line (footer problem?)
+            ConsoleKeyInfo info = Console.ReadKey();
             app.HandleKey(info);
         }
     }
+
+
 }

@@ -18,7 +18,7 @@ public class ListWindow : Window
     Footer footer;
     MenuBar MenuBar;
 
-    static void Test()
+    static void Y_autoSize_IDEA() //delMe
     {
         //Elements Y size
         int menu = 1;

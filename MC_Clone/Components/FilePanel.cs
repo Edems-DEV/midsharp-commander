@@ -8,13 +8,13 @@ public class FilePanel : IComponent
 
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-
+                                                     // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
     private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
     #region Atributes
     private int deadRows = 0;
     private int lineLength = 0; //used in: Clear(), Generete_StatusLine()
-    private int maxNameLength = 20; // used in: Truncate.name [lineLength - 26(Size + Date + |) - 1(first '|')]
+    private int maxNameLength = 0; // used in: Truncate.name
     private string statusBarLabel = "";
     char folderPrefix = '/';
 
@@ -120,7 +120,7 @@ public class FilePanel : IComponent
         X = x;
         Y = y;
         y_temp = y;
-        CalcMaxLength();
+        UpdateMaxLengths();
         FM = new FileManager();
 
     }
@@ -207,9 +207,9 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        ImportRows(); //update long row (laggy)
+        ImportRows(); //update rows
         List<int> widths = Widths();
-        CalcMaxLength();
+        UpdateMaxLengths();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
         //var a = new Logs(Visible.ToString());
 
@@ -253,7 +253,7 @@ public class FilePanel : IComponent
         char _end = end == 'ĉ' ? sep : end;
 
         int i = 0;
-        //y = Console.CursorTop;
+        
         Console.SetCursorPosition(X, y_temp);
         y_temp++;
         foreach (int width in widths)
@@ -293,14 +293,14 @@ public class FilePanel : IComponent
         else
             label = $" {_path} ";
         Console.Write(label);
-        //Console.ResetColor();
+
         Console.ForegroundColor = oldTextColor;
         Console.BackgroundColor = oldBackColor;
     }
 
-    private void StatusLine(string label) //char vertical = l.lineY //new element?
+    private void StatusLine(string label) //new element?
     {
-        string[] local_rows = Generete_StatusLine(label);
+        string[] local_rows = Generate_StatusLine(label);
 
         int count = 0;
         foreach (var local_row in local_rows)
@@ -316,10 +316,10 @@ public class FilePanel : IComponent
         int currentLeftCursor = Console.CursorLeft;
         if (currentLeftCursor > (diskInfo.Length + 2))
             Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
+        
         Console.Write(diskInfo);
-
     }
-    private string[] Generete_StatusLine(string label)
+    private string[] Generate_StatusLine(string label)
     {
         string row0 = "";
         row0 += l.upRight;
@@ -344,7 +344,7 @@ public class FilePanel : IComponent
     }
 
     #region Calc
-    public void CalcMaxLength() // why? So I don't have to calculate that for each line - PERFORMANCE?
+    public void UpdateMaxLengths() // why? So I don't have to calculate that for each line - PERFORMANCE?
     {
         GetMaxLineLength();
         GetMaxNameLength();
@@ -361,26 +361,13 @@ public class FilePanel : IComponent
         local_maxNameLength -= 1; // first |
         local_maxNameLength -= 26; // | Size | Date |
 
+        maxNameLength = local_maxNameLength;
         return local_maxNameLength;
-    }
-    private int old_MaxLineLength()
-    {
-        int lenght = 0;
-        foreach (var item in Widths())
-        {
-            lenght += 2;
-            lenght += item;
-            lenght += 1;
-        }
-        lenght += 1;
-        lineLength = lenght;
-        return lenght;
     }
     private int new_MaxNameLength()
     {
         int local_maxNameLength;
         local_maxNameLength = halfWindowSize;
-        local_maxNameLength -= 1; // first |
         local_maxNameLength -= 1; // first |
         for (int i = 1; i < headers.Count; i++)
         {
@@ -389,16 +376,6 @@ public class FilePanel : IComponent
         }
         maxNameLength = local_maxNameLength;
         return local_maxNameLength;
-    }
-    private int odlGetMaxNameLength()
-    {
-        int aaaa = 5;
-        int ikd = 16 + 11;
-        if (halfWindowSize >= ikd) //need to update
-        {
-            aaaa = ((halfWindowSize) - ikd);
-        }
-        return aaaa;
     }
 
     private List<int> Widths()
@@ -425,7 +402,9 @@ public class FilePanel : IComponent
     #region Prepere data
     public void ImportRows(string path = "")
     {
+        UpdateMaxLengths();
         LongLine();
+        
         deadRows = 0;
 
         if (rows != null)
@@ -434,13 +413,12 @@ public class FilePanel : IComponent
         {
             if (item == null)
             {
-                CalcMaxLength();
                 string upDirName = folderPrefix + "..";
-                upDirName = Truncate.Text(upDirName, GetMaxNameLength());
+                upDirName = Truncate.Text(upDirName, maxNameLength);
                 Add(new string[] { upDirName, "UP--DIR", "ToDo" });
                 continue;
             }
-            string name = Truncate.Text(item.Name, GetMaxNameLength());
+            string name = Truncate.Text(item.Name, maxNameLength);
             int local_maxNameLength = maxNameLength;
 
             long size = 0;
@@ -449,6 +427,7 @@ public class FilePanel : IComponent
                 if (!_isDiscs)
                     name = folderPrefix + name;
                 local_maxNameLength -= 1;
+                Truncate.Text(item.Name, local_maxNameLength);
 
                 //try { //missing permision for low level folders
                 //    size = FM.DirSize(item as DirectoryInfo);
@@ -458,9 +437,7 @@ public class FilePanel : IComponent
             {
                 FileInfo a = item as FileInfo;
                 size = a.Length;
-            }
-
-            Truncate.Text(item.Name, local_maxNameLength); //TODO: clearMe
+            } 
 
             string sizeStr = "";
             if (size != 0)
@@ -469,14 +446,19 @@ public class FilePanel : IComponent
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
 
-        int yElementsSize = 8;
-        int asss = rows.Count + yElementsSize;
-        for (int i = 0; i < Console.WindowHeight - asss; i++)
+        
+    }
+
+    private void AddDeadRows()
+    {
+        int yElementsSize = 8; // Menu, Header, StatusLine, ... //TODO: global atribut
+        int occupiedSpace = rows.Count + yElementsSize;
+        for (int i = 0; i < Console.WindowHeight - occupiedSpace; i++)
         {
             Add(new string[] { "", "", "" });
             deadRows++;
         }
-    }
+    }    
     public void Add(string[] data)
     {
         if (data.Length != headers.Count)
@@ -492,7 +474,7 @@ public class FilePanel : IComponent
 
     private string FillToLong(string text)
     {
-        CalcMaxLength();
+        UpdateMaxLengths();
 
         string emptyLong = "";
         int maxE = GetMaxNameLength() - text.Length + 2; //+2 fixed GetMaxNameLength() too short (idk why)
@@ -503,10 +485,7 @@ public class FilePanel : IComponent
 
         return Misc.PadBoth(text, maxE);
     }
-
-
     #endregion
-
 
     #endregion
     #region HandleKey methods
@@ -693,7 +672,7 @@ public class FilePanel : IComponent
     }
     private void UpdatePanel()
     {
-        Clear(); //change to something better (clear only that pane)
+        Clear();
         ImportRows();
         Draw();
     }
