@@ -9,10 +9,10 @@ using static System.Net.Mime.MediaTypeNames;
 namespace Lab_PopUp;
 internal class PopUp : IComponent
 {
-    int x = 0;
-    int y = 0; // = start y
+    int x_center = 0;
+    int y_center = 0; // = start y
 
-    int height = 2 + 8;
+    int height = 2 + 8 + 8;
     int width;
 
     int X_DeadSpace = 5;
@@ -26,8 +26,8 @@ internal class PopUp : IComponent
         
     public PopUp( string title, string info, int width = 50)
     {
-        x = (Console.WindowWidth  / 2);
-        y = (Console.WindowHeight / 3);
+        x_center = (Console.WindowWidth  / 2);
+        y_center = (Console.WindowHeight / 3);
 
         this.width = width;
         this.title = title;
@@ -37,17 +37,17 @@ internal class PopUp : IComponent
     public void Draw()
     {
         int c = 1; //y counter
-        y += DrawBox(); //first -> backgroud color
+        y_center += DrawBox(); //first -> backgroud color
         DrawTitle(c++); //y += -> píše se v drawbox
-        y += DrawInfo(c++);
+        y_center += DrawInfo(c++);
         if (textBoxes.Count > 0)
         {
-            y += Line('├', '┤', '─', c++);
-            y += DrawTextBoxes(c);  
+            y_center += Line('├', '┤', '─', c++);
+            y_center += DrawTextBoxes(c);  
         }
         
-        y += Line('├', '┤', '─', c++);
-        y += DrawButtons(c++);
+        y_center += Line('├', '┤', '─', c++);
+        y_center += DrawButtons(c++);
         height = c + 2;
     }
 
@@ -72,7 +72,7 @@ internal class PopUp : IComponent
         yy += Line('┌', '┐', '─', yy);
         ySize = yy;
         
-        while (yy < height - 2)
+        while (yy < height - ySize)
         {
             yy += Line('│', '│', ' ', yy);
         }
@@ -91,7 +91,10 @@ internal class PopUp : IComponent
 
         title = $" {title} "; //spaces
 
-        Console.SetCursorPosition(x - (title.Length / 2), y - 1);
+        try { 
+        Console.SetCursorPosition(XCenter(title), y_center - 1);
+        }
+        catch { throw new Exception($"{XCenter(title)}"); }
         Console.Write(title);
 
         Console.ForegroundColor = oldTextC;
@@ -104,7 +107,7 @@ internal class PopUp : IComponent
         ConsoleColor oldBackC = Console.BackgroundColor;
         Console.BackgroundColor = ConsoleColor.Gray;
 
-        Console.SetCursorPosition(x - (info.Length / 2), y);
+        Console.SetCursorPosition(XCenter(info), y_center);
         if (info.Length > width - 4)
         {
             throw new ArgumentException($"Text overflow box - text.l = {info.Length} | box.w = {width}");
@@ -136,7 +139,7 @@ internal class PopUp : IComponent
         }
         buf += end;
         buf += " ";
-        Console.SetCursorPosition(x - (buf.Length/2), y);
+        Console.SetCursorPosition(XCenter(buf), y_center + yy);
         Console.Write(buf);
 
         
@@ -159,7 +162,7 @@ internal class PopUp : IComponent
         foreach (var textbox in textBoxes)
         {
             textbox.Size = width - X_DeadSpace;
-            ySize = textbox.Draw(x - (width / 2) + 2, y +1);
+            ySize = textbox.Draw(XCenter(width) + 2, y_center +1);
         }
 
         return ySize;
@@ -182,7 +185,7 @@ internal class PopUp : IComponent
         }
         TotalWidth -= 5; //idk - just works to center it
 
-        Console.SetCursorPosition(x - (TotalWidth / 2), y + yy);
+        Console.SetCursorPosition(XCenter(TotalWidth), y_center + yy);
         foreach (var button in buttons)
         {
             button.Draw();
@@ -195,6 +198,22 @@ internal class PopUp : IComponent
 
         int ySize = 1;
         return ySize;
+    }
+
+    public void Clear()
+    {
+        Console.Clear();
+        x_center = (Console.WindowWidth / 2);
+        y_center = (Console.WindowHeight / 3);
+    }
+
+    public int XCenter(string text)
+    {
+        return (x_center - (text.Length / 2));
+    }
+    public int XCenter(int text)
+    {
+        return (x_center - (text / 2));
     }
 
     #region Old

@@ -12,7 +12,24 @@ internal class Program
         p.buttons.Add(new Button() { Title = "Yes" });
         p.buttons.Add(new Button() { Title = "Yes" });
         p.textBoxes.Add(new TextBox() { Label = "Name", Value = "John" });
-        p.textBoxes.Add(new TextBox() { Label = "Path", Value = @"C:\Users\" });
+        //p.textBoxes.Add(new TextBox() { Label = "Path", Value = @"C:\Users\" });
+
+        int a = Console.WindowHeight;
+        int b = Console.WindowWidth;
+
         p.Draw();
+
+        while (true) {
+            //Updates if window size was changed
+            if (a == Console.WindowHeight && b == Console.WindowWidth)
+            {
+                continue;
+            }
+
+            a = Console.WindowHeight;
+            b = Console.WindowWidth;
+            p.Clear();
+            p.Draw();
+        }
     }
 }
