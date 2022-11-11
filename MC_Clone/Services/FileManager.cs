@@ -122,13 +122,14 @@ internal class FileManager
         }
     }
 
-    public void RenMov(string destPath, FileSystemInfo fileObject)
+    public void RenMov(string destPath, FileSystemInfo fileObject, string newName = "")
     {
         //string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
         try
         {
             //FileSystemInfo fileObject = GetActiveObject();
             string objectName = fileObject.Name;
+            if (newName.Length > 0){ objectName = newName; }
             string destName = Path.Combine(destPath, objectName);
             if (fileObject is FileInfo)
                 ((FileInfo)fileObject).MoveTo(destName);

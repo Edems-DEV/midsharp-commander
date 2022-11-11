@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -9,8 +10,12 @@ using static System.Net.Mime.MediaTypeNames;
 namespace Lab_PopUp;
 internal class PopUp : IComponent
 {
-    int x_center = 0;
-    int y_center = 0; // = start y
+    #region Atributes
+    int originalY;
+    int originalX;
+    
+    int x_center = 0; // -
+    int y_center = 0; // |
 
     int height = 2 + 8 + 8;
     int width;
@@ -18,43 +23,147 @@ internal class PopUp : IComponent
     int X_DeadSpace = 5;
 
     string title = "Title";
-    string info = "Do you want to save changes?";
-
+    public List<string> details = new List<string>();
+    //public List<IComponent> components = new List<IComponent>();
     public List<Button> buttons = new List<Button>();
-    public List<TextBox> textBoxes= new List<TextBox>();
-    public List<IComponent> components = new List<IComponent>();
-        
-    public PopUp( string title, string info, int width = 50)
-    {
-        x_center = (Console.WindowWidth  / 2);
-        y_center = (Console.WindowHeight / 3);
+    public List<TextBox> textBoxes = new List<TextBox>();
 
-        this.width = width;
-        this.title = title;
-        this.info = info;
+    public ConsoleColor BackgroundColor = Config.PopUp_Backgroud;
+    public ConsoleColor ForegroundColor = Config.PopUp_ForeGroud;
+    public ConsoleColor AccentColor = Config.PopUp_Accent;
+    #endregion
+    #region Property
+    public int X
+    {
+        get { return x_center - width / 2; }
+        set { x_center = value + width / 2;  }
     }
 
+    public string Info
+    {
+        get { return string.Join("\n", details); }
+        set
+        {
+            if (value.Contains("\n"))
+            {
+                details = value.Split("\n").ToList();
+                //infos.AddRange(value.Split("\n"));
+            }
+            else
+            {
+                details.Add(value);
+            }
+        }
+    }
+    #endregion
+    #region Constructor
+    private void Setup(string title, int width = 50)
+    {
+        x_center = (Console.WindowWidth / 2);
+        y_center = (Console.WindowHeight / 3);
+        
+        this.width = width;
+        this.title = title;
+    }
+    public PopUp(string title, string info = "", int width = 50)
+    {
+        Setup(title, width);
+        Info = info;
+    }
+    public PopUp(string title, List<string> info, int width = 50)
+    {
+        Setup(title, width);
+        details = info;
+    }
+    #endregion
+    
+    private int WidthCalc()
+    {
+        int local_width = 0;
+        local_width += 2;//start box + space
+        foreach (var item in details)
+        {
+            local_width += 1;
+        }
+        foreach (var item in textBoxes)
+        {
+            local_width += 1; //seperator
+            local_width += 2;
+        }
+        if (buttons.Count > 0)
+        {
+            local_width += 1; //seperator
+            local_width += 1;
+        }
+        local_width += 2; //end box + space
+
+
+        return local_width;
+    }
+    private int MinWidth(int ExtraPad = 2)
+    {
+        //for each elemnt size x size
+        int maxWidth = 0;
+        foreach (var item in details)
+        {
+            if (item.Length > maxWidth)
+            {
+                maxWidth = item.Length;
+            }
+        }
+        foreach (var item in textBoxes)
+        {
+            if (item.Label.Length > maxWidth)
+            {
+                maxWidth = item.Label.Length;
+            }
+            if (item.Value.Length > maxWidth)
+            {
+                maxWidth = item.Value.Length; //user input pontetional problem?
+            }
+        }
+        if (buttons.Count > 0)
+        {
+            int localBtnRowLenght = 0;
+            foreach (var item in buttons) //row
+            {
+                localBtnRowLenght += item.Title.Length + 4 + 2;
+            }
+            if (localBtnRowLenght > maxWidth)
+            {
+                maxWidth = localBtnRowLenght;
+            }
+        }
+        maxWidth += 4; //box + space
+        maxWidth += 2; //%2 = 0 (property?)
+        return maxWidth;
+    }
     public void Draw()
     {
-        int c = 1; //y counter
-        y_center += DrawBox(); //first -> backgroud color
-        DrawTitle(c++); //y += -> píše se v drawbox
-        y_center += DrawInfo(c++);
+        bool a = true;
+        if (a){
+            height = WidthCalc(); //cant be in constructor because elemets are added in run time
+            a = false;
+            width = MinWidth();
+        }
+        Console.BackgroundColor = BackgroundColor;
+
+        DrawBox(); //+2 (space + box)
+        DrawTitle(); //own -1
+        DrawInfo(); //+1
         if (textBoxes.Count > 0)
         {
-            y_center += Line('├', '┤', '─', c++);
-            y_center += DrawTextBoxes(c);  
+            DrawTextBoxes();  
         }
-        
-        y_center += Line('├', '┤', '─', c++);
-        y_center += DrawButtons(c++);
-        height = c + 2;
+
+        y_center += Line('├', '┤', '─');
+        DrawButtonsRow();
     }
 
     public void Draw(string title, string info, int width = 50)
     {
         this.title = title;
-        this.info = info;
+        this.Info = info;
         Draw();
     }
 
@@ -62,11 +171,10 @@ internal class PopUp : IComponent
     { 
     }
 
-    public int DrawBox()
+    public void DrawBox()
     {
         int yy = 0;
         int ySize;
-
 
         yy += Line(' ', ' ', ' ', yy);
         yy += Line('┌', '┐', '─', yy);
@@ -79,54 +187,52 @@ internal class PopUp : IComponent
         yy += Line('└', '┘', '─', yy);
         yy += Line(' ', ' ', ' ', yy);
 
-        return ySize;
+        y_center += ySize;
     }
 
-    public void DrawTitle(int yy)
+    public void DrawTitle()
     {
-        ConsoleColor oldTextC = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Blue;
+        ConsoleColor oldTextC = Console.ForegroundColor; //del this - always same (cfg)
         ConsoleColor oldBackC = Console.BackgroundColor;
-        Console.BackgroundColor = ConsoleColor.Gray;
+        Console.ForegroundColor = AccentColor;
+        Console.BackgroundColor = BackgroundColor;
 
-        title = $" {title} "; //spaces
+        string local_title = $" {title} "; //spaces //fixed bug - on interation -> spaces added
 
         try { 
-        Console.SetCursorPosition(XCenter(title), y_center - 1);
+        Console.SetCursorPosition(XCenter(local_title), y_center - 1);
         }
-        catch { throw new Exception($"{XCenter(title)}"); }
-        Console.Write(title);
+        catch { throw new Exception($"{XCenter(local_title)}"); }
+        Console.Write(local_title);
 
         Console.ForegroundColor = oldTextC;
         Console.BackgroundColor = oldBackC;
     }
-    public int DrawInfo(int yy)
-    {
+    public void DrawInfo()
+    {   
         ConsoleColor oldTextC = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Black;
         ConsoleColor oldBackC = Console.BackgroundColor;
-        Console.BackgroundColor = ConsoleColor.Gray;
+        Console.ForegroundColor = ForegroundColor;
+        Console.BackgroundColor = BackgroundColor;
 
-        Console.SetCursorPosition(XCenter(info), y_center);
-        if (info.Length > width - 4)
+        foreach (var line in details)
         {
-            throw new ArgumentException($"Text overflow box - text.l = {info.Length} | box.w = {width}");
+            Console.SetCursorPosition(XCenter(line), y_center);
+            Console.Write(line);
+            y_center++;
         }
-        Console.Write(info);
-        int ySize = 1;
+        
 
         Console.ForegroundColor = oldTextC;
         Console.BackgroundColor = oldBackC;
-
-        return ySize;
     }
 
     public int Line(char start = '└', char end = '┘', char fill = '─', int yy = 0)
     {
         ConsoleColor oldBackC = Console.BackgroundColor;
         ConsoleColor oldTextC = Console.ForegroundColor;
-        Console.BackgroundColor = ConsoleColor.Gray;
-        Console.ForegroundColor = ConsoleColor.Black;
+        Console.BackgroundColor = BackgroundColor;
+        Console.ForegroundColor = ForegroundColor;
 
         
         string buf = "";
@@ -150,34 +256,32 @@ internal class PopUp : IComponent
         return ySize;
     }
 
-    public int DrawTextBoxes(int yy)
+    public void DrawTextBoxes()
     {
         ConsoleColor oldTextC = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Black;
         ConsoleColor oldBackC = Console.BackgroundColor;
-        Console.BackgroundColor = ConsoleColor.Blue;
+        Console.ForegroundColor = ForegroundColor;
+        Console.BackgroundColor = BackgroundColor;
 
         int ySize = 0;
 
         foreach (var textbox in textBoxes)
         {
+            y_center += Line('├', '┤', '─');
             textbox.Size = width - X_DeadSpace;
-            ySize = textbox.Draw(XCenter(width) + 2, y_center +1);
+            y_center += textbox.Draw(XCenter(width) + 2, y_center);
         }
-
-        return ySize;
     }
-
-    public int DrawButtons(int yy)
+    
+    public void DrawButtonsRow()
     {
         ConsoleColor oldTextC = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ForegroundColor;
         ConsoleColor oldBackC = Console.BackgroundColor;
-        Console.BackgroundColor = ConsoleColor.Gray;
+        Console.BackgroundColor = BackgroundColor;
 
         int TotalWidth = 0;
         int space = 2;
-        //4 = button border
         foreach (var button in buttons)
         {
             TotalWidth += button.Title.Length + 4;
@@ -185,26 +289,24 @@ internal class PopUp : IComponent
         }
         TotalWidth -= 5; //idk - just works to center it
 
-        Console.SetCursorPosition(XCenter(TotalWidth), y_center + yy);
+        Console.SetCursorPosition(XCenter(TotalWidth), y_center);
         foreach (var button in buttons)
         {
             button.Draw();
             Console.Write(" ");
         }
 
-        Console.SetCursorPosition(0, 0); //debug console
         Console.ForegroundColor = oldTextC;
         Console.BackgroundColor = oldBackC;
 
-        int ySize = 1;
-        return ySize;
+        y_center++; //single row
     }
 
     public void Clear()
     {
         Console.Clear();
         x_center = (Console.WindowWidth / 2);
-        y_center = (Console.WindowHeight / 3);
+        y_center = (Console.WindowHeight / 3); //reset y
     }
 
     public int XCenter(string text)
@@ -215,6 +317,21 @@ internal class PopUp : IComponent
     {
         return (x_center - (text / 2));
     }
+
+    private void Write(string text)
+    {
+        Console.SetCursorPosition(XCenter(text), y_center);
+        Console.Write(text);
+        y_center++;
+    }
+
+    #region Factories
+
+    public void Error()
+    {
+        
+    }
+    #endregion
 
     #region Old
     static void PopUp_OLD()

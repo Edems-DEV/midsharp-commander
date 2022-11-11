@@ -6,26 +6,16 @@ using System.Threading.Tasks;
 
 namespace Lab_PopUp;
 public static class Config
-    {
-    // Can be changed
-        public static ConsoleColor BackgroundColor                  = ConsoleColor.Black;
-        public static ConsoleColor ForegroundColor                  = ConsoleColor.White;
-        public static ConsoleColor AdditionalBackgroundColor        = ConsoleColor.Red;
-        public static ConsoleColor  MsgBoxBackgroundColor           = ConsoleColor.White;
-        public static ConsoleColor  MsgBoxForegroundColor           = ConsoleColor.Black;
-        public static ConsoleColor  AdditionalMsgBoxBackgroundColor = ConsoleColor.Red;
-        public static ConsoleColor  TextBoxBackgroundColor          = ConsoleColor.Gray;
-        public static string        LeftSectionPath                 = @".";
-        public static string        RightSectionPath                = @".";
-        public static int           StartupWindowWidth              = /*Console.LargestWindowWidth;*/120; // Default - 120
-        public static int           StartupWindowHeight             = /*Console.LargestWindowHeight;*/30; // Default - 30
-
-        // Can not be changed
-        public static int           WindowWidth                     = StartupWindowWidth - 3;
-        public static int           QuarterWindowWidth              = WindowWidth / 4;
-        public static int           HalfWindowWidth                 = WindowWidth / 2;
-        public static int           WindowHeight                    = StartupWindowHeight - 3;
-        public static int           FilesCountOneSection            = StartupWindowHeight - 11;
-        public static int           FilesCountTwoSections           = FilesCountOneSection * 2;
-        public static string        ProgramLocation                 = Directory.GetCurrentDirectory();
-    }
+{
+        public static ConsoleColor BackgroundColor                 = ConsoleColor.Black;
+        public static ConsoleColor ForegroundColor                 = ConsoleColor.White;
+        public static ConsoleColor AdditionalBackgroundColor       = ConsoleColor.Red;
+    
+        public static ConsoleColor  Error_Backgroud          = ConsoleColor.Red;
+        public static ConsoleColor  Error_Foreground         = ConsoleColor.White;
+        public static ConsoleColor  Error_Accent             = ConsoleColor.DarkYellow;
+    
+        public static ConsoleColor  PopUp_Backgroud          = ConsoleColor.Gray;
+        public static ConsoleColor  PopUp_ForeGroud          = ConsoleColor.Black;
+        public static ConsoleColor  PopUp_Accent             = ConsoleColor.DarkBlue;
+}

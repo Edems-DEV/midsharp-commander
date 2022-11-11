@@ -26,8 +26,8 @@ public abstract class MessageBox
 
         // -------------------------------------
 
-        w = Config.WindowWidth;
-        h = Config.WindowHeight;
+        w = Console.WindowWidth;
+        h = Console.WindowHeight;
 
         msgbWidth = (int)(w / koef1);
         msgbHeigth = (int)(h / koef2);
@@ -39,7 +39,7 @@ public abstract class MessageBox
     public void GetMessageBox()
     {
         Console.SetCursorPosition(x, y);
-        Console.BackgroundColor = Config.MsgBoxBackgroundColor;
+        Console.BackgroundColor = Config.Error_Backgroud;
 
         string buf = "";
         for (int i = 0; i < msgbHeigth; i++)
@@ -53,7 +53,7 @@ public abstract class MessageBox
             Console.SetCursorPosition(x, ++Console.CursorTop);
         }
 
-        Console.ForegroundColor = Config.MsgBoxForegroundColor;
+        Console.ForegroundColor = Config.Error_Foreground;
         Console.SetCursorPosition(x + 3, y + 1);
 
         buf = "┌";
@@ -122,9 +122,9 @@ public class YesNoMessageBox : MessageBox
 
             if (selectedOK)
             {
-                Console.BackgroundColor = Config.AdditionalMsgBoxBackgroundColor;
+                Console.BackgroundColor = Config.Error_Accent;
                 Console.Write("OK");
-                Console.BackgroundColor = Config.MsgBoxBackgroundColor;
+                Console.BackgroundColor = Config.Error_Backgroud;
             }
             else
                 Console.Write("OK");
@@ -133,9 +133,9 @@ public class YesNoMessageBox : MessageBox
 
             if (!selectedOK)
             {
-                Console.BackgroundColor = Config.AdditionalMsgBoxBackgroundColor;
+                Console.BackgroundColor = Config.Error_Accent;
                 Console.Write("CANCEL");
-                Console.BackgroundColor = Config.MsgBoxBackgroundColor;
+                Console.BackgroundColor = Config.Error_Backgroud;
             }
             else
                 Console.Write("CANCEL");
@@ -174,9 +174,9 @@ public class OkMessageBox : MessageBox
         while (true)
         {
             Console.SetCursorPosition(x + ((msgbWidth) / 2), y + msgbHeigth - 3);
-            Console.BackgroundColor = Config.AdditionalMsgBoxBackgroundColor;
+            Console.BackgroundColor = Config.Error_Accent;
             Console.Write("OK");
-            Console.BackgroundColor = Config.MsgBoxBackgroundColor;
+            Console.BackgroundColor = Config.Error_Backgroud;
 
             switch (Console.ReadKey(true).Key)
             {
