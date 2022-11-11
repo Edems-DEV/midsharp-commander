@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ public class TextBox : IComponent
     {
         Console.Write(this.Label);
         Console.Write("_" + this.Value.PadRight(this.Size, '_'));
-        //Console.WriteLine();
     }
     public int  Draw(int x, int y)
     {

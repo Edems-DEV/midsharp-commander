@@ -6,11 +6,13 @@ internal class Program
     {
         //YesNoMessageBox y = new YesNoMessageBox("Hello", "World");
         //y.GetMessageBox();
-        PopUp p = new PopUp();
+        int size = 20;
+        PopUp p = new PopUp("Joe", "no", 50);
         p.buttons.Add(new Button() { Title = "Yes" });
         p.buttons.Add(new Button() { Title = "Yes" });
         p.buttons.Add(new Button() { Title = "Yes" });
         p.textBoxes.Add(new TextBox() { Label = "Name", Value = "John" });
+        p.textBoxes.Add(new TextBox() { Label = "Path", Value = @"C:\Users\" });
         p.Draw();
     }
 }
