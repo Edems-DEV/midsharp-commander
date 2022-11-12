@@ -10,10 +10,10 @@ internal class PopUpFactory
     static public PopUp Error_Dismiss()
     {
         PopUp p = new PopUp("Close file", "\"/Home/root/\" is not a regular file");
-        p.buttons.Add(new Button() { Title = "Dismiss" });
-        p.BackgroundColor = ConsoleColor.Red;
-        p.ForegroundColor = ConsoleColor.White;
-        p.AccentColor = ConsoleColor.Yellow;
+        p.components.Add(new Button() { Title = "Dismiss" });
+        p.BackgroundColor = Config.Error_Backgroud;
+        p.ForegroundColor = Config.Error_Foreground;
+        p.AccentColor = Config.Error_Accent;
         return p;
     }
 
@@ -23,26 +23,28 @@ internal class PopUpFactory
         Lines.Add("Delete file");
         Lines.Add("\"ChangeMe.txt\"?");
         PopUp p = new PopUp("Delete", Lines);
-        p.buttons.Add(new Button() { Title = "Yes" });
-        p.buttons.Add(new Button() { Title = "no" });
-        p.BackgroundColor = ConsoleColor.Red;
-        p.ForegroundColor = ConsoleColor.White;
-        p.AccentColor = ConsoleColor.Yellow;
+        p.components.Add(new Button() { Title = "Yes" });
+        p.components.Add(new Button() { Title = "no" });
+        p.BackgroundColor = Config.Error_Backgroud;
+        p.ForegroundColor = Config.Error_Foreground;
+        p.AccentColor = Config.Error_Accent;
         return p;
     }
 
     static public PopUp Move()
     {
         PopUp p = new PopUp("Move", "File: {filename}"); //optimize for empty details
-        p.textBoxes.Add(new TextBox() { Label = "Destination Path:", Value = @"C:\Users\root\Desktop\Example" }); //TODO: path truncate
-        p.buttons.Add(new Button() { Title = "Ok" });
-        p.buttons.Add(new Button() { Title = "Cancel" });
+        p.components.Add(new TextBox() { Label = "Destination Path:", Value = @"C:\Users\root\Desktop\Example" }); //TODO: path truncate
+        p.components.Add(new Button() { Title = "Ok" });
+        p.components.Add(new Button() { Title = "Cancel" });
         return p;
     }
 }
 
 internal class PopUp : IComponent //new window?
 {
+    int selected = 0;
+    
     #region Atributes
     int originalY;
     int originalX;
@@ -58,18 +60,8 @@ internal class PopUp : IComponent //new window?
     string title = "Title";
     public List<string> details = new List<string>();
     public List<IComponent> components = new List<IComponent>();
-    public List<Button> buttons = new List<Button>();
-    public List<TextBox> textBoxes = new List<TextBox>();
-    public List<Button> OptionsList
-    {
-        get { return buttons; }
-        set 
-        { 
-            buttons.AddRange(value);
-            components.AddRange(value);
-            //height += value.Count;
-        }
-    }
+    //public List<Button> buttons = new List<Button>();
+    //public List<TextBox> textBoxes = new List<TextBox>();
 
     public ConsoleColor BackgroundColor = Config.PopUp_Backgroud;
     public ConsoleColor ForegroundColor = Config.PopUp_ForeGroud;
@@ -124,16 +116,31 @@ internal class PopUp : IComponent //new window?
     {
         if (info.Key == ConsoleKey.Tab)
         {
-            //this.selected = (this.selected + 1) % this.components.Count;
+            selected = (selected + 1) % components.Count;
         }
         else
         {
-            //this.components[this.selected].HandleKey(info);
+            components[selected].HandleKey(info);
+        }
+    }
+
+    private void Editing() //del this (concept)
+    {
+        bool active = true;
+        while (active)
+        {
+            while (!(Console.KeyAvailable))
+            {
+                //same as program
+            }
+            ConsoleKeyInfo info = Console.ReadKey();
         }
     }
     
     public void Draw()
     {
+        List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
+        
         bool a = true;
         if (a)
         {
@@ -250,6 +257,8 @@ internal class PopUp : IComponent //new window?
 
     public void DrawTextBoxes()
     {
+        List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
+
         ConsoleColor oldTextC = Console.ForegroundColor;
         ConsoleColor oldBackC = Console.BackgroundColor;
         Console.ForegroundColor = ForegroundColor;
@@ -267,6 +276,8 @@ internal class PopUp : IComponent //new window?
 
     public void DrawButtonsRow()
     {
+        List<Button> buttons = components.OfType<Button>().ToList();
+
         ConsoleColor oldTextC = Console.ForegroundColor;
         Console.ForegroundColor = ForegroundColor;
         ConsoleColor oldBackC = Console.BackgroundColor;
@@ -319,6 +330,9 @@ internal class PopUp : IComponent //new window?
 
     private int WidthCalc()
     {
+        List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
+        List<Button> buttons = components.OfType<Button>().ToList();
+        
         int local_width = 0;
         local_width += 2;//start box + space
         foreach (var item in details)
@@ -342,6 +356,8 @@ internal class PopUp : IComponent //new window?
     }
     private int MinWidth(int ExtraPad = 2)
     {
+        List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
+        List<Button> buttons = components.OfType<Button>().ToList();
         //for each elemnt size x size
         int maxWidth = 0;
         foreach (var item in details)

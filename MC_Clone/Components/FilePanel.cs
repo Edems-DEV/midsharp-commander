@@ -4,6 +4,8 @@ namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
+    bool PopUp = false;
+    IComponent a;
     public event Action<int> RowSelected;
 
     FileManager FM;
@@ -143,6 +145,10 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
+        if (PopUp)
+        {
+            a.HandleKey(info);
+        }
         switch (info.Key)
         {
             //---------UPDATE---------
@@ -597,6 +603,11 @@ public class FilePanel : IComponent
         } while (name.Length == 0);
         Console.CursorVisible = false;
         return name;
+    }
+    private void PopUpPrep() 
+    {
+        PopUp = true;
+        a = PopUpFactory.Move();
     }
 
     private void ShowMessage(string message)
