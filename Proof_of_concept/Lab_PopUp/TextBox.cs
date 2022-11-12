@@ -10,7 +10,7 @@ public class TextBox : IComponent
 {
     public string Label { get; set; } = "Default Label";
 
-    public string Value { get; set; } = "";
+    public string Value { get; set; } = "Default ˇVALUE";
 
     public int Size { get; set; } = 20;
 

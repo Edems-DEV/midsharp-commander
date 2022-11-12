@@ -25,9 +25,7 @@ public class Button : IComponent
         Console.ForegroundColor = a;
         Console.Write(this.Title.Substring(asscentLetters, this.Title.Length - asscentLetters));
         Console.Write($" ]");
-        Console.WriteLine();
-
-
+        //Console.WriteLine();
     }
 
     public void HandleKey(ConsoleKeyInfo info)

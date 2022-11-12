@@ -53,8 +53,8 @@ public class ListWindow : Window
     {
         return _panels[_activePanelIndex];
     }
-
     public ListWindow()
+
     {
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
