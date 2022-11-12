@@ -4,6 +4,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        //OpenFileDialog openFileDialog1 = new OpenFileDialog();
         //Config.ChangeColorScheme(); //TODO: update config (no more static)
 
         Console.CursorVisible = false;

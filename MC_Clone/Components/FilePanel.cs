@@ -577,7 +577,7 @@ public class FilePanel : IComponent
     {
         string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
         string newName = this.AksName("Rename: "); //TODO: change to popUp
-        FM.RenMov(destPath, GetActiveObject(), newName);
+        FM.RenMov(destPath, GetActiveObject(), newName); //PopUpFactory.Move().Line[1]
         SetLists(Path_);
         RestartPanel();
     }
