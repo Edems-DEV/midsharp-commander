@@ -93,7 +93,7 @@ public class Config
 
     public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
     public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;
-    public static ConsoleColor PopUp_Accent    = ConsoleColor.DarkBlue;
+    public static ConsoleColor PopUp_Accent    = ConsoleColor.Cyan;
 
     public static ConsoleColor Error_Backgroud  = ConsoleColor.Red;
     public static ConsoleColor Error_Foreground = ConsoleColor.White;

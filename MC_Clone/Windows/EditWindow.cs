@@ -38,7 +38,7 @@ public class EditWindow : Window
         this.components.Add(btnOk);
         this.components.Add(btnCancel);
     }
-
+     
     private void BtnCancel_Clicked()
     {
         this.Application.SwitchWindow(new ListWindow());

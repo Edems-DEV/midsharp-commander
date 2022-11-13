@@ -19,7 +19,7 @@ public class Button : IComponent
         int asscentLetters = 1;
 
         Console.Write("[ ");
-        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.ForegroundColor = ConsoleColor.DarkBlue;
         
         Console.Write(this.Title.Substring(0, asscentLetters));
         Console.ForegroundColor = a;

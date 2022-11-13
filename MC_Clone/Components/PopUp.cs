@@ -37,6 +37,7 @@ internal class PopUpFactory
         p.components.Add(new TextBox() { Label = "Destination Path:", Value = @"C:\Users\root\Desktop\Example" }); //TODO: path truncate
         p.components.Add(new Button() { Title = "Ok" });
         p.components.Add(new Button() { Title = "Cancel" });
+        
         return p;
     }
 }
@@ -44,7 +45,8 @@ internal class PopUpFactory
 internal class PopUp : IComponent //new window?
 {
     int selected = 0;
-    
+    public bool alive = true;
+
     #region Atributes
     int originalY;
     int originalX;
@@ -104,24 +106,41 @@ internal class PopUp : IComponent //new window?
     {
         Setup(title, width);
         Info = info;
+        //Loop();
     }
     public PopUp(string title, List<string> info, int width = 50)
     {
         Setup(title, width);
         details = info;
+        //Loop();
     }
     #endregion
 
+    public void Loop()
+    {
+        while (alive)
+        {
+            Draw();
+        }
+    }
     public void HandleKey(ConsoleKeyInfo info)
     {
-        if (info.Key == ConsoleKey.Tab)
+        switch (info.Key)
         {
-            selected = (selected + 1) % components.Count;
+            case ConsoleKey.RightArrow:
+            case ConsoleKey.DownArrow:
+                selected = (selected + 1) % components.Count;
+                return;
+            case ConsoleKey.LeftArrow:
+            case ConsoleKey.UpArrow:
+                selected = (selected - 1) % components.Count;
+                return;
+            case ConsoleKey.Escape:
+                alive = false;
+                return;
         }
-        else
-        {
-            components[selected].HandleKey(info);
-        }
+        
+        components[selected].HandleKey(info);
     }
 
     private void Editing() //del this (concept)
@@ -149,7 +168,8 @@ internal class PopUp : IComponent //new window?
             a = false;
         }
         Console.BackgroundColor = BackgroundColor;
-
+        int oldY = y_center;
+        
         DrawBox(); //+2 (space + box)
         DrawTitle(); //own -1
         DrawInfo(); //+1
@@ -160,6 +180,8 @@ internal class PopUp : IComponent //new window?
 
         y_center += Line('├', '┤', '─');
         DrawButtonsRow();
+        
+        y_center = oldY;
     }
 
     public void Draw(string title, string info, int width = 50)
@@ -266,10 +288,15 @@ internal class PopUp : IComponent //new window?
 
         int ySize = 0;
 
+        int i = 0;
         foreach (var textbox in textBoxes)
         {
             y_center += Line('├', '┤', '─');
             textbox.Size = width - X_DeadSpace;
+            if (selected == i)
+            {
+                Console.BackgroundColor = AccentColor;
+            }
             y_center += textbox.Draw(XCenter(width) + 2, y_center);
         }
     }
@@ -293,10 +320,17 @@ internal class PopUp : IComponent //new window?
         TotalWidth -= 5; //idk - just works to center it
 
         Console.SetCursorPosition(XCenter(TotalWidth), y_center);
+        int i = components.Count - buttons.Count; //works only if buttos are last elements added
         foreach (var button in buttons)
         {
+            if (selected == i)
+            {
+                Console.BackgroundColor = AccentColor;
+            }
             button.Draw();
+            Console.BackgroundColor = BackgroundColor;
             Console.Write(" ");
+            i++;
         }
 
         Console.ForegroundColor = oldTextC;

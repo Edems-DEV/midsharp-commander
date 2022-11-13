@@ -5,7 +5,7 @@ namespace MC_Clone;
 public class FilePanel : IComponent
 {
     bool PopUp = false;
-    IComponent a;
+    PopUp a;
     public event Action<int> RowSelected;
 
     FileManager FM;
@@ -148,6 +148,8 @@ public class FilePanel : IComponent
         if (PopUp)
         {
             a.HandleKey(info);
+            PopUp = a.alive;
+            return;
         }
         switch (info.Key)
         {
@@ -177,7 +179,9 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                Drives();
+                a = PopUpFactory.Move();
+                PopUp = true;
+                //Drives();
                 break;
             case ConsoleKey.F2:
                 CreateFile();
@@ -215,6 +219,12 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
+        if (PopUp) //second instance of panel still blink
+        {
+            a.Draw();
+            return;
+        }
+
         ImportRows(); //update rows
         List<int> widths = Widths();
         UpdateMaxLengths();
@@ -252,7 +262,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = Y;
+        y_temp = Y;   
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
