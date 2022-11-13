@@ -12,7 +12,7 @@ internal class PopUpFactory
         PopUp p = new PopUp("Close file", "\"/Home/root/\" is not a regular file");
         p.components.Add(new Button() { Title = "Dismiss" });
         p.BackgroundColor = Config.Error_Backgroud;
-        p.ForegroundColor = Config.Error_Foreground;
+        p.ForegroundColor = Config.Error_Foreground; 
         p.AccentColor = Config.Error_Accent;
         return p;
     }

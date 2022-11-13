@@ -93,16 +93,30 @@ internal class FileManager
     }
 
     #region Function Keys
+    public void MkFile(string path, string fileName)
+    {
+        if (!fileName.Contains('.'))
+        {
+            CreateFolder(path, fileName);
+        }
+        else
+        {
+            CreateFile(path, fileName);
+        }
+    }
+    public void CreateFolder(string path, string fileName)
+    {
+        if (!Directory.Exists($@"{path}\{fileName}"))
+        {
+            Directory.CreateDirectory($@"{path}\{fileName}");
+        }
+    }
     public void CreateFile(string path, string fileName) //Menu
     {
         //if (IsDiscs)
         //    return;
         string destPath = path;
-        //string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        if (!fileName.Contains('.'))
-        {
-            fileName = fileName + ".txt";
-        }
+
         try
         {
             string fileFullPath = path + @"\" + fileName;

@@ -561,8 +561,8 @@ public class FilePanel : IComponent
         if (IsDiscs)
             return;
         string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        PopUpFactory.Move();
-        FM.CreateFile(Path_, fileName);
+        //PopUpFactory.Move();
+        FM.MkFile(Path_, fileName);
         RestartPanel();
     }
     private void View()
