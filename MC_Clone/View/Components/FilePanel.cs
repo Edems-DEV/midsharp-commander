@@ -4,9 +4,12 @@ namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
+    public ListWindow a;
+
     bool PopUp = false;
     PopUp msg;
     public event Action<int> RowSelected;
+    public Application Application { get; set; }
 
     FileManager FM;
 
@@ -128,14 +131,16 @@ public class FilePanel : IComponent
         FM = new FileManager();
 
     }
-    public FilePanel(int x = 0, int y = 0)
+    public FilePanel(Application Application, int x = 0, int y = 0)
     {
+        this.Application = Application;
         Start(x, y);
         SetDiscs();
     }
 
-    public FilePanel(string path, int x = 0, int y = 0)
+    public FilePanel(ListWindow ListWindow, Application Application, string path, int x = 0, int y = 0)
     {
+        this.Application = Application;
         Path_ = path;
         Start(x, y);
         if (path == ".") { SetDiscs(); return; }
@@ -179,8 +184,8 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                msg = PopUpFactory.Move();
-                PopUp = true;
+                Application.SwitchPopUp(new ErrorMsg());
+                //a.PopUp_Switch(new ErrorMsg());
                 //Drives();
                 break;
             case ConsoleKey.F2:
@@ -613,11 +618,6 @@ public class FilePanel : IComponent
         } while (name.Length == 0);
         Console.CursorVisible = false;
         return name;
-    }
-    private void PopUpPrep() 
-    {
-        PopUp = true;
-        msg = PopUpFactory.Move();
     }
 
     private void ShowMessage(string message)

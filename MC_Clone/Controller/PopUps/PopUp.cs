@@ -5,63 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class PopUpFactory
+
+public abstract class PopUp : Window //?: Window -> have same needs
 {
-    static public PopUp Error_Dismiss()
-    {
-        PopUp p = new PopUp("Close file", "\"/Home/root/\" is not a regular file");
-        p.components.Add(new Button() { Title = "Dismiss" });
-        p.BackgroundColor = Config.Error_Backgroud;
-        p.ForegroundColor = Config.Error_Foreground;
-        p.AccentColor = Config.Error_Accent;
-        return p;
-    }
-
-    static public PopUp Error_Delete()
-    {
-        List<string> Lines = new List<string>();
-        Lines.Add("Delete file");
-        Lines.Add("\"ChangeMe.txt\"?");
-        PopUp p = new PopUp("Delete", Lines);
-        p.components.Add(new Button() { Title = "Yes" });
-        p.components.Add(new Button() { Title = "no" });
-        p.BackgroundColor = Config.Error_Backgroud;
-        p.ForegroundColor = Config.Error_Foreground;
-        p.AccentColor = Config.Error_Accent;
-        return p;
-    }
-
-    static public PopUp Move()
-    {
-        PopUp p = new PopUp("Move", "File: {filename}"); //optimize for empty details
-        p.components.Add(new TextBox() { Label = "Destination Path:", Value = @"C:\Users\root\Desktop\Example" }); //TODO: path truncate
-        p.components.Add(new Button() { Title = "Ok" });
-        p.components.Add(new Button() { Title = "Cancel" });
-
-        return p;
-    }
-}
-
-public class PopUp : Window //?: Window -> have same needs
-{
-    int selected = 0;
+    public int selected = 0;
     public bool alive = true;
 
     #region Atributes
-    int originalY;
-    int originalX;
+    public int originalY;
+    public int originalX;
 
-    int x_center = 0; // -
-    int y_center = 0; // |
+    public int x_center = 0; // -
+    public int y_center = 0; // |
 
-    int height = 2 + 8 + 8;
-    int width;
+    public int height = 2 + 8 + 8;
+    public int width = 70;
 
-    int X_DeadSpace = 5;
+    public int X_DeadSpace = 5;
 
-    string title = "Title";
+    public string title = "Title";
     public List<string> details = new List<string>();
-    public List<IComponent> components = new List<IComponent>();
+    protected List<IComponent> components = new List<IComponent>();
     //public List<Button> buttons = new List<Button>();
     //public List<TextBox> textBoxes = new List<TextBox>();
 
@@ -102,6 +66,11 @@ public class PopUp : Window //?: Window -> have same needs
         this.width = width;
         this.title = title;
     }
+    public PopUp()
+    {
+        x_center = Console.WindowWidth / 2;
+        y_center = Console.WindowHeight / 3;
+    }
     public PopUp(string title, string info = "", int width = 50)
     {
         Setup(title, width);
@@ -128,12 +97,31 @@ public class PopUp : Window //?: Window -> have same needs
                 selected = (selected - 1) % components.Count;
                 return;
             case ConsoleKey.Escape:
-                alive = false;
+                BtnCancel_Clicked();
                 return;
         }
 
         components[selected].HandleKey(info);
     }
+    public void Add_CancelBtn()
+    {
+        Button btnCancel = new Button() { Title = "Cancel" };
+        btnCancel.Clicked += BtnCancel_Clicked;
+    }
+    public void BtnCancel_Clicked()
+    {
+        this.Application.SwitchPopUp(new EmptyMsg());
+    }
+    public void Add_BtnOk()
+    {
+        Button btnOk = new Button() { Title = "OK" };
+        btnOk.Clicked += BtnOk_Clicked;
+    }
+    protected virtual void BtnOk_Clicked()
+    {
+        
+    }
+
     public override void Draw()
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
@@ -141,9 +129,12 @@ public class PopUp : Window //?: Window -> have same needs
         bool a = true;
         if (a)
         {
+            x_center = Console.WindowWidth / 2;
+            y_center = Console.WindowHeight / 3;
+            
             height = WidthCalc(); //cant be in constructor because elemets are added in run time
             width = MinWidth();
-            a = false;
+            //a = false;
         }
         Console.BackgroundColor = BackgroundColor;
         int oldY = y_center;
@@ -333,14 +324,14 @@ public class PopUp : Window //?: Window -> have same needs
         return x_center - text / 2;
     }
 
-    private void Write(string text)
+    public void Write(string text)
     {
         Console.SetCursorPosition(XCenter(text), y_center);
         Console.Write(text);
         y_center++;
     }
 
-    private int WidthCalc()
+    public int WidthCalc()
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
         List<Button> buttons = components.OfType<Button>().ToList();
@@ -366,7 +357,7 @@ public class PopUp : Window //?: Window -> have same needs
 
         return local_width;
     }
-    private int MinWidth(int ExtraPad = 2)
+    public int MinWidth(int ExtraPad = 2)
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
         List<Button> buttons = components.OfType<Button>().ToList();
@@ -401,6 +392,14 @@ public class PopUp : Window //?: Window -> have same needs
             {
                 maxWidth = localBtnRowLenght;
             }
+        }
+        if (title.Length > maxWidth)
+        {
+            maxWidth = title.Length;
+        }
+        if (maxWidth < 0)
+        {
+            throw new Exception($"maxWidth < 0  [{maxWidth}]");
         }
         maxWidth += 4; //box + space
         maxWidth += 2; //%2 = 0 (property?)

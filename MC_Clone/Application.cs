@@ -13,12 +13,12 @@ public class Application
     public Application()
     {
         this.SwitchWindow(new ListWindow());
-        this.SwitchPopUp(new PopUp("Title")); //change
+        this.SwitchPopUp(new EmptyMsg()); //change
     }
 
     public void HandleKey(ConsoleKeyInfo info)
     {
-        if (popUp.alive)
+        if (popUp.GetType() != typeof(EmptyMsg))
         {
             this.popUp.HandleKey(info);
         }
@@ -31,7 +31,7 @@ public class Application
     public void Draw()
     {
         this.window.Draw();
-        if (popUp.alive)
+        if (popUp.GetType() != typeof(EmptyMsg))
         {
             this.popUp.Draw();
         }
@@ -48,7 +48,6 @@ public class Application
     {
         popUp.Application = this; //acces to object above
         this.popUp = popUp;
-        popUp.alive = false; //temp - TODO: del
 
         //Console.Clear();
     }

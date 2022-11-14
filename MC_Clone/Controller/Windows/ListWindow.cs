@@ -59,11 +59,10 @@ public class ListWindow : Window
         FilesService service = new FilesService(Config.FILE);
 
         int paneY = 1;
-        FilePanel pane1 = new FilePanel(Config.Path_LeftPane, 0, paneY);
-        FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY);
+        FilePanel pane1 = new FilePanel(this,Application, Config.Path_LeftPane, 0, paneY);
+        FilePanel pane2 = new FilePanel(this,Application, Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
-        //pane1.Path_;
         
         string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         footer = new Footer(labels);
@@ -99,9 +98,13 @@ public class ListWindow : Window
     {
         this.Application.SwitchWindow(new EditWindow(index));
     }
+    public void PopUp_Switch(PopUp msg)
+    {
+        this.Application.SwitchPopUp(msg);
+    }
     private void PopUp_Selected(PopUp popUp)
     {
-        //this.Application.SwitchPopUp(popUp);
+        this.Application.SwitchPopUp(popUp);
     }
 
     public override void Draw()
@@ -122,6 +125,11 @@ public class ListWindow : Window
         {
             ChangeActivePanel();
         }
+        //if (info.Key == ConsoleKey.F1) //testing
+        //{
+        //    Application.SwitchPopUp(new ErrorMsg()); //works
+        //    //PopUp_Selected(new ErrorMsg()); //works
+        //}
 
         ActivePanel().HandleKey(info);
     }
