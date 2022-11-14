@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MC_Clone;
-
+namespace Lab_PopUp;
 public class Button : IComponent
 {
     public event Action Clicked;
@@ -19,7 +19,8 @@ public class Button : IComponent
         int asscentLetters = 1;
 
         Console.Write("[ ");
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.Blue;
+
         Console.Write(this.Title.Substring(0, asscentLetters));
         Console.ForegroundColor = a;
         Console.Write(this.Title.Substring(asscentLetters, this.Title.Length - asscentLetters));

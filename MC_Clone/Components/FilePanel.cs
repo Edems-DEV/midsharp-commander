@@ -4,6 +4,9 @@ namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
+    bool PopUp = false;
+    PopUp a;
+
     public event Action<int> RowSelected;
 
     FileManager FM;
@@ -143,6 +146,12 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
+        if (PopUp)
+        {
+            a.HandleKey(info);
+            PopUp = a.alive;
+            return;
+        }
         switch (info.Key)
         {
             //---------UPDATE---------
@@ -171,7 +180,9 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                Drives();
+                a = PopUpFactory.Move();
+                PopUp = true;
+                //Drives();
                 break;
             case ConsoleKey.F2:
                 CreateFile();
@@ -209,6 +220,11 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
+        if (PopUp) //second instance of panel still blink
+        {
+            a.Draw();
+            return;
+        }
         ImportRows(); //update rows
         List<int> widths = Widths();
         UpdateMaxLengths();
@@ -246,7 +262,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = Y;
+        y_temp = Y;   
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
@@ -545,7 +561,8 @@ public class FilePanel : IComponent
         if (IsDiscs)
             return;
         string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        FM.CreateFile(Path_, fileName);
+        //PopUpFactory.Move();
+        FM.MkFile(Path_, fileName);
         RestartPanel();
     }
     private void View()
@@ -569,7 +586,8 @@ public class FilePanel : IComponent
     private void RenMov()
     {
         string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        FM.RenMov(destPath, GetActiveObject());
+        string newName = this.AksName("Rename: "); //TODO: change to popUp
+        FM.RenMov(destPath, GetActiveObject(), newName); //PopUpFactory.Move().Line[1]
         SetLists(Path_);
         RestartPanel();
     }
@@ -595,6 +613,11 @@ public class FilePanel : IComponent
         } while (name.Length == 0);
         Console.CursorVisible = false;
         return name;
+    }
+    private void PopUpPrep() 
+    {
+        PopUp = true;
+        a = PopUpFactory.Move();
     }
 
     private void ShowMessage(string message)

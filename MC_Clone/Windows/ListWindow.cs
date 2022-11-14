@@ -53,7 +53,7 @@ public class ListWindow : Window
     {
         return _panels[_activePanelIndex];
     }
-
+    
     public ListWindow()
     {
         winWidth = Console.BufferWidth / 2;

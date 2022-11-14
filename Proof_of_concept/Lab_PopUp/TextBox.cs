@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MC_Clone;
-
+namespace Lab_PopUp;
 public class TextBox : IComponent
 {
-    public string Label { get; set; } = "";
+    public string Label { get; set; } = "Default Label";
 
-    public string Value { get; set; } = "";
+    public string Value { get; set; } = "Default ˇVALUE";
 
     public int Size { get; set; } = 20;
 
     public void Draw()
     {
-        Console.WriteLine(this.Label);
-        Console.WriteLine("_" + this.Value.PadRight(this.Size, '_'));
-        Console.WriteLine();
+        Console.Write(Label);
+        Console.Write("_" + Value.PadRight(Size, '_'));
     }
-    
-    public int Draw(int x, int y)
+    public int  Draw(int x, int y)
     {
         ConsoleColor oldTextC = Console.ForegroundColor;
         ConsoleColor oldBackC = Console.BackgroundColor;
@@ -30,7 +27,7 @@ public class TextBox : IComponent
 
         Console.SetCursorPosition(x, y);
         Console.Write(Label);
-        Console.ForegroundColor = ConsoleColor.Black; //Config.PopUp_ForeGroud;
+        Console.ForegroundColor = Config.PopUp_ForeGroud;
         Console.BackgroundColor = ConsoleColor.Cyan; //TODO: Change me to a config value //static painter class
         Console.SetCursorPosition(x, y += 1);
         Console.Write("_" + Value.PadRight(Size, '_'));
@@ -40,7 +37,7 @@ public class TextBox : IComponent
         int ySize = 2;
         return ySize;
     }
-    
+
     public void HandleKey(ConsoleKeyInfo info)
     {
         if (info.Key == ConsoleKey.Backspace)
