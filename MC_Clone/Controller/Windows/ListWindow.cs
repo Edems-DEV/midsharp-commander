@@ -102,6 +102,10 @@ public class ListWindow : Window
     {
         this.Application.SwitchPopUp(msg);
     }
+    public void PopUp_Switch()
+    {
+        this.Application.SwitchPopUp(new ErrorMsg());
+    }
     private void PopUp_Selected(PopUp popUp)
     {
         this.Application.SwitchPopUp(popUp);

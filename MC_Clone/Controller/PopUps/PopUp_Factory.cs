@@ -55,7 +55,7 @@ public class MoveMsg : PopUp
     private TextBox input;
     private FileSystemInfo file;
 
-    public MoveMsg(FileSystemInfo file) : base()
+    public MoveMsg(FileSystemInfo file) //: base()
     {
         this.file = file;
 
