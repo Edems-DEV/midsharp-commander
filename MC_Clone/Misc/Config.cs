@@ -99,9 +99,6 @@ public class Config
     public static ConsoleColor Error_Foreground = ConsoleColor.White;
     public static ConsoleColor Error_Accent     = ConsoleColor.DarkYellow;
 
-
-
-
     public static void ChangeColorScheme(ConsoleColor[] colors) ////static cannot be changed ? 
     {
         Primary_BackgroundColor = ConsoleColor.Black; //colors[0];
