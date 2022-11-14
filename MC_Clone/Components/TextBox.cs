@@ -21,7 +21,7 @@ public class TextBox : IComponent
         Console.WriteLine("_" + this.Value.PadRight(this.Size, '_'));
         Console.WriteLine();
     }
-
+    
     public int Draw(int x, int y)
     {
         ConsoleColor oldTextC = Console.ForegroundColor;

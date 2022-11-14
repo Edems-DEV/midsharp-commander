@@ -6,6 +6,7 @@ public class FilePanel : IComponent
 {
     bool PopUp = false;
     PopUp a;
+
     public event Action<int> RowSelected;
 
     FileManager FM;
@@ -224,7 +225,6 @@ public class FilePanel : IComponent
             a.Draw();
             return;
         }
-
         ImportRows(); //update rows
         List<int> widths = Widths();
         UpdateMaxLengths();
