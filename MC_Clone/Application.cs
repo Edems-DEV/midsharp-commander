@@ -8,6 +8,7 @@ namespace MC_Clone;
 public class Application
 {
     private Window window;
+    private PopUp popUp;
 
     public Application()
     {
@@ -16,19 +17,37 @@ public class Application
 
     public void HandleKey(ConsoleKeyInfo info)
     {
-        this.window.HandleKey(info);
+        if (popUp.alive)
+        {
+            this.popUp.HandleKey(info);
+        }
+        else
+        {
+            this.window.HandleKey(info);
+        }
     }
 
     public void Draw()
     {
         this.window.Draw();
+        if (popUp.alive)
+        {
+            this.popUp.Draw();
+        }
     }
 
     public void SwitchWindow(Window window)
     {
-        window.Application = this;
+        window.Application = this; //acces to parent.Object above
         this.window = window;
 
         Console.Clear();
     }
+    //public void SwitchPopUp(PopUp popUp)
+    //{
+    //    popUp.Application = this; //acces to object above
+    //    this.popUp = popUp;
+
+    //    Console.Clear();
+    //}
 }

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\EditW\" />
+    <Folder Include="View\Components\EditW\" />
   </ItemGroup>
 
 </Project>
