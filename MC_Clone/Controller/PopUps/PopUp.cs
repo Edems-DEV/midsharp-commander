@@ -42,10 +42,8 @@ internal class PopUpFactory
     }
 }
 
-internal class PopUp : IComponent //new window?
+public class PopUp : Window //?: Window -> have same needs
 {
-    public Application Application { get; set; }
-
     int selected = 0;
     public bool alive = true;
 
@@ -108,27 +106,19 @@ internal class PopUp : IComponent //new window?
     {
         Setup(title, width);
         Info = info;
-        //Loop();
     }
     public PopUp(string title, List<string> info, int width = 50)
     {
         Setup(title, width);
         details = info;
-        //Loop();
     }
     #endregion
 
-    public void Loop()
-    {
-        while (alive)
-        {
-            Draw();
-        }
-    }
-    public void HandleKey(ConsoleKeyInfo info)
+    public override void HandleKey(ConsoleKeyInfo info)
     {
         switch (info.Key)
         {
+            case ConsoleKey.Tab:
             case ConsoleKey.RightArrow:
             case ConsoleKey.DownArrow:
                 selected = (selected + 1) % components.Count;
@@ -144,21 +134,7 @@ internal class PopUp : IComponent //new window?
 
         components[selected].HandleKey(info);
     }
-
-    private void Editing() //del this (concept)
-    {
-        bool active = true;
-        while (active)
-        {
-            while (!Console.KeyAvailable)
-            {
-                //same as program
-            }
-            ConsoleKeyInfo info = Console.ReadKey();
-        }
-    }
-
-    public void Draw()
+    public override void Draw()
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
 

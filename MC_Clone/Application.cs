@@ -13,6 +13,7 @@ public class Application
     public Application()
     {
         this.SwitchWindow(new ListWindow());
+        this.SwitchPopUp(new PopUp("Title")); //change
     }
 
     public void HandleKey(ConsoleKeyInfo info)
@@ -43,11 +44,12 @@ public class Application
 
         Console.Clear();
     }
-    //public void SwitchPopUp(PopUp popUp)
-    //{
-    //    popUp.Application = this; //acces to object above
-    //    this.popUp = popUp;
+    public void SwitchPopUp(PopUp popUp)
+    {
+        popUp.Application = this; //acces to object above
+        this.popUp = popUp;
+        popUp.alive = false; //temp - TODO: del
 
-    //    Console.Clear();
-    //}
+        //Console.Clear();
+    }
 }
