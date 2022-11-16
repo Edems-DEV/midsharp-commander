@@ -38,8 +38,8 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = @"C:\Users\Dolanskyadam\Desktop\ExampleFolde"; //change to dynamic desktop path
-    public const string Path_RightPane = @"C:\Users\Dolanskyadam\Desktop";
+    public const string Path_LeftPane = @"C:\Users\root\Desktop\Example Folder"; //change to dynamic desktop path
+    public const string Path_RightPane = @".";
 
     //------------------Color schemes------------------
     public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,
@@ -84,20 +84,15 @@ public class Config
     public static ConsoleColor Cout_BackgroundColor   = ConsoleColor.Black;
     public static ConsoleColor Cout_ForegroundColor   = ConsoleColor.White;
 
-    public static ConsoleColor MsgBoxBackgroundColor           = ConsoleColor.White;
-    public static ConsoleColor MsgBoxForegroundColor           = ConsoleColor.Black;
-
-
-    public static ConsoleColor AdditionalMsgBoxBackgroundColor = ConsoleColor.Red;
-    public static ConsoleColor TextBoxBackgroundColor          = ConsoleColor.Gray;
-
     public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
     public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;
-    public static ConsoleColor PopUp_Accent    = ConsoleColor.Cyan;
+    public static ConsoleColor PopUp_Accent    = ConsoleColor.DarkBlue;
+    public static ConsoleColor PopUp_ACTIVE    = ConsoleColor.Blue;
 
-    public static ConsoleColor Error_Backgroud  = ConsoleColor.Red;
+    public static ConsoleColor Error_Backgroud  = ConsoleColor.DarkRed;
     public static ConsoleColor Error_Foreground = ConsoleColor.White;
-    public static ConsoleColor Error_Accent     = ConsoleColor.DarkYellow;
+    public static ConsoleColor Error_Accent     = ConsoleColor.Yellow;
+    public static ConsoleColor Error_ACTIVE     = ConsoleColor.Black;
 
 
 

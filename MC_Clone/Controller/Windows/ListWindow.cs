@@ -105,7 +105,7 @@ public class ListWindow : Window
     }
     public void PopUp_Switch()
     {
-        this.Application.SwitchPopUp(new ErrorMsg("\"/home/idk/Desktop/Bob/ChangeMe\" is not regular file"));
+        this.Application.SwitchPopUp(new ErrorMsg("  404 error :)  "));
     }
     private void PopUp_Selected(PopUp popUp)
     {
@@ -130,11 +130,6 @@ public class ListWindow : Window
         {
             ChangeActivePanel();
         }
-        //if (info.Key == ConsoleKey.F1) //testing
-        //{
-        //    Application.SwitchPopUp(new ErrorMsg()); //works
-        //    //PopUp_Selected(new ErrorMsg()); //works
-        //}
 
         ActivePanel().HandleKey(info);
     }

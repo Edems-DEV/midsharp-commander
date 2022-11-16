@@ -12,6 +12,12 @@ public class Button : IComponent
 
     public string Title { get; set; } = "";
 
+    public ConsoleColor asccentColor = Config.PopUp_Accent;
+    public Button(){}
+    public Button(ConsoleColor asccentColor)
+    {
+        this.asccentColor = asccentColor;
+    }
     public void Draw()
     {
         //Console.WriteLine($"[ {this.Title} ]");
@@ -19,7 +25,7 @@ public class Button : IComponent
         int asscentLetters = 1;
 
         Console.Write("[ ");
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = asccentColor;
         
         Console.Write(this.Title.Substring(0, asscentLetters));
         Console.ForegroundColor = a;

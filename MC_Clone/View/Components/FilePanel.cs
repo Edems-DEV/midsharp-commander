@@ -176,13 +176,7 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                //Application.SwitchPopUp(new ErrorMsg()); //why Application - Object reference not set to an instance of an object.
-                //throw new Exception(Application.test);
-
-                listWindow.PopUp_Switch(new DeleteMsg(GetActiveObject())); //new ErrorMsg()
-                //RestartPanel(); // runs imminently after -> doesnt work
-
-                //Drives();
+                Drives();
                 break;
             case ConsoleKey.F2:
                 CreateFile();

@@ -13,6 +13,7 @@ public abstract class PopUp_Red : PopUp //TODO: find better name
         BackgroundColor = Config.Error_Backgroud;
         ForegroundColor = Config.Error_Foreground;
         AccentColor = Config.Error_Accent;
+        Selected = Config.Error_ACTIVE;
     }
 }
 
@@ -42,6 +43,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
     public ConsoleColor BackgroundColor = Config.PopUp_Backgroud;
     public ConsoleColor ForegroundColor = Config.PopUp_ForeGroud;
     public ConsoleColor AccentColor = Config.PopUp_Accent;
+    public ConsoleColor Selected = Config.PopUp_ACTIVE;
     #endregion
     #region Property
     public int X
@@ -129,11 +131,29 @@ public abstract class PopUp : Window //?: Window -> have same needs
         btnOk.Clicked += BtnOk_Clicked;
         components.Add(btnOk);
     }
+    
     protected virtual void BtnOk_Clicked()
     {
         
     }
 
+    #region Error specific
+    public void Add_CancelBtn(ConsoleColor AsscentColor)
+    {
+        Button btnCancel = new Button() { Title = "Cancel" };
+        btnCancel.Clicked += BtnCancel_Clicked;
+        btnCancel.asccentColor = AsscentColor;
+        components.Add(btnCancel);
+    }
+    public void Add_BtnOk(ConsoleColor AsscentColor)
+    {
+        Button btnOk = new Button() { Title = "OK" };
+        btnOk.Clicked += BtnOk_Clicked;
+        btnOk.asccentColor = AsscentColor;
+        components.Add(btnOk);
+    }
+    #endregion
+    
     public override void Draw()
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
@@ -276,7 +296,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
             textbox.Size = width - X_DeadSpace;
             if (selected == i)
             {
-                Console.BackgroundColor = AccentColor;
+                Console.BackgroundColor = Selected;
             }
             y_center += textbox.Draw(XCenter(width) + 2, y_center);
         }
@@ -306,7 +326,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
         {
             if (selected == i)
             {
-                Console.BackgroundColor = AccentColor;
+                Console.BackgroundColor = Selected;
             }
             button.Draw();
             Console.BackgroundColor = BackgroundColor;

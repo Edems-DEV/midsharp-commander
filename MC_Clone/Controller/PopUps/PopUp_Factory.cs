@@ -132,8 +132,9 @@ public class DeleteMsg : PopUp_Red
         this.file = file;
 
         title = "Delete";
-        Add_BtnOk();
-        Add_CancelBtn();
+        details.Add($"\"{file.Name}\"");
+        Add_BtnOk(Config.Error_Accent);
+        Add_CancelBtn(Config.Error_Accent);
     }
 
     protected override void BtnOk_Clicked()
@@ -148,8 +149,12 @@ public class ErrorMsg : PopUp_Red
     public ErrorMsg(string message)
     {   
         title = "Error";
-        details.Add(message);
+        if (message.Length > 0)
+        {
+            details.Add(message);
+        }
         Button btnDismiss = new Button() { Title = "Dismiss" };
+        btnDismiss.asccentColor = Config.PopUp_Accent;
         btnDismiss.Clicked += BtnCancel_Clicked;
         components.Add(btnDismiss);
     }
