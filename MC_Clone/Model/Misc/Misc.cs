@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace MC_Clone;
 internal class Misc //koncepty
@@ -33,6 +28,17 @@ internal class Misc //koncepty
         }
         string newPath = string.Join("\\", pathList);
         return newPath;
+    }
+    
+    public static bool IsIlegalChar(ConsoleKeyInfo info)
+    {
+        switch (info.Key)
+        {
+            case ConsoleKey.Enter:
+            case ConsoleKey.Tab:
+                return true;
+        }
+        return false;
     }
 }
 

@@ -54,7 +54,10 @@ public class TextBox : IComponent
         }
         else
         {
-            this.Value += info.KeyChar;
+            if (!Misc.IsIlegalChar(info))
+            {
+                this.Value += info.KeyChar;
+            }
         }
     }
 }
