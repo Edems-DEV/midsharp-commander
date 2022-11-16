@@ -107,6 +107,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
     {
         Button btnCancel = new Button() { Title = "Cancel" };
         btnCancel.Clicked += BtnCancel_Clicked;
+        components.Add(btnCancel);
     }
     public void BtnCancel_Clicked()
     {
@@ -116,6 +117,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
     {
         Button btnOk = new Button() { Title = "OK" };
         btnOk.Clicked += BtnOk_Clicked;
+        components.Add(btnOk);
     }
     protected virtual void BtnOk_Clicked()
     {

@@ -42,6 +42,13 @@ internal class PopUp_Factory
 
         //return p;
     }
+
+    //private static void SetError()
+    //{
+    //    BackgroundColor = Config.Error_Backgroud;
+    //    ForegroundColor = Config.Error_Foreground;
+    //    AccentColor = Config.Error_Accent;
+    //}
 }
 
 public class EmptyMsg : PopUp
@@ -74,6 +81,32 @@ public class MoveMsg : PopUp
     }
 }
 
+public class DeleteMsg : PopUp
+{
+    private FileManager FM = new FileManager();
+    private TextBox input;
+    private FileSystemInfo file;
+
+    public DeleteMsg(FileSystemInfo file) //: base()
+    {
+        this.file = file;
+        BackgroundColor = Config.Error_Backgroud;
+        ForegroundColor = Config.Error_Foreground;
+        AccentColor = Config.Error_Accent;
+
+        title = "Delete";
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        FM.Delete(file);
+        BtnCancel_Clicked();
+    }
+}
+
 public class ErrorMsg : PopUp
 {
     public ErrorMsg()
@@ -89,3 +122,5 @@ public class ErrorMsg : PopUp
         components.Add(btnDismiss);
     }
 }
+
+

@@ -10,6 +10,7 @@ namespace MC_Clone;
 
 public class ListWindow : Window
 {
+    //'Application Application' created in Window, set in App
     readonly List<FilePanel> _panels = new List<FilePanel>();
     private int _activePanelIndex;
     public delegate void OnKey(ConsoleKeyInfo key);

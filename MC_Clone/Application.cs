@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Application
 {
-    private Window window;
+    private Window window; //stack oken
     private PopUp popUp;
+
+    public string test = "aaaa";
 
     public Application()
     {

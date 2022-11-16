@@ -1,14 +1,10 @@
-﻿using System.ComponentModel;
-
-namespace MC_Clone;
+﻿namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
-    public ListWindow a { get; set; }
+    public ListWindow listWindow { get; set; }
     public Application Application { get; set; }
 
-    bool PopUp = false;
-    PopUp msg;
     public event Action<int> RowSelected;
     
 
@@ -141,7 +137,7 @@ public class FilePanel : IComponent
 
     public FilePanel(ListWindow ListWindow, Application Application, string path, int x = 0, int y = 0)
     {
-        this.a = ListWindow;
+        this.listWindow = ListWindow;
         this.Application = Application;
         Path_ = path;
         Start(x, y);
@@ -152,12 +148,6 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
-        if (PopUp)
-        {
-            msg.HandleKey(info);
-            PopUp = msg.alive;
-            return;
-        }
         switch (info.Key)
         {
             //---------UPDATE---------
@@ -186,8 +176,12 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                Application.SwitchPopUp(new ErrorMsg());
-                //a.PopUp_Switch(new ErrorMsg()); //new ErrorMsg()
+                //Application.SwitchPopUp(new ErrorMsg()); //why Application - Object reference not set to an instance of an object.
+                //throw new Exception(Application.test);
+
+                listWindow.PopUp_Switch(new DeleteMsg(GetActiveObject())); //new ErrorMsg()
+                //RestartPanel(); // runs imminently after -> doesnt work
+
                 //Drives();
                 break;
             case ConsoleKey.F2:
@@ -226,13 +220,10 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        if (PopUp) //second instance of panel still blink
-        {
-            msg.Draw();
-            return;
-        }
-
+        if (!IsDiscs)
+            SetLists(_path); //TODO: change me (draw no -> logic)
         ImportRows(); //update rows
+
         List<int> widths = Widths();
         UpdateMaxLengths();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
