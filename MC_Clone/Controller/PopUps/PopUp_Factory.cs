@@ -7,49 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class PopUp_Factory
-{
-    static public void Error_Dismiss()
-    {
-        //PopUp p = new PopUp("Close file", "\"/Home/root/\" is not a regular file");
-        //p.components.Add(new Button() { Title = "Dismiss" });
-        //p.BackgroundColor = Config.Error_Backgroud;
-        //p.ForegroundColor = Config.Error_Foreground;
-        //p.AccentColor = Config.Error_Accent;
-        //return p;
-    }
-
-    static public void Error_Delete()
-    {
-        List<string> Lines = new List<string>();
-        Lines.Add("Delete file");
-        Lines.Add("\"ChangeMe.txt\"?");
-        //PopUp p = new PopUp("Delete", Lines);
-        //p.components.Add(new Button() { Title = "Yes" });
-        //p.components.Add(new Button() { Title = "no" });
-        //p.BackgroundColor = Config.Error_Backgroud;
-        //p.ForegroundColor = Config.Error_Foreground;
-        //p.AccentColor = Config.Error_Accent;
-        //return p;
-    }
-
-    static public void Move()
-    {
-        //PopUp p = new PopUp("Move", "File: {filename}"); //optimize for empty details
-        //p.components.Add(new TextBox() { Label = "Destination Path:", Value = @"C:\Users\root\Desktop\Example" }); //TODO: path truncate
-        //p.components.Add(new Button() { Title = "Ok" });
-        //p.components.Add(new Button() { Title = "Cancel" });
-
-        //return p;
-    }
-
-    //private static void SetError()
-    //{
-    //    BackgroundColor = Config.Error_Backgroud;
-    //    ForegroundColor = Config.Error_Foreground;
-    //    AccentColor = Config.Error_Accent;
-    //}
-}
+internal class PopUp_Factory{}
 
 public class EmptyMsg : PopUp
 {
@@ -119,7 +77,7 @@ public class CopyMsg : PopUp
         title = "Copy";
         details.Add($"Copy: \"{file.Name}\"");
         //details.Add($"from: \"{Truncate.Path(file.FullName)}\"");
-        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.Name) }; //destPath
+        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.FullName, 2) }; //destPath
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
@@ -147,7 +105,7 @@ public class MoveMsg : PopUp
 
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
-        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.Name) };
+        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.FullName, 2) };
         input2 = new TextBox() { Label = "Rename to:", Value = file.Name };
         components.Add(input);
         components.Add(input2);

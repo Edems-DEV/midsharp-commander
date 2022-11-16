@@ -15,10 +15,12 @@ public class TextBox : IComponent
 
     public int Size { get; set; } = 20;
 
+    public char PadChar { get; set; } = ' ';
+
     public void Draw()
     {
         Console.WriteLine(this.Label);
-        Console.WriteLine("_" + this.Value.PadRight(this.Size, '_'));
+        Console.WriteLine(PadChar + this.Value.PadRight(this.Size, PadChar));
         Console.WriteLine();
     }
 
@@ -33,7 +35,7 @@ public class TextBox : IComponent
         Console.ForegroundColor = ConsoleColor.Black; //Config.PopUp_ForeGroud;
         Console.BackgroundColor = ConsoleColor.Cyan; //TODO: Change me to a config value //static painter class
         Console.SetCursorPosition(x, y += 1);
-        Console.Write("_" + Value.PadRight(Size, '_'));
+        Console.Write(PadChar + Value.PadRight(Size, PadChar));
 
         Console.ForegroundColor = oldTextC;
         Console.BackgroundColor = oldBackC;

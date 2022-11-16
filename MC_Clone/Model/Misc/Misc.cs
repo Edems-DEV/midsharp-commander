@@ -24,12 +24,15 @@ internal class Misc //koncepty
         Console.SetCursorPosition(0, 0);
     }
 
-    public static string GetPath(string path)
+    public static string GetPath(string path, int cut = 1)
     {
-        //string oldPath = file.FullName.Remove(file.FullName.Length - file.Name.Length, file.Name.Length);
-        string[] pathArray = path.Split('\\');
-        string pathName = pathArray[pathArray.Length - 1];
-        return pathName;
+        List<string> pathList = path.Split('\\').ToList();
+        for (int i = 0; i < cut; i++)
+        {
+            pathList.RemoveAt(pathList.Count - 1);
+        }
+        string newPath = string.Join("\\", pathList);
+        return newPath;
     }
 }
 
