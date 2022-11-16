@@ -32,7 +32,8 @@ public class Application
 
     public void Draw()
     {
-        this.window.Draw();
+        this.window.Draw(); //cant be in else -> on resize backgroud is not redrawn
+
         if (popUp.GetType() != typeof(EmptyMsg))
         {
             this.popUp.Draw();

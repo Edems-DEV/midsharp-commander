@@ -23,6 +23,14 @@ internal class Misc //koncepty
         Console.Clear();
         Console.SetCursorPosition(0, 0);
     }
+
+    public static string GetPath(string path)
+    {
+        //string oldPath = file.FullName.Remove(file.FullName.Length - file.Name.Length, file.Name.Length);
+        string[] pathArray = path.Split('\\');
+        string pathName = pathArray[pathArray.Length - 1];
+        return pathName;
+    }
 }
 
 

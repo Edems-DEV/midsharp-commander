@@ -8,6 +8,33 @@ namespace MC_Clone;
 
 internal static class Truncate
 {
+    public static string Path(string ts, int maxLength = 40, string trun = @"~\") //TODO: finish it
+    {
+        if (ts.Length < maxLength)
+            return ts;
+        
+        List<string> PathNodes = ts.Split('\\').ToList();
+
+        string leftTruncated = "";
+        string disk = PathNodes[0] + @"\";
+        PathNodes.RemoveAt(0); //disk
+        PathNodes.RemoveAt(PathNodes.Count - 1); //file
+
+        string rightTruncated = "";
+
+        PathNodes.Reverse();
+        for (int i = PathNodes.Count - 1; i >= 0; i--)
+        {
+            if (i == 3) { leftTruncated = disk; continue; }
+            if (maxLength > rightTruncated.Length + leftTruncated.Length + PathNodes[i].Length + trun.Length)
+                rightTruncated += PathNodes[i] + @"\";
+            else { break; }
+        }
+        
+        string truncated = leftTruncated + trun + rightTruncated;
+        return truncated;
+    }
+    
     public static string Text(string ts, int maxLength, string trun = "~")
     {
         if (ts.Length < maxLength)

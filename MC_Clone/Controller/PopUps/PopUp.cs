@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace MC_Clone;
 
+public abstract class PopUp_Red : PopUp //TODO: find better name
+{
+    public PopUp_Red()
+    {
+        BackgroundColor = Config.Error_Backgroud;
+        ForegroundColor = Config.Error_Foreground;
+        AccentColor = Config.Error_Accent;
+    }
+}
+
 public abstract class PopUp : Window //?: Window -> have same needs
 {
     public int selected = 0;
@@ -408,3 +418,4 @@ public abstract class PopUp : Window //?: Window -> have same needs
         return maxWidth;
     }
 }
+

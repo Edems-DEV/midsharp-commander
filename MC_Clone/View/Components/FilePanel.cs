@@ -204,6 +204,7 @@ public class FilePanel : IComponent
             case ConsoleKey.F7:
                 MkDir();
                 break;
+            case ConsoleKey.Delete:
             case ConsoleKey.F8:
                 Delete();
                 break;
@@ -558,10 +559,7 @@ public class FilePanel : IComponent
     {
         if (IsDiscs)
             return;
-        string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        //PopUpFactory.Move();
-        FM.MkFile(Path_, fileName);
-        RestartPanel();
+        listWindow.PopUp_Switch(new CreateFileMsg(Path_));
     }
     private void View()
     {
@@ -572,71 +570,24 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
-        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        FM.Copy(destPath, GetActiveObject());
-        RestartPanel();
-    }
-    private void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
-    {
-        FM.CopyDirectory(sourceDirName, destDirName);
-        RestartPanel();
+        listWindow.PopUp_Switch(new CopyMsg(GetActiveObject()));
     }
     private void RenMov()
     {
-        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        string newName = this.AksName("Rename: "); //TODO: change to popUp
-        FM.RenMov(destPath, GetActiveObject(), newName); //PopUpFactory.Move().Line[1]
-        SetLists(Path_); //why?
-        RestartPanel();
+        listWindow.PopUp_Switch(new MoveMsg(GetActiveObject()));
     }
     private void MkDir()
     {
         if (IsDiscs)
             return;
-        string destPath = Path_;
-        string dirName = this.AksName("Enter the folder name: "); //TODO: change to popUp
-        FM.MkDir(destPath, dirName);
-        RestartPanel();
+        listWindow.PopUp_Switch(new CreateFolderMsg(Path_));
     }
-
-    #region lidlPopUp
-    private string AksName(string message)
-    {
-        string name;
-        Console.CursorVisible = true;
-        do
-        {
-            this.ShowMessage(message);
-            name = Console.ReadLine();
-        } while (name.Length == 0);
-        Console.CursorVisible = false;
-        return name;
-    }
-
-    private void ShowMessage(string message)
-    {
-        PrintString(message, 0, Console.WindowHeight - 2, Config.MsgBoxForegroundColor, Config.MsgBoxBackgroundColor);
-    }
-
-    public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)
-    {
-        Console.ForegroundColor = text;
-        Console.BackgroundColor = background;
-
-        Console.SetCursorPosition(X, Y);
-        Console.Write(str);
-
-        Console.ForegroundColor = Config.MsgBoxForegroundColor;
-        Console.BackgroundColor = Config.MsgBoxBackgroundColor;
-    }
-    #endregion
     private void Delete()
     {
         if (IsDiscs)
             return;
-        FM.Delete(GetActiveObject());
-        Selected -= 1;
-        RestartPanel();
+        listWindow.PopUp_Switch(new DeleteMsg(GetActiveObject()));
+        Selected -= 1; //move before deleted (backgroud still updates)
     }
     private void PullDn()
     {

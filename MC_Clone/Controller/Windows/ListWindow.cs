@@ -105,7 +105,7 @@ public class ListWindow : Window
     }
     public void PopUp_Switch()
     {
-        this.Application.SwitchPopUp(new ErrorMsg());
+        this.Application.SwitchPopUp(new ErrorMsg("\"/home/idk/Desktop/Bob/ChangeMe\" is not regular file"));
     }
     private void PopUp_Selected(PopUp popUp)
     {
