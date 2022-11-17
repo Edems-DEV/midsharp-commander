@@ -545,9 +545,9 @@ public class FilePanel : IComponent
     #region FunctionKeys
     private void Drives() //Help
     {
-        SetDiscs();
-        ImportRows();
-        Draw();
+        //SetDiscs();
+        //RefreshPanel();
+        Application.SwitchPopUp(new ErrorMsg("I can acces App from FilePanel"));
     }
     private void CreateFile() //Menu
     {

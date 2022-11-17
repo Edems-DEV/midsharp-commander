@@ -14,7 +14,7 @@ public class Application
 
     public Application()
     {
-        this.SwitchWindow(new ListWindow());
+        this.SwitchWindow(new ListWindow(this));
         this.SwitchPopUp(new EmptyMsg()); //change
     }
 

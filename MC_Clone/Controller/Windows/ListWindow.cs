@@ -54,21 +54,22 @@ public class ListWindow : Window
     {
         return _panels[_activePanelIndex];
     }
-    public ListWindow()
+
+    private void Start()
     {
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
 
         int paneY = 1;
-        FilePanel pane1 = new FilePanel(this,Application, Config.Path_LeftPane, 0, paneY);
-        FilePanel pane2 = new FilePanel(this,Application, Config.Path_RightPane, winWidth, paneY);
+        FilePanel pane1 = new FilePanel(this, Application, Config.Path_LeftPane, 0, paneY);
+        FilePanel pane2 = new FilePanel(this, Application, Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
-        
+
         string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         footer = new Footer(labels);
         MenuBar = new MenuBar();
-        
+
         foreach (var pane in _panels)
         {
             pane.ImportRows(pane.Path_); //useless?
@@ -78,6 +79,16 @@ public class ListWindow : Window
         _activePanelIndex = 0;
         ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
+    }
+    
+    public ListWindow(Application Application)
+    {
+        this.Application = Application;
+        Start();
+    }
+    public ListWindow()
+    {
+        Start();
     }
 
     public void ChangeActivePanel()
