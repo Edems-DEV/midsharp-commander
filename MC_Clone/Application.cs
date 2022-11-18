@@ -8,16 +8,18 @@ namespace MC_Clone;
 public class Application
 {
     private Window window; //stack oken
-    private PopUp popUp;
+    public PopUp popUp;// = new EmptyMsg();
     public EventPublisher WinSize = new EventPublisher();
-
-    public string test = "aaaa";
+    bool a = true;
 
     public Application()
     {
         this.SwitchWindow(new ListWindow(this));
-        this.SwitchPopUp(new EmptyMsg()); //change
-        //WinSize = new EventPublisher();
+        this.SwitchPopUp(new EmptyMsg());
+        WinSize.Application = this;
+
+        WinSize.OnWindowSizeChange += window.Draw;
+        WinSize.OnWindowSizeChange += popUp.Draw; //use SwitchPopUp obeject (why?)
     }
 
     public void HandleKey(ConsoleKeyInfo info)
@@ -33,9 +35,7 @@ public class Application
     }
 
     public void Draw()
-    {
-        
-
+    {   
         if (popUp.GetType() != typeof(EmptyMsg))
         {
             this.popUp.Draw();
@@ -68,13 +68,22 @@ public class EventPublisher
     int x;
     int y;
 
+    int MsgStartSize = 0;
+
+    public Application Application { get; set; }
+
     public EventPublisher()
     {
         x = Console.WindowWidth;
         y = Console.WindowHeight;
     }
 
-    public bool Check()
+    public bool CheckIfSizeChanged()
+    {
+        CheckMsgSize();
+        return CheckWinSize();
+    }
+    public bool CheckWinSize()
     {
         if (x != Console.WindowWidth || y != Console.WindowHeight)
         {
@@ -84,5 +93,21 @@ public class EventPublisher
             return false;
         }
         return true;
+    }
+
+    public void CheckMsgSize()
+    {
+        if (Application.popUp.GetType() == typeof(EmptyMsg)) { return; }
+
+        if (Application.popUp.width < MsgStartSize)
+        {
+            OnWindowSizeChange?.Invoke(); // -> it switch to empty msg (WHY????)
+            //default size -> ok
+            //one char larger + backspace -> empty msg
+            //right size -> ok again
+            //problem -> use SwitchPopUp obeject on backspace (why?)
+        }
+
+        MsgStartSize = Application.popUp.width;
     }
 }

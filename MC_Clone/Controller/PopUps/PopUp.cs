@@ -30,11 +30,12 @@ public abstract class PopUp : Window //?: Window -> have same needs
     public int y_center = 0; // |
 
     public int height = 2 + 8 + 8;
-    public int width = 70;
+    public int width = 0;
+    private int maxWidth = Console.WindowWidth / 3;
 
     public int X_DeadSpace = 5;
 
-    public string title = "Title";
+    public string title = "";
     public List<string> details = new List<string>();
     protected List<IComponent> components = new List<IComponent>();
     //public List<Button> buttons = new List<Button>();
@@ -44,6 +45,8 @@ public abstract class PopUp : Window //?: Window -> have same needs
     public ConsoleColor ForegroundColor = Config.PopUp_ForeGroud;
     public ConsoleColor AccentColor = Config.PopUp_Accent;
     public ConsoleColor Selected = Config.PopUp_ACTIVE;
+
+    Application app;
     #endregion
     #region Property
     public int X
@@ -161,12 +164,17 @@ public abstract class PopUp : Window //?: Window -> have same needs
         bool a = true;
         if (a)
         {
-            x_center = Console.WindowWidth / 2;
+            x_center = Console.WindowWidth / 2; //each draw it update by window size
             y_center = Console.WindowHeight / 3;
             
             height = WidthCalc(); //cant be in constructor because elemets are added in run time
             width = MinWidth();
             //a = false;
+
+            if (width <= 6) //6 = empty msg width
+            {
+                return;
+            }
         }
         Console.BackgroundColor = BackgroundColor;
         int oldY = y_center;

@@ -23,7 +23,7 @@ internal class Program
 
             while (!(Console.KeyAvailable))
             {
-                sizeChanged = app.WinSize.Check(); //before 
+                sizeChanged = app.WinSize.CheckIfSizeChanged(); //before 
 
                 //Updates if window size was changed
                 if (sizeChanged)
