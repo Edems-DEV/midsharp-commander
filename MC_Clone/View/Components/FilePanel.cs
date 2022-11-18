@@ -126,7 +126,7 @@ public class FilePanel : IComponent
         y_temp = y;
         UpdateMaxLengths();
         FM = new FileManager();
-
+        Application.WinSize.OnWindowSizeChange += UpdatePanel; //set lisener for if window size changed -> update rows
     }
     public FilePanel(Application Application, int x = 0, int y = 0)
     {
@@ -217,7 +217,7 @@ public class FilePanel : IComponent
     {
         if (!IsDiscs)
             SetLists(_path); //TODO: change me (draw no -> logic)
-        ImportRows(); //update rows
+        //ImportRows(); //update rows
 
         List<int> widths = Widths();
         UpdateMaxLengths();
