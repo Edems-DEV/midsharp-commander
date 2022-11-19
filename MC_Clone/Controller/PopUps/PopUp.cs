@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MC_Clone;
+﻿namespace MC_Clone;
 
 public abstract class PopUp_Red : PopUp //TODO: find better name
 {
@@ -13,14 +7,13 @@ public abstract class PopUp_Red : PopUp //TODO: find better name
         BackgroundColor = Config.Error_Backgroud;
         ForegroundColor = Config.Error_Foreground;
         AccentColor = Config.Error_Accent;
-        Selected = Config.Error_ACTIVE;
+        Active = Config.Error_ACTIVE;
     }
 }
 
 public abstract class PopUp : Window //?: Window -> have same needs
 {
-    public int selected = 0;
-    public bool alive = true;
+    private int selected = 0;
 
     #region Atributes
     public int originalY;
@@ -44,7 +37,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
     public ConsoleColor BackgroundColor = Config.PopUp_Backgroud;
     public ConsoleColor ForegroundColor = Config.PopUp_ForeGroud;
     public ConsoleColor AccentColor = Config.PopUp_Accent;
-    public ConsoleColor Selected = Config.PopUp_ACTIVE;
+    public ConsoleColor Active = Config.PopUp_ACTIVE;
 
     Application app;
     #endregion
@@ -69,6 +62,20 @@ public abstract class PopUp : Window //?: Window -> have same needs
             {
                 details.Add(value);
             }
+        }
+    }
+
+    public int Selected
+    {
+        get { return selected; }
+        set
+        {
+            if (value < 0)
+                selected = 0;
+            else if (value >= components.Count)
+                selected = components.Count - 1;
+            else
+                selected = value;
         }
     }
     #endregion
@@ -105,18 +112,18 @@ public abstract class PopUp : Window //?: Window -> have same needs
             case ConsoleKey.Tab:
             case ConsoleKey.RightArrow:
             case ConsoleKey.DownArrow:
-                selected = (selected + 1) % components.Count;
+                Selected = (Selected + 1) % components.Count;
                 return;
             case ConsoleKey.LeftArrow:
             case ConsoleKey.UpArrow:
-                selected = (selected - 1) % components.Count;
+                Selected = (Selected - 1) % components.Count;
                 return;
             case ConsoleKey.Escape:
                 BtnCancel_Clicked();
                 return;
         }
 
-        components[selected].HandleKey(info);
+        components[Selected].HandleKey(info);
     }
     public void Add_CancelBtn()
     {
@@ -302,9 +309,9 @@ public abstract class PopUp : Window //?: Window -> have same needs
         {
             y_center += Line('├', '┤', '─');
             textbox.Size = width - X_DeadSpace;
-            if (selected == i)
+            if (Selected == i)
             {
-                Console.BackgroundColor = Selected;
+                Console.BackgroundColor = Active;
             }
             y_center += textbox.Draw(XCenter(width) + 2, y_center);
         }
@@ -332,9 +339,9 @@ public abstract class PopUp : Window //?: Window -> have same needs
         int i = components.Count - buttons.Count; //works only if buttos are last elements added
         foreach (var button in buttons)
         {
-            if (selected == i)
+            if (Selected == i)
             {
-                Console.BackgroundColor = Selected;
+                Console.BackgroundColor = Active;
             }
             button.Draw();
             Console.BackgroundColor = BackgroundColor;
