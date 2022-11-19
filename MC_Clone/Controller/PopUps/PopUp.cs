@@ -316,6 +316,8 @@ public abstract class PopUp : Window //?: Window -> have same needs
                 Console.BackgroundColor = Active;
             }
             y_center += textbox.Draw(XCenter(width) + 2, y_center);
+            Console.BackgroundColor = BackgroundColor;
+            i++;
         }
     }
 
@@ -425,10 +427,10 @@ public abstract class PopUp : Window //?: Window -> have same needs
             {
                 maxWidth = item.Label.Length;
             }
-            if (item.Value.Length > maxWidth)
-            {
-                maxWidth = item.Value.Length; //user input pontetional problem?
-            }
+            //if (item.Value.Length > maxWidth)
+            //{
+            //    maxWidth = item.DisplayValue.Length; //user input pontetional problem?
+            //}
         }
         if (buttons.Count > 0)
         {

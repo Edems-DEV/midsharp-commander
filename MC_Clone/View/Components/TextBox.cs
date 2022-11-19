@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -12,8 +13,10 @@ public class TextBox : IComponent
     public string Label { get; set; } = "";
 
     public string Value { get; set; } = "";
+    public string DisplayValue { get; set; } = "";
 
     public int Size { get; set; } = 20;
+    private int size = 20;
 
     public char PadChar { get; set; } = ' ';
 
@@ -35,12 +38,25 @@ public class TextBox : IComponent
         Console.ForegroundColor = Config.PopUp_ForeGroud;
         Console.BackgroundColor = ConsoleColor.Cyan; //TODO: Change me to a config value //static painter class
         Console.SetCursorPosition(x, y += 1);
-        Console.Write(PadChar + Value.PadRight(Size, PadChar));
+        Console.Write(LineMover());
 
         Console.ForegroundColor = oldTextC;
         Console.BackgroundColor = oldBackC;
         int ySize = 2;
         return ySize;
+    }
+
+    public string LineMover()
+    {
+        string value = Value;
+        if (Value.Length > Size)
+        {
+            int start = (Value.Length - Size) + 1;
+            value = Value.Substring(start, Size - 1);
+            //Size = size;
+        }
+        DisplayValue = PadChar + value.PadRight(Size, PadChar);
+        return DisplayValue;
     }
     
     public void HandleKey(ConsoleKeyInfo info)
