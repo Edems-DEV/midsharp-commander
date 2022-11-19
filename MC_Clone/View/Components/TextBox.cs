@@ -36,7 +36,7 @@ public class TextBox : IComponent
         Console.SetCursorPosition(x, y);
         Console.Write(Label);
         Console.ForegroundColor = Config.PopUp_ForeGroud;
-        Console.BackgroundColor = ConsoleColor.Cyan; //TODO: Change me to a config value //static painter class
+        Console.BackgroundColor = Config.TextBox_InputField;
         Console.SetCursorPosition(x, y += 1);
         Console.Write(LineMover());
 

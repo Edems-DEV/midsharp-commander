@@ -93,6 +93,8 @@ public class Config
     public static ConsoleColor Error_Foreground = ConsoleColor.White;
     public static ConsoleColor Error_Accent     = ConsoleColor.Yellow;
     public static ConsoleColor Error_ACTIVE     = ConsoleColor.Black;
+    
+    public static ConsoleColor TextBox_InputField = ConsoleColor.Cyan;
 
 
 

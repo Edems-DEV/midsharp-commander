@@ -200,6 +200,8 @@ public abstract class PopUp : Window //?: Window -> have same needs
         DrawButtonsRow();
 
         y_center = oldY;
+
+        //Console.SetCursorPosition(0, 0); //blinking cursor
     }
 
     public void Draw(string title, string info, int width = 50)
