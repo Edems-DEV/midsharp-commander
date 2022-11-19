@@ -77,7 +77,7 @@ public class CopyMsg : PopUp
         title = "Copy";
         details.Add($"Copy: \"{file.Name}\"");
         //details.Add($"from: \"{Truncate.Path(file.FullName)}\"");
-        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.FullName, 2) }; //destPath
+        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.FullName, 1) }; //destPath
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
@@ -89,6 +89,7 @@ public class CopyMsg : PopUp
         string destPath = input.Value;
         FM.Copy(destPath, file);
         BtnCancel_Clicked();
+        Console.Beep();
     }
 }
 
@@ -105,7 +106,7 @@ public class MoveMsg : PopUp
 
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
-        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.FullName, 2) };
+        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.FullName, 1) };
         input2 = new TextBox() { Label = "Rename to:", Value = file.Name };
         components.Add(input);
         components.Add(input2);
@@ -116,9 +117,9 @@ public class MoveMsg : PopUp
 
     protected override void BtnOk_Clicked()
     {
-
         FM.RenMov(input.Value, file, input2.Value);
         BtnCancel_Clicked();
+        Console.Beep();
     }
 }
 
