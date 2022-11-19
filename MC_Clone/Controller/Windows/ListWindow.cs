@@ -50,7 +50,7 @@ public class ListWindow : Window
         int visible = middleSpace;
     }
     
-    FilePanel ActivePanel()
+     public FilePanel ActivePanel()
     {
         return _panels[_activePanelIndex];
     }

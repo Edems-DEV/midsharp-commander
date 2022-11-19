@@ -556,7 +556,7 @@ public class FilePanel : IComponent
         //RefreshPanel();
         Application.SwitchPopUp(new ErrorMsg("I can acces App from FilePanel"));
     }
-    private void CreateFile() //Menu
+    private void CreateFile() //Menu //IDEA: move closer to MkDir?
     {
         if (IsDiscs)
             return;
@@ -588,7 +588,7 @@ public class FilePanel : IComponent
         if (IsDiscs)
             return;
         listWindow.PopUp_Switch(new DeleteMsg(GetActiveObject()));
-        Selected -= 1; //move before deleted (backgroud still updates)
+        Selected -= 1; //move before deleted (backgroud still updates) //TODO: Fix
     }
     private void PullDn()
     {
