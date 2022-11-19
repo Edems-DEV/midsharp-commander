@@ -39,7 +39,8 @@ public abstract class PopUp : Window //?: Window -> have same needs
     public ConsoleColor AccentColor = Config.PopUp_Accent;
     public ConsoleColor Active = Config.PopUp_ACTIVE;
 
-    Application app;
+    public Application app;
+    private bool a = true; //Draw (only once)[my constructor alternative]
     #endregion
     #region Property
     public int X
@@ -109,6 +110,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
 
         components[Selected].HandleKey(info);
     }
+    #region Button factory
     public void Add_CancelBtn()
     {
         Button btnCancel = new Button() { Title = "Cancel" };
@@ -130,7 +132,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
     {
         
     }
-
+    #endregion
     #region Error specific
     public void Add_CancelBtn(ConsoleColor AsscentColor)
     {
@@ -148,25 +150,32 @@ public abstract class PopUp : Window //?: Window -> have same needs
     }
     #endregion
     
+    public void ConstructorWithElements()
+    {
+        if (a) //Can't calculate without elements
+        {
+            height = WidthCalc();
+            a = false;
+        }
+    }
+    public void winSizeChanged()
+    {
+        x_center = Console.WindowWidth / 2; //each draw it update by window size
+        y_center = Console.WindowHeight / 3;
+    }
+    
     public override void Draw()
     {
         List<TextBox> textBoxes = components.OfType<TextBox>().ToList();
 
-        bool a = true;
-        if (a)
-        {
-            x_center = Console.WindowWidth / 2; //each draw it update by window size
-            y_center = Console.WindowHeight / 3;
-            
-            height = WidthCalc(); //cant be in constructor because elemets are added in run time
-            width = MinWidth();
-            //a = false;
 
-            if (width <= 6) //6 = empty msg width
-            {
-                return;
-            }
-        }
+        x_center = Console.WindowWidth / 2; //each draw it update by window size
+        y_center = Console.WindowHeight / 3;
+        width = MinWidth(); // need to still update -> textbox size
+        ConstructorWithElements();
+        
+        if (width <= 6) { return; } //6 = empty msg width
+
         Console.BackgroundColor = BackgroundColor;
         int oldY = y_center;
 
