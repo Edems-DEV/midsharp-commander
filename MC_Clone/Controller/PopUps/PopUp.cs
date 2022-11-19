@@ -429,10 +429,10 @@ public abstract class PopUp : Window //?: Window -> have same needs
             {
                 maxWidth = item.Label.Length;
             }
-            //if (item.Value.Length > maxWidth)
-            //{
-            //    maxWidth = item.DisplayValue.Length; //user input pontetional problem?
-            //}
+            if (item.DisplayValue.Length > maxWidth)
+            {
+                maxWidth = item.DisplayValue.Length; //user input pontetional problem?
+            }
         }
         if (buttons.Count > 0)
         {

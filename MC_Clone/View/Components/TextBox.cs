@@ -49,14 +49,15 @@ public class TextBox : IComponent
     public string LineMover()
     {
         string value = Value;
-        if (Value.Length > Size)
+        if (Value.Length > size) //comment out for size to be dynamic / (disable line mover)
         {
-            int start = (Value.Length - Size) + 1;
-            value = Value.Substring(start, Size - 1);
-            //Size = size;
+            int start = (Value.Length - size) + 1;
+            value = Value.Substring(start, size - 1);
+            Size = size;
         }
-        DisplayValue = PadChar + value.PadRight(Size, PadChar);
-        return DisplayValue;
+        DisplayValue = value;
+        value = PadChar + value.PadRight(Size, PadChar);
+        return value;
     }
     
     public void HandleKey(ConsoleKeyInfo info)
