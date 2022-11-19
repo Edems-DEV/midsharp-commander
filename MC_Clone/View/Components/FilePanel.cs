@@ -9,7 +9,7 @@ public class FilePanel : IComponent
     
 
     private FileManager FM;
-
+    private List<int> widths;
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
                                                    // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
@@ -126,7 +126,9 @@ public class FilePanel : IComponent
         y_temp = y;
         UpdateMaxLengths();
         FM = new FileManager();
-        Application.WinSize.OnWindowSizeChange += UpdatePanel; //set lisener for if window size changed -> update rows
+        //set lisener for if window size changed -> update rows and their length +...
+        UpdateAllThingsDependentedOnWindowSize();
+        Application.WinSize.OnWindowSizeChange += UpdateAllThingsDependentedOnWindowSize;
     }
     public FilePanel(Application Application, int x = 0, int y = 0)
     {
@@ -215,14 +217,11 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        if (!IsDiscs)
+        if (!IsDiscs) //temp fix (need: event if data were changed  <- popUps)
+        { 
             SetLists(_path); //TODO: change me (draw no -> logic)
-        //ImportRows(); //update rows
-
-        List<int> widths = Widths();
-        UpdateMaxLengths();
-        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
-        //var a = new Logs(Visible.ToString());
+            ImportRows();
+        }
 
         if (X != 0)
         {
@@ -255,7 +254,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = Y;   
+        y_temp = Y;
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
@@ -355,6 +354,14 @@ public class FilePanel : IComponent
     }
 
     #region Calc
+
+    public void UpdateAllThingsDependentedOnWindowSize()
+    {
+        ImportRows(); //update rows
+        widths = Widths();
+        UpdateMaxLengths();
+        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
+    }
     public void UpdateMaxLengths() // why? So I don't have to calculate that for each line - PERFORMANCE?
     {
         GetMaxLineLength();
