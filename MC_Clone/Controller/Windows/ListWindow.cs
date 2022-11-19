@@ -73,8 +73,6 @@ public class ListWindow : Window
         foreach (var pane in _panels)
         {
             pane.ImportRows(pane.Path_); //useless?
-            pane.RowSelected += Table_RowSelected;
-
         }
         _activePanelIndex = 0;
         ActivePanel().IsActive = true;
@@ -84,10 +82,6 @@ public class ListWindow : Window
     public ListWindow(Application Application)
     {
         this.Application = Application;
-        Start();
-    }
-    public ListWindow()
-    {
         Start();
     }
 
@@ -104,23 +98,6 @@ public class ListWindow : Window
 
         ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
-    }
-
-    private void Table_RowSelected(int index)
-    {
-        this.Application.SwitchWindow(new EditWindow(index));
-    }
-    public void PopUp_Switch(PopUp msg)
-    {
-        this.Application.SwitchPopUp(msg);
-    }
-    public void PopUp_Switch()
-    {
-        this.Application.SwitchPopUp(new ErrorMsg("  404 error :)  "));
-    }
-    private void PopUp_Selected(PopUp popUp)
-    {
-        this.Application.SwitchPopUp(popUp);
     }
 
     public override void Draw()

@@ -560,7 +560,7 @@ public class FilePanel : IComponent
     {
         if (IsDiscs)
             return;
-        listWindow.PopUp_Switch(new CreateFileMsg(Path_));
+        Application.SwitchPopUp(new CreateFileMsg(Path_));
     }
     private void View()
     {
@@ -571,23 +571,23 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
-        listWindow.PopUp_Switch(new CopyMsg(GetActiveObject()));
+        Application.SwitchPopUp(new CopyMsg(GetActiveObject()));
     }
     private void RenMov()
     {
-        listWindow.PopUp_Switch(new MoveMsg(GetActiveObject()));
+        Application.SwitchPopUp(new MoveMsg(GetActiveObject()));
     }
     private void MkDir()
     {
         if (IsDiscs)
             return;
-        listWindow.PopUp_Switch(new CreateFolderMsg(Path_));
+        Application.SwitchPopUp(new CreateFolderMsg(Path_));
     }
     private void Delete()
     {
         if (IsDiscs)
             return;
-        listWindow.PopUp_Switch(new DeleteMsg(GetActiveObject()));
+        Application.SwitchPopUp(new DeleteMsg(GetActiveObject()));
         Selected -= 1; //move before deleted (backgroud still updates) //TODO: Fix
     }
     private void PullDn()

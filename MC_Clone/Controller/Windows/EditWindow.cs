@@ -41,7 +41,7 @@ public class EditWindow : Window
      
     private void BtnCancel_Clicked()
     {
-        this.Application.SwitchWindow(new ListWindow());
+        //this.Application.SwitchWindow(new ListWindow());
     }
 
     private void BtnOk_Clicked()
@@ -58,7 +58,7 @@ public class EditWindow : Window
 
         this.service.Update(data.ToArray(), this.index);
 
-        this.Application.SwitchWindow(new ListWindow());
+        //this.Application.SwitchWindow(new ListWindow());
     }
 
     public override void Draw()
