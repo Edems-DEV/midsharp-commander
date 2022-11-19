@@ -137,9 +137,8 @@ public class FilePanel : IComponent
         SetDiscs();
     }
 
-    public FilePanel(ListWindow ListWindow, Application Application, string path, int x = 0, int y = 0)
+    public FilePanel(Application Application, string path, int x = 0, int y = 0)
     {
-        this.listWindow = ListWindow;
         this.Application = Application;
         Path_ = path;
         Start(x, y);

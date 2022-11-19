@@ -61,8 +61,8 @@ public class ListWindow : Window
         FilesService service = new FilesService(Config.FILE);
 
         int paneY = 1;
-        FilePanel pane1 = new FilePanel(this, Application, Config.Path_LeftPane, 0, paneY);
-        FilePanel pane2 = new FilePanel(this, Application, Config.Path_RightPane, winWidth, paneY);
+        FilePanel pane1 = new FilePanel(Application, Config.Path_LeftPane, 0, paneY);
+        FilePanel pane2 = new FilePanel(Application, Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
 
