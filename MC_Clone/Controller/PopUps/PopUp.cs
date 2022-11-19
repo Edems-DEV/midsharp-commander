@@ -110,13 +110,15 @@ public abstract class PopUp : Window //?: Window -> have same needs
         switch (info.Key)
         {
             case ConsoleKey.Tab:
+                Selected = (Selected + 1) % components.Count;
+                return;
             case ConsoleKey.RightArrow:
             case ConsoleKey.DownArrow:
-                Selected = (Selected + 1) % components.Count;
+                Selected += 1;
                 return;
             case ConsoleKey.LeftArrow:
             case ConsoleKey.UpArrow:
-                Selected = (Selected - 1) % components.Count;
+                Selected -= 1;
                 return;
             case ConsoleKey.Escape:
                 BtnCancel_Clicked();
