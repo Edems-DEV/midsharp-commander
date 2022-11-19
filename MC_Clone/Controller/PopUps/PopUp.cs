@@ -80,28 +80,10 @@ public abstract class PopUp : Window //?: Window -> have same needs
     }
     #endregion
     #region Constructor
-    private void Setup(string title, int width = 50)
-    {
-        x_center = Console.WindowWidth / 2;
-        y_center = Console.WindowHeight / 3;
-
-        this.width = width;
-        this.title = title;
-    }
     public PopUp()
     {
         x_center = Console.WindowWidth / 2;
         y_center = Console.WindowHeight / 3;
-    }
-    public PopUp(string title, string info = "", int width = 50)
-    {
-        Setup(title, width);
-        Info = info;
-    }
-    public PopUp(string title, List<string> info, int width = 50)
-    {
-        Setup(title, width);
-        details = info;
     }
     #endregion
 
