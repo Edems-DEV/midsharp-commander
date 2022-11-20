@@ -29,4 +29,13 @@ internal class MyFileService
 
         return result;
     }
+    public void OverWrite() { }
+
+    #region Stats calc
+    public void CountWords() { }
+    public void CountLines() { }
+
+
+    #endregion
+
 }

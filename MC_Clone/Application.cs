@@ -18,7 +18,7 @@ public class Application
         this.SwitchPopUp(new EmptyMsg());
         WinSize.Application = this;
 
-        WinSize.OnWindowSizeChange += window.Draw;
+        //WinSize.OnWindowSizeChange += window.Draw; //on EditWindow still draw ListWindow
         WinSize.OnWindowSizeChange += popUp.Draw; //use SwitchPopUp obeject (why?)
     }
 

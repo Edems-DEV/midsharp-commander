@@ -127,8 +127,8 @@ public class FilePanel : IComponent
         UpdateMaxLengths();
         FM = new FileManager();
         //set lisener for if window size changed -> update rows and their length +...
-        UpdateAllThingsDependentedOnWindowSize();
-        Application.WinSize.OnWindowSizeChange += UpdateAllThingsDependentedOnWindowSize;
+        OnResize();
+        Application.WinSize.OnWindowSizeChange += OnResize;
     }
     public FilePanel(Application Application, int x = 0, int y = 0)
     {
@@ -354,7 +354,7 @@ public class FilePanel : IComponent
 
     #region Calc
 
-    public void UpdateAllThingsDependentedOnWindowSize()
+    public void OnResize()
     {
         ImportRows(); //update rows
         widths = Widths();
@@ -570,7 +570,7 @@ public class FilePanel : IComponent
         
         FileInfo file = GetActiveObject() as FileInfo;
 
-        Application.WinSize.OnWindowSizeChange -= UpdateAllThingsDependentedOnWindowSize;
+        Application.WinSize.OnWindowSizeChange -= OnResize;
         Application.SwitchWindow(new PreviewWindow(Application, file));
     }
     private void Edit()
