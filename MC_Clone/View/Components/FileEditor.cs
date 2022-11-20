@@ -15,6 +15,8 @@ internal class FileEditor : IComponent
     private int _visible; //rows = Console.WindowWidth;
     private int maxWidth; //columns = Console.WindowWidth;
 
+    private bool wrap = true;
+
     //cursor position
     private int _x = 0;
     private int _y = 0;
@@ -22,6 +24,7 @@ internal class FileEditor : IComponent
     public MyFileService FS;
 
     public FileSystemInfo File { get; set; }
+    public List<string> OriginalRows = new List<string>();
     public List<string> Rows = new List<string>(); //real rows in txt
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
@@ -90,7 +93,8 @@ internal class FileEditor : IComponent
         this.X = x;
         this.Y = y;
         FS = new MyFileService(file.FullName);
-        Rows = FS.Read();
+        OriginalRows = FS.Read();
+        Rows = OriginalRows;
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -99,22 +103,71 @@ internal class FileEditor : IComponent
     {
         Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
         maxWidth = Console.WindowWidth;
+
+        Rows = FS.Read(); //OriginalRows //doesnt work -> why?
+        Wrap();
     }
 
     public void Draw()
     {
+        Console.SetCursorPosition(X,Y);
         for (int i = Offset; i < Offset + Math.Min(Visible, Rows.Count); i++)
         {
-            if (i == Selected)
-            {
-                Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
-                Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
-            }
-            Console.Write($"{i}. ");
+            //LineNumber(i); //debug //broken maxWidth -> bad Wrap
+
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
-            Console.WriteLine(Rows[i]);
+            Console.WriteLine(Rows[i]); //fix: console auto line wrap -> (destroys formatting)
+        }
+    }
+    public void LineNumber(int i)
+    {
+        //selected is disabled
+        if (i == Selected)
+        {
+            Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
+            Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
+        }
+        Console.Write($"{i}. ");
+    }
+    public void Wrap()
+    {
+        for (int i = 0; i < Rows.Count; i++)
+        {
+            int locMaxWidth = maxWidth;// - 1;
+            if (Rows[i].Length > maxWidth)
+            {
+                if (wrap)
+                {
+                    List<string> texts = new List<string>();
+                    int lenght = Rows[i].Length;
+                    int index = locMaxWidth;// - 1;
+                    string text = "";
+                    while (locMaxWidth + locMaxWidth < lenght) //+ index
+                    {
+                        text = Rows[i].Substring(index, locMaxWidth);
+                        lenght -= locMaxWidth;
+                        index += locMaxWidth - 1;
+                        //Rows.Insert(i + 1, text);
+                        texts.Add(text);
+                    }
+                    if (lenght < locMaxWidth + locMaxWidth)
+                    {
+                        text = Rows[i].Substring(index, lenght - locMaxWidth);
+                        //Rows.Insert(i + 1, text);
+                        texts.Add(text);
+                        //throw new Exception(lenght.ToString());
+                    }
+                    texts.Reverse();
+                    //Rows.InsertRange();
+                    foreach (var item in texts)
+                    {
+                        Rows.Insert(i + 1, item);
+                    }
+                }
+                Rows[i] = Rows[i].Substring(0, locMaxWidth);
+            }
         }
     }
 
@@ -147,36 +200,36 @@ internal class FileEditor : IComponent
     #region Controls Methods
     private void ScrollUp()
     {
-        //Selected--;
+        Selected--;
 
         //if (Selected == Offset - 1)
             Offset--;
     }
     private void ScrollDown()
     {
-        //Selected++;
+        Selected++;
 
         //if (Selected == Offset + Math.Min(Visible, Rows.Count))
-            Offset++;
+          Offset++;
     }
     private void PageUp()
     {
-        //Selected = Selected - Visible;
+        Selected = Selected - Visible;
         Offset = Offset - Visible;
     }
     private void PageDown()
     {
-        //Selected = Selected + Visible;
+        Selected = Selected + Visible;
         Offset = Offset + Visible;
     }
     private void GoBegin()
     {
-        //Selected = 0;
+        Selected = 0;
         Offset = 0;
     }
     private void GoEnd()
     {
-        //Selected = Rows.Count - 1;
+        Selected = Rows.Count - 1;
         Offset = Rows.Count - Visible;
     }
 
