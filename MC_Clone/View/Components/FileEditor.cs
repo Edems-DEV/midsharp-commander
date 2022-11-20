@@ -9,7 +9,7 @@ internal class FileEditor : IComponent
 {
     #region Atributes
     public Application Application { get; set; }
-    
+
     private int _offset = 0;
     private int _selected = 0;
     private int _visible; //rows = Console.WindowWidth;
@@ -18,6 +18,8 @@ internal class FileEditor : IComponent
     //cursor position
     private int _x = 0;
     private int _y = 0;
+
+    public MyFileService FS;
 
     public FileSystemInfo File { get; set; }
     public List<string> Rows = new List<string>(); //real rows in txt
@@ -65,8 +67,8 @@ internal class FileEditor : IComponent
         set
         {
             if (value < 0) { _offset = 0; return; }
-            //if (FS_Objects.Count <= Visible) { return; }
-            //if (value >= FS_Objects.Count - Visible) { _offset = FS_Objects.Count - Visible; _selected = FS_Objects.Count - 1; return; }
+            if (Rows.Count <= Visible) { return; }
+            if (value >= Rows.Count - Visible) { _offset = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
             _offset = value;
         }
     }
@@ -76,7 +78,7 @@ internal class FileEditor : IComponent
         set
         {
             if (value < 0) { return; }
-            //if (value >= rows.Count - deadRows) { return; }
+            if (value >= Rows.Count) { return; }
             _selected = value;
         }
     }
@@ -87,6 +89,8 @@ internal class FileEditor : IComponent
         this.File = file;
         this.X = x;
         this.Y = y;
+        FS = new MyFileService(file.FullName);
+        Rows = FS.Read();
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -99,6 +103,19 @@ internal class FileEditor : IComponent
 
     public void Draw()
     {
+        for (int i = Offset; i < Offset + Math.Min(Visible, Rows.Count); i++)
+        {
+            if (i == Selected)
+            {
+                Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
+                Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
+            }
+            Console.Write($"{i}. ");
+            Console.ForegroundColor = Config.Table_ForegroundColor;
+            Console.BackgroundColor = Config.Table_BackgroundColor;
+
+            Console.WriteLine(Rows[i]);
+        }
     }
 
     public void HandleKey(ConsoleKeyInfo info)
@@ -106,17 +123,23 @@ internal class FileEditor : IComponent
         switch (info.Key)
         {
             case ConsoleKey.UpArrow:
-                Y--;
-                return;
+                ScrollUp();
+                break;
             case ConsoleKey.DownArrow:
-                Y++;
-                return;
-            case ConsoleKey.LeftArrow:
-                X--;
-                return;
-            case ConsoleKey.RightArrow:
-                X++;
-                return;
+                ScrollDown();
+                break;
+            case ConsoleKey.Home:
+                GoBegin();
+                break;
+            case ConsoleKey.End:
+                GoEnd();
+                break;
+            case ConsoleKey.PageUp:
+                PageUp();
+                break;
+            case ConsoleKey.PageDown:
+                PageDown();
+                break;
         }
         Console.WriteLine(info.KeyChar);
     }
@@ -124,38 +147,45 @@ internal class FileEditor : IComponent
     #region Controls Methods
     private void ScrollUp()
     {
-        Selected--;
+        //Selected--;
 
-        if (Selected == Offset - 1)
+        //if (Selected == Offset - 1)
             Offset--;
     }
     private void ScrollDown()
     {
-        Selected++;
+        //Selected++;
 
-        //if (Selected == Offset + Math.Min(Visible, this.rows.Count))
+        //if (Selected == Offset + Math.Min(Visible, Rows.Count))
             Offset++;
-    }
-    private void GoBegin()
-    {
-        Selected = 0;
-        Offset = 0;
-    }
-    private void GoEnd()
-    {
-        //Selected = FS_Objects.Count - 1;
-        //Offset = FS_Objects.Count - Visible;
     }
     private void PageUp()
     {
-        Selected = Selected - Visible;
+        //Selected = Selected - Visible;
         Offset = Offset - Visible;
     }
     private void PageDown()
     {
-        Selected = Selected + Visible;
+        //Selected = Selected + Visible;
         Offset = Offset + Visible;
     }
+    private void GoBegin()
+    {
+        //Selected = 0;
+        Offset = 0;
+    }
+    private void GoEnd()
+    {
+        //Selected = Rows.Count - 1;
+        Offset = Rows.Count - Visible;
+    }
+
+    private void GoTo()
+    {
+        int GoTo = 10;
+        Selected = Rows.Count - 1;
+    }
+
     #endregion
 
     #region FKeys methods

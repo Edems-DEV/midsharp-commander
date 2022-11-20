@@ -15,15 +15,15 @@ internal class MyFileService
         Path = file.FullName;
     }
 
-    private List<char[]> Read()
+    public List<string> Read()
     {
-        List<char[]> result = new List<char[]>();
+        List<string> result = new List<string>();
 
         using (StreamReader reader = new StreamReader(Path))
         {
             while (!reader.EndOfStream)
             {
-                result.Add(reader.ReadLine().ToArray());
+                result.Add(reader.ReadLine());
             }
         }
 

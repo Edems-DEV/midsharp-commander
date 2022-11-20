@@ -27,9 +27,11 @@ internal class PreviewWindow : Window
         
     public override void Draw()
     {
+        Console.Clear(); //editor
+        Console.SetCursorPosition(0, 0);
         header.Draw();
         editor.Draw();
-        Console.SetCursorPosition(0,0);
+        //footer.Draw();
     }
 
     public override void HandleKey(ConsoleKeyInfo info)
