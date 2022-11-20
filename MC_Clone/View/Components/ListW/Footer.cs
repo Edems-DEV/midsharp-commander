@@ -17,6 +17,9 @@ internal class Footer : IComponent
 
     public void Draw()
     {
+        ConsoleColor oldBack = Console.BackgroundColor;
+        ConsoleColor oldText = Console.ForegroundColor;
+
         int top = Console.WindowHeight;
         int rowLength = Console.WindowWidth;
         Console.SetCursorPosition(0, top - 1); // -1 (last visible row) - 1 (buggy scrool fix -> from readkey?)
@@ -40,7 +43,8 @@ internal class Footer : IComponent
 
             count++;
         }
-        Console.ResetColor();
+        Console.BackgroundColor = oldBack;
+        Console.ForegroundColor = oldText;
         Console.CursorVisible = false;
         Console.SetCursorPosition(0,0);
     }

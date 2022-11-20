@@ -31,7 +31,7 @@ internal class PreviewWindow : Window
         Console.SetCursorPosition(0, 0);
         header.Draw();
         editor.Draw();
-        //footer.Draw();
+        footer.Draw();
     }
 
     public override void HandleKey(ConsoleKeyInfo info)
