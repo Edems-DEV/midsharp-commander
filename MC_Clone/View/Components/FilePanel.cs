@@ -563,6 +563,15 @@ public class FilePanel : IComponent
     }
     private void View()
     {
+        if (IsDiscs)
+            return;
+        if (GetActiveObject() is not FileInfo)
+            return;
+        
+        FileInfo file = GetActiveObject() as FileInfo;
+
+        Application.WinSize.OnWindowSizeChange -= UpdateAllThingsDependentedOnWindowSize;
+        Application.SwitchWindow(new PreviewWindow(Application, file));
     }
     private void Edit()
     {

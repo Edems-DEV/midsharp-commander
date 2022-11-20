@@ -17,7 +17,7 @@ internal class Program
         while (true)
         {
             Console.BackgroundColor = Config.Primary_BackgroundColor;
-            Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
+            //Console.BufferHeight = Console.WindowHeight; //buggy Scroolbar del
 
             app.Draw();
 
