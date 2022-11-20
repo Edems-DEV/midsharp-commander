@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Application
 {
-    private Window window; //stack oken
+    public Window window; //stack oken
     public PopUp popUp;// = new EmptyMsg();
     public EventPublisher WinSize = new EventPublisher();
     bool a = true;

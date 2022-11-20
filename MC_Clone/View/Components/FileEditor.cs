@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class FileEditor : IComponent
+internal class FileEditor : IComponent //TODO: Rename to FileViwer
 {
     #region Atributes
     public Application Application { get; set; }
@@ -193,6 +193,9 @@ internal class FileEditor : IComponent
             case ConsoleKey.PageDown:
                 PageDown();
                 break;
+            case ConsoleKey.F5:
+                GoTo(10);
+                break;
         }
         Console.WriteLine(info.KeyChar);
     }
@@ -233,10 +236,9 @@ internal class FileEditor : IComponent
         Offset = Rows.Count - Visible;
     }
 
-    private void GoTo()
+    private void GoTo(int goIndex)
     {
-        int GoTo = 10;
-        Selected = Rows.Count - 1;
+        Offset = goIndex;
     }
 
     #endregion

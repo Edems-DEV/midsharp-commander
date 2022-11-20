@@ -161,4 +161,29 @@ public class ErrorMsg : PopUp_Red
     }
 }
 
+public class GoTo : PopUp
+{
+    private IntBox input;
+    string path;
+
+    public GoTo(string path)
+    {
+        this.path = path;
+
+        title = "Create a new File";
+        input = new IntBox() { Label = $"Enter file name:", Value = "" };
+        components.Add(input);
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        //Application.window.GetType();
+        //Application.PreviewWindow.editor.Offset = value; // goal
+        BtnCancel_Clicked();
+    }
+}
+
 

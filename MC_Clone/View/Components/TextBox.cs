@@ -4,10 +4,31 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
 
+public class IntBox : TextBox
+{
+    public override void HandleKey(ConsoleKeyInfo info)
+    {
+        if (info.Key == ConsoleKey.Backspace)
+        {
+            if (this.Value.Length == 0)
+                return;
+
+            this.Value = this.Value.Substring(0, this.Value.Length - 1);
+        }
+        else
+        {
+            if (Misc.IsNumber(info)) //filter property?
+            {
+                this.Value += info.KeyChar;
+            }
+        }
+    }
+}
 public class TextBox : IComponent
 {
     public string Label { get; set; } = "";
@@ -60,7 +81,7 @@ public class TextBox : IComponent
         return value;
     }
     
-    public void HandleKey(ConsoleKeyInfo info)
+    public virtual void HandleKey(ConsoleKeyInfo info)
     {
         if (info.Key == ConsoleKey.Backspace)
         {

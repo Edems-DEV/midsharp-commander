@@ -40,6 +40,23 @@ internal class Misc //koncepty
         }
         return false;
     }
+    public static bool IsNumber(ConsoleKeyInfo info)
+    {
+        switch (info.Key)
+        {
+            case ConsoleKey.D1:
+            case ConsoleKey.D2:
+            case ConsoleKey.D3:
+            case ConsoleKey.D4:
+            case ConsoleKey.D5:
+            case ConsoleKey.D6:
+            case ConsoleKey.D7:
+            case ConsoleKey.D8:
+            case ConsoleKey.D9:
+                return true;
+        }
+        return false;
+    }
 }
 
 

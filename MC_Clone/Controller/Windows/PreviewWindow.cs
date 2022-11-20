@@ -8,7 +8,7 @@ namespace MC_Clone;
 internal class PreviewWindow : Window
 {
     private FileSystemInfo file;
-    private FileEditor editor;
+    public FileEditor editor;
     private Header header;
     private Footer footer;
 
