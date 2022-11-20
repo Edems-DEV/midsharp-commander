@@ -238,7 +238,12 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
 
     private void GoTo(int goIndex)
     {
-        Offset = goIndex;
+        GoTo a = new GoTo();
+        Application.SwitchPopUp(a);
+        //while (Application.popUp != new EmptyMsg()) //block spawn of popup
+        //{
+        //}
+        //Offset = Convert.ToInt32(a.input.Value);
     }
 
     #endregion

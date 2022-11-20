@@ -163,21 +163,16 @@ public class ErrorMsg : PopUp_Red
 
 public class GoTo : PopUp
 {
-    private IntBox input;
-    string path;
+    public IntBox input;
 
-    public GoTo(string path)
+    public GoTo()
     {
-        this.path = path;
-
-        title = "Create a new File";
-        input = new IntBox() { Label = $"Enter file name:", Value = "" };
+        title = "Go To";
+        input = new IntBox() { Label = $"Enter row number:", Value = "" };
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
     }
-
-
     protected override void BtnOk_Clicked()
     {
         //Application.window.GetType();
