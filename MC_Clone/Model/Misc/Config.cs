@@ -38,7 +38,7 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = @"C:\Users\root\Desktop"; //change to dynamic desktop path
+    public const string Path_LeftPane = @"C:\Users\root\Desktop\Example Folder"; //change to dynamic desktop path
     public const string Path_RightPane = @".";
 
     //------------------Color schemes------------------
@@ -84,12 +84,17 @@ public class Config
     public static ConsoleColor Cout_BackgroundColor   = ConsoleColor.Black;
     public static ConsoleColor Cout_ForegroundColor   = ConsoleColor.White;
 
-    public static ConsoleColor MsgBoxBackgroundColor           = ConsoleColor.White;
-    public static ConsoleColor MsgBoxForegroundColor           = ConsoleColor.Black;
+    public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
+    public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;
+    public static ConsoleColor PopUp_Accent    = ConsoleColor.DarkBlue;
+    public static ConsoleColor PopUp_ACTIVE    = ConsoleColor.Blue;
 
-
-    public static ConsoleColor AdditionalMsgBoxBackgroundColor = ConsoleColor.Red;
-    public static ConsoleColor TextBoxBackgroundColor          = ConsoleColor.Gray;
+    public static ConsoleColor Error_Backgroud  = ConsoleColor.DarkRed;
+    public static ConsoleColor Error_Foreground = ConsoleColor.White;
+    public static ConsoleColor Error_Accent     = ConsoleColor.Yellow;
+    public static ConsoleColor Error_ACTIVE     = ConsoleColor.Black;
+    
+    public static ConsoleColor TextBox_InputField = ConsoleColor.Cyan;
 
     public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
     public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;

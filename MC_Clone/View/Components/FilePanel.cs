@@ -1,16 +1,15 @@
-﻿using System.ComponentModel;
-
-namespace MC_Clone;
+﻿namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
-    bool PopUp = false;
-    PopUp a;
+    public ListWindow listWindow { get; set; }
+    public Application Application { get; set; }
 
     public event Action<int> RowSelected;
+    
 
-    FileManager FM;
-
+    private FileManager FM;
+    private List<int> widths;
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
                                                    // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
@@ -127,16 +126,20 @@ public class FilePanel : IComponent
         y_temp = y;
         UpdateMaxLengths();
         FM = new FileManager();
-
+        //set lisener for if window size changed -> update rows and their length +...
+        OnResize();
+        Application.WinSize.OnWindowSizeChange += OnResize;
     }
-    public FilePanel(int x = 0, int y = 0)
+    public FilePanel(Application Application, int x = 0, int y = 0)
     {
+        this.Application = Application;
         Start(x, y);
         SetDiscs();
     }
 
-    public FilePanel(string path, int x = 0, int y = 0)
+    public FilePanel(Application Application, string path, int x = 0, int y = 0)
     {
+        this.Application = Application;
         Path_ = path;
         Start(x, y);
         if (path == ".") { SetDiscs(); return; }
@@ -204,6 +207,7 @@ public class FilePanel : IComponent
             case ConsoleKey.F7:
                 MkDir();
                 break;
+            case ConsoleKey.Delete:
             case ConsoleKey.F8:
                 Delete();
                 break;
@@ -220,16 +224,11 @@ public class FilePanel : IComponent
 
     public void Draw()
     {
-        if (PopUp) //second instance of panel still blink
-        {
-            a.Draw();
-            return;
+        if (!IsDiscs) //temp fix (need: event if data were changed  <- popUps)
+        { 
+            SetLists(_path); //TODO: change me (draw no -> logic)
+            ImportRows();
         }
-        ImportRows(); //update rows
-        List<int> widths = Widths();
-        UpdateMaxLengths();
-        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
-        //var a = new Logs(Visible.ToString());
 
         if (X != 0)
         {
@@ -362,6 +361,14 @@ public class FilePanel : IComponent
     }
 
     #region Calc
+
+    public void OnResize()
+    {
+        ImportRows(); //update rows
+        widths = Widths();
+        UpdateMaxLengths();
+        Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
+    }
     public void UpdateMaxLengths() // why? So I don't have to calculate that for each line - PERFORMANCE?
     {
         GetMaxLineLength();
@@ -552,21 +559,27 @@ public class FilePanel : IComponent
     #region FunctionKeys
     private void Drives() //Help
     {
-        SetDiscs();
-        ImportRows();
-        Draw();
+        //SetDiscs();
+        //RefreshPanel();
+        Application.SwitchPopUp(new ErrorMsg("I can acces App from FilePanel"));
     }
-    private void CreateFile() //Menu
+    private void CreateFile() //Menu //IDEA: move closer to MkDir?
     {
         if (IsDiscs)
             return;
-        string fileName = this.AksName("Enter the file name: "); //TODO: change to popUp
-        //PopUpFactory.Move();
-        FM.MkFile(Path_, fileName);
-        RestartPanel();
+        Application.SwitchPopUp(new CreateFileMsg(Path_));
     }
     private void View()
     {
+        if (IsDiscs)
+            return;
+        if (GetActiveObject() is not FileInfo)
+            return;
+        
+        FileInfo file = GetActiveObject() as FileInfo;
+
+        Application.WinSize.OnWindowSizeChange -= OnResize;
+        Application.SwitchWindow(new PreviewWindow(Application, file));
     }
     private void Edit()
     {
@@ -574,76 +587,24 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
-        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        FM.Copy(destPath, GetActiveObject());
-        RestartPanel();
-    }
-    private void CopyDirectory(string sourceDirName, string destDirName) //TODO: change to popUp
-    {
-        FM.CopyDirectory(sourceDirName, destDirName);
-        RestartPanel();
+        Application.SwitchPopUp(new CopyMsg(GetActiveObject()));
     }
     private void RenMov()
     {
-        string destPath = this.AksName("Enter the catalog name: "); //TODO: change to popUp
-        string newName = this.AksName("Rename: "); //TODO: change to popUp
-        FM.RenMov(destPath, GetActiveObject(), newName); //PopUpFactory.Move().Line[1]
-        SetLists(Path_);
-        RestartPanel();
+        Application.SwitchPopUp(new MoveMsg(GetActiveObject()));
     }
     private void MkDir()
     {
         if (IsDiscs)
             return;
-        string destPath = Path_;
-        string dirName = this.AksName("Enter the folder name: "); //TODO: change to popUp
-        FM.MkDir(destPath, dirName);
-        RestartPanel();
+        Application.SwitchPopUp(new CreateFolderMsg(Path_));
     }
-
-    #region lidlPopUp
-    private string AksName(string message)
-    {
-        string name;
-        Console.CursorVisible = true;
-        do
-        {
-            this.ShowMessage(message);
-            name = Console.ReadLine();
-        } while (name.Length == 0);
-        Console.CursorVisible = false;
-        return name;
-    }
-    private void PopUpPrep() 
-    {
-        PopUp = true;
-        a = PopUpFactory.Move();
-    }
-
-    private void ShowMessage(string message)
-    {
-        PrintString(message, 0, Console.WindowHeight - 2, Config.MsgBoxForegroundColor, Config.MsgBoxBackgroundColor);
-    }
-
-    public static void PrintString(string str, int X, int Y, ConsoleColor text, ConsoleColor background)
-    {
-        Console.ForegroundColor = text;
-        Console.BackgroundColor = background;
-
-        Console.SetCursorPosition(X, Y);
-        Console.Write(str);
-
-        Console.ForegroundColor = Config.MsgBoxForegroundColor;
-        Console.BackgroundColor = Config.MsgBoxBackgroundColor;
-    }
-    #endregion
     private void Delete()
     {
         if (IsDiscs)
             return;
-        FM.Delete(GetActiveObject());
-        Selected -= 1;
-        RestartPanel();
+        Application.SwitchPopUp(new DeleteMsg(GetActiveObject()));
+        Selected -= 1; //move before deleted (backgroud still updates) //TODO: Fix
     }
     private void PullDn()
     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace MC_Clone;
 internal class Misc //koncepty
@@ -22,6 +17,45 @@ internal class Misc //koncepty
         Console.BackgroundColor = Config.Primary_BackgroundColor; //paint whole console
         Console.Clear();
         Console.SetCursorPosition(0, 0);
+    }
+
+    public static string GetPath(string path, int cut = 1)
+    {
+        List<string> pathList = path.Split('\\').ToList();
+        for (int i = 0; i < cut; i++)
+        {
+            pathList.RemoveAt(pathList.Count - 1);
+        }
+        string newPath = string.Join("\\", pathList);
+        return newPath;
+    }
+    
+    public static bool IsIlegalChar(ConsoleKeyInfo info)
+    {
+        switch (info.Key)
+        {
+            case ConsoleKey.Enter:
+            case ConsoleKey.Tab:
+                return true;
+        }
+        return false;
+    }
+    public static bool IsNumber(ConsoleKeyInfo info)
+    {
+        switch (info.Key)
+        {
+            case ConsoleKey.D1:
+            case ConsoleKey.D2:
+            case ConsoleKey.D3:
+            case ConsoleKey.D4:
+            case ConsoleKey.D5:
+            case ConsoleKey.D6:
+            case ConsoleKey.D7:
+            case ConsoleKey.D8:
+            case ConsoleKey.D9:
+                return true;
+        }
+        return false;
     }
 }
 

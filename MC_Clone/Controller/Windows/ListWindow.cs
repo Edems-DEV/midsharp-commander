@@ -10,6 +10,7 @@ namespace MC_Clone;
 
 public class ListWindow : Window
 {
+    //'Application Application' created in Window, set in App
     readonly List<FilePanel> _panels = new List<FilePanel>();
     private int _activePanelIndex;
     public delegate void OnKey(ConsoleKeyInfo key);
@@ -49,35 +50,38 @@ public class ListWindow : Window
         int visible = middleSpace;
     }
     
-    FilePanel ActivePanel()
+     public FilePanel ActivePanel()
     {
         return _panels[_activePanelIndex];
     }
-    
-    public ListWindow()
+    private void Start()
     {
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
 
         int paneY = 1;
-        FilePanel pane1 = new FilePanel(Config.Path_LeftPane, 0, paneY);
-        FilePanel pane2 = new FilePanel(Config.Path_RightPane, winWidth, paneY);
+        FilePanel pane1 = new FilePanel(Application, Config.Path_LeftPane, 0, paneY);
+        FilePanel pane2 = new FilePanel(Application, Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
-        
+
         string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         footer = new Footer(labels);
         MenuBar = new MenuBar();
-        
+
         foreach (var pane in _panels)
         {
             pane.ImportRows(pane.Path_); //useless?
-            pane.RowSelected += Table_RowSelected;
-
         }
         _activePanelIndex = 0;
         ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
+    }
+    
+    public ListWindow(Application Application)
+    {
+        this.Application = Application;
+        Start();
     }
 
     public void ChangeActivePanel()
@@ -93,11 +97,6 @@ public class ListWindow : Window
 
         ActivePanel().IsActive = true;
         KeyPress += ActivePanel().HandleKey;
-    }
-
-    private void Table_RowSelected(int index)
-    {
-        this.Application.SwitchWindow(new EditWindow(index));
     }
 
     public override void Draw()

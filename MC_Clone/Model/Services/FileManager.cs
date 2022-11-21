@@ -43,7 +43,6 @@ internal class FileManager
         {
             FS_Objects.Clear();
         }
-
         DriveInfo[] discs = DriveInfo.GetDrives();
         foreach (DriveInfo disc in discs)
         {
@@ -94,7 +93,7 @@ internal class FileManager
     #region Function Keys
     public void MkFile(string path, string fileName)
     {
-        if (!fileName.Contains('.'))
+        if (!fileName.Contains('.')) //delete -> only file (F7 -> MkDir)
         {
             CreateFolder(path, fileName);
         }

@@ -12,11 +12,7 @@ internal class Program
 
         Application app = new Application();
 
-        int a = Console.WindowHeight;
-        int b = Console.WindowWidth;
-
-        int MinHeight = 10;
-        int MinWidth = 60;
+        bool sizeChanged;
 
         while (true)
         {
@@ -27,20 +23,19 @@ internal class Program
 
             while (!(Console.KeyAvailable))
             {
+                sizeChanged = app.WinSize.CheckIfSizeChanged(); //before 
 
                 //Updates if window size was changed
-                if (a == Console.WindowHeight && b == Console.WindowWidth)
+                if (sizeChanged)
                 {
                     continue;
                 }
-                if (Console.WindowHeight < MinHeight || Console.WindowWidth < MinWidth)
-                {
-                    //Console.SetWindowSize(a, b); //broken
-                }
+                //if (Console.WindowHeight < MinHeight || Console.WindowWidth < MinWidth)
+                //{
+                //    //Console.SetWindowSize(a, b); //broken
+                //}
 
-                a = Console.WindowHeight;
-                b = Console.WindowWidth;
-                Misc.ClearConsole();
+                //Misc.ClearConsole();
                 app.Draw();
             }
             ConsoleKeyInfo info = Console.ReadKey();
@@ -48,3 +43,4 @@ internal class Program
         }
     }
 }
+
