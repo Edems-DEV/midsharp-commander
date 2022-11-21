@@ -43,7 +43,6 @@ internal class FileManager
         {
             FS_Objects.Clear();
         }
-        
         DriveInfo[] discs = DriveInfo.GetDrives();
         foreach (DriveInfo disc in discs)
         {

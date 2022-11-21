@@ -96,8 +96,13 @@ public class Config
     
     public static ConsoleColor TextBox_InputField = ConsoleColor.Cyan;
 
+    public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
+    public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;
+    public static ConsoleColor PopUp_Accent    = ConsoleColor.Cyan;
 
-
+    public static ConsoleColor Error_Backgroud  = ConsoleColor.Red;
+    public static ConsoleColor Error_Foreground = ConsoleColor.White;
+    public static ConsoleColor Error_Accent     = ConsoleColor.DarkYellow;
 
     public static void ChangeColorScheme(ConsoleColor[] colors) ////static cannot be changed ? 
     {
