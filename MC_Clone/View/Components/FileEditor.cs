@@ -21,6 +21,7 @@ internal class FileEditor : IComponent
     private int _y = 0;
 
     public MyFileService FS;
+    public Cursor_2D Cursor;
 
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
