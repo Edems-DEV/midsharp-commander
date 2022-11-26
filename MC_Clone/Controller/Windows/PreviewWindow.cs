@@ -8,7 +8,7 @@ namespace MC_Clone;
 public class PreviewWindow : Window
 {
     private FileSystemInfo file;
-    public FileEditor editor;
+    public FilePreview editor;
     private Header header;
     private Footer footer;
     public string[] labels;
@@ -18,7 +18,7 @@ public class PreviewWindow : Window
         this.Application = application;
         this.file = file;
 
-        editor = new FileEditor(this, Application, file, 0, 1);
+        editor = new FilePreview(this, Application, file, 0, 1);
         header = new Header(file);
         labels = new string[] { "Help", "UnWrap", "Quit", "Hex", "Goto", "    ", "Search", "Raw", "Format", "Quit" };
         footer = new Footer(labels);
