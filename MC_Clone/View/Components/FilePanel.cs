@@ -575,7 +575,15 @@ public class FilePanel : IComponent
     }
     private void Edit()
     {
-        this.RowSelected(this.Selected);
+        if (IsDiscs)
+            return;
+        if (GetActiveObject() is not FileInfo)
+            return;
+
+        FileInfo file = GetActiveObject() as FileInfo;
+
+        Application.WinSize.OnWindowSizeChange -= OnResize;
+        Application.SwitchWindow(new EditWindow(Application, file));
     }
     private void Copy()
     {
