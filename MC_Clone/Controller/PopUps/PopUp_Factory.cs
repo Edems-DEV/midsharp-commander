@@ -164,7 +164,7 @@ public class ErrorMsg : PopUp_Red
 public class GoTo : PopUp
 {
     public IntBox input;
-    public FileEditor editor;
+    public FilePreview editor;
 
     private void Start()
     {
@@ -178,7 +178,7 @@ public class GoTo : PopUp
     //{
     //    Start();
     //}
-    public GoTo(FileEditor editor)
+    public GoTo(FilePreview editor)
     {
         Start();
         this.editor = editor;
