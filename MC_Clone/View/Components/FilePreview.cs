@@ -62,7 +62,7 @@ public class FilePreview : IComponent //TODO: Rename to FileViwer
         set
         {
             if (value < 0)
-                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
+                throw new Exception(String.Format($"Y_visible < 0 (val: {value})"));
             _visible = value;
         }
     }
@@ -227,7 +227,7 @@ public class FilePreview : IComponent //TODO: Rename to FileViwer
     {
         Selected++;
 
-        //if (Selected == Offset + Math.Min(Visible, Rows.Count))
+        //if (Selected == Offset + Math.Min(Y_visible, Rows.Count))
           Offset++;
     }
     private void PageUp()

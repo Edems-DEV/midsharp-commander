@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class Cursor_1D //: IComponent //(Y '|')
+public class Cursor_1D //: IComponent //(Y '|')
 {
     #region Atributes
     //RENAME
     //Selected;          // Y_selected
     //offset;            // Y_offset
     //Y_visible;         // Y_visible
-    //rows.count;        // Y_totalSize
+    //Y_totalSize;        // Y_totalSize
     //FS_Objects.count;  // Y_totalSize (-1)
 
     public Cursor_1D(int y_start, int maxHeight, int rowsCount)
@@ -25,7 +25,7 @@ internal class Cursor_1D //: IComponent //(Y '|')
     //Feed me
     protected int _y_start;        // original pos (for reset)
     protected int _y_visible;      // maxHeight
-    protected int _y_totalSize;    // rows.count
+    protected int _y_totalSize;    // Y_totalSize
 
     //Local
     protected int _y_selected = 0; // current cursor pos
@@ -38,7 +38,7 @@ internal class Cursor_1D //: IComponent //(Y '|')
         set
         {
             if (value < 0) { return; }
-            //if (value >= Rows.Count) { return; }
+            if (value >= Y_totalSize) { return; }
             _y_selected = value;
         }
     }
@@ -47,6 +47,10 @@ internal class Cursor_1D //: IComponent //(Y '|')
         get { return _y_offset; }
         set
         {
+            if (value < 0) { _y_offset = 0; return; }
+            if (Y_totalSize <= Y_visible) { return; }
+            if (value >= Y_totalSize - Y_visible) { _y_offset = Y_totalSize - Y_visible; Y_selected = Y_totalSize - 1; return; }
+
             _y_offset = value;
         }
     }
@@ -55,9 +59,8 @@ internal class Cursor_1D //: IComponent //(Y '|')
         get { return _y_visible; }
         set
         {
-            if (value < 0) { Y_offset = 0; return; }
-            //if (Rows.Count <= Visible) { return; }
-            //if (value >= Rows.Count - Visible) { _offset_X = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
+            if (value < 0)
+                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
             _y_visible = value;
         }
     }
@@ -79,37 +82,37 @@ internal class Cursor_1D //: IComponent //(Y '|')
     }
     #endregion
     #region Methods
-    protected void Up()
+    public void Up()
     {
         Y_selected--;
 
         if (Y_selected == Y_offset - 1)
             Y_offset--;
     }
-    protected void Down()
+    public void Down()
     {
         Y_selected++;
 
-        if (Y_selected == Y_offset + Math.Min(Y_visible, Y_totalSize))
+        if (Y_selected == Y_offset + Y_visible); //Math.Min(Y_visible, Y_totalSize)
             Y_offset++;
     }
 
-    protected void PageUp()
+    public void PageUp()
     {
         Y_selected = Y_selected - Y_visible;
         Y_offset = Y_offset - Y_visible;
     }
-    protected void PageDown()
+    public void PageDown()
     {
         Y_selected = Y_selected + Y_visible;
         Y_offset = Y_offset + Y_visible;
     }
-    protected virtual void GoBegin()
+    public virtual void GoBegin()
     {
         Y_selected = 0;
         Y_offset = 0;
     }
-    protected virtual void GoEnd()
+    public virtual void GoEnd()
     {
         Y_selected = Y_totalSize - 1;
         Y_offset = Y_totalSize - Y_visible;
@@ -127,22 +130,22 @@ internal class Cursor_1D //: IComponent //(Y '|')
     //    {
     //        case ConsoleKey.UpArrow:
     //            ScrollUp();
-    //            break;
+    //            return;
     //        case ConsoleKey.DownArrow:
     //            ScrollDown();
-    //            break;
+    //            return;
     //        case ConsoleKey.Home:
     //            GoBegin();
-    //            break;
+    //            return;
     //        case ConsoleKey.End:
     //            GoEnd();
-    //            break;
+    //            return;
     //        case ConsoleKey.PageUp:
     //            PageUp();
-    //            break;
+    //            return;
     //        case ConsoleKey.PageDown:
     //            PageDown();
-    //            break;
+    //            return;
     //    }
     //}
     #endregion

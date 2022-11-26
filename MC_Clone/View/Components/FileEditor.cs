@@ -59,7 +59,7 @@ internal class FileEditor : IComponent
         set
         {
             if (value < 0)
-                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
+                throw new Exception(String.Format($"Y_visible < 0 (val: {value})"));
             _visible = value;
         }
     }
@@ -140,24 +140,31 @@ internal class FileEditor : IComponent
     {
         switch (info.Key)
         {
+            //Controls
             case ConsoleKey.UpArrow:
                 ScrollUp();
-                break;
+                return;
             case ConsoleKey.DownArrow:
                 ScrollDown();
-                break;
+                return;
             case ConsoleKey.Home:
                 GoBegin();
-                break;
+                return;
             case ConsoleKey.End:
                 GoEnd();
-                break;
+                return;
             case ConsoleKey.PageUp:
                 PageUp();
-                break;
+                return;
             case ConsoleKey.PageDown:
                 PageDown();
-                break;
+                return;
+            //Edit
+            case ConsoleKey.Delete:
+                return;
+            case ConsoleKey.Backspace:
+                return;
+
         }
         Console.WriteLine(info.KeyChar);
     }
@@ -174,7 +181,7 @@ internal class FileEditor : IComponent
     {
         Selected++;
 
-        //if (Selected == Offset + Math.Min(Visible, Rows.Count))
+        //if (Selected == Offset + Math.Min(Y_visible, Rows.Count))
         Offset_Y++;
     }
     private void PageUp()
