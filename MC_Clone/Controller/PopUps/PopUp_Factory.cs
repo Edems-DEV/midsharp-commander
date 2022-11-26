@@ -164,8 +164,9 @@ public class ErrorMsg : PopUp_Red
 public class GoTo : PopUp
 {
     public IntBox input;
+    public FileEditor editor;
 
-    public GoTo()
+    private void Start()
     {
         title = "Go To";
         input = new IntBox() { Label = $"Enter row number:", Value = "" };
@@ -173,10 +174,21 @@ public class GoTo : PopUp
         Add_BtnOk();
         Add_CancelBtn();
     }
+    //public GoTo()
+    //{
+    //    Start();
+    //}
+    public GoTo(FileEditor editor)
+    {
+        Start();
+        this.editor = editor;
+    }
     protected override void BtnOk_Clicked()
     {
         //Application.window.GetType();
         //Application.PreviewWindow.editor.Offset = value; // goal
+        
+        editor.Offset = Convert.ToInt32(input.Value); //max 10chars /num (int limit?)
         BtnCancel_Clicked();
     }
 }

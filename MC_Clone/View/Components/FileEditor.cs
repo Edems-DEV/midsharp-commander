@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MC_Clone;
-internal class FileEditor : IComponent //TODO: Rename to FileViwer
+public class FileEditor : IComponent //TODO: Rename to FileViwer
 {
     #region Atributes
     public Application Application { get; set; }
+    public PreviewWindow ParentClass { get; set; }
 
     private int _offset = 0;
     private int _selected = 0;
@@ -86,7 +88,8 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         }
     }
     #endregion
-    public FileEditor(Application application, FileInfo file, int x = 0, int y = 0)
+
+    private void Start(Application application, FileInfo file, int x = 0, int y = 0)
     {
         this.Application = application;
         this.File = file;
@@ -98,6 +101,15 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
+    }
+    public FileEditor(Application application, FileInfo file, int x = 0, int y = 0)
+    {
+        Start(application, file, x, y);
+    }
+    public FileEditor(PreviewWindow parent, Application application, FileInfo file, int x = 0, int y = 0)
+    {
+        ParentClass = parent;
+        Start(application, file, x, y);
     }
     public void OnResize() //rename to: OnResize
     {
@@ -239,9 +251,30 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         Offset = Rows.Count - Visible;
     }
 
+
+    #endregion
+
+    #region FKeys methods
+    public void WrapLine() //bool outside? to stay persistent
+    {
+        //wrap = !wrap;
+        string label = "Wrap";
+        if (wrap)
+        {
+            wrap = false;
+        }
+        else
+        {
+            label = "Un" + label;
+            wrap = true;
+        }
+        ParentClass.labels[1] = label; //label in abstract window -> acces over app
+        OnResize();
+    }
+
     private void GoTo()
     {
-        GoTo a = new GoTo(); ///this -> value
+        GoTo a = new GoTo(this); ///this -> value
         Application.SwitchPopUp(a);
         //while (Application.popUp != new EmptyMsg()) //block spawn of popup
         //{
@@ -249,19 +282,7 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         //Offset = Convert.ToInt32(a.input.Value);
     }
 
-    #endregion
 
-    #region FKeys methods
-    public void WrapLine() //bool outside? to stay persistent
-    {
-        wrap = !wrap;
-        if (wrap)
-        {
-            //change label Label
-            wrap = false;
-        }
-        OnResize();
-    }
     public void Hex_Asci() { }
     public void GoToLine()
     {
@@ -269,7 +290,16 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
     }
     public void SearchText()
     {
-
+        string input = "You";
+        for (int i = Offset; i < Offset + Math.Min(Visible, Rows.Count); i++)
+        {
+            if (Rows[i].Contains(input))
+            {
+                Rows[i].IndexOf(input);
+                Console.SetCursorPosition(1,1);
+                Console.Write(i);
+            }
+        }
     }
     #endregion
 

@@ -1,5 +1,5 @@
 ﻿namespace MC_Clone;
-internal class MyFileService
+public class MyFileService
 {
     public string Path { get; set; }
     public FileInfo File { get; set; }

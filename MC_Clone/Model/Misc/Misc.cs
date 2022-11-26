@@ -44,6 +44,7 @@ internal class Misc //koncepty
     {
         switch (info.Key)
         {
+            case ConsoleKey.D0:
             case ConsoleKey.D1:
             case ConsoleKey.D2:
             case ConsoleKey.D3:
