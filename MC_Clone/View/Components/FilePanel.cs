@@ -4,6 +4,7 @@ public class FilePanel : IComponent
 {
     public ListWindow listWindow { get; set; }
     public Application Application { get; set; }
+    public Cursor_1D Cursor { get; set; }
 
     public event Action<int> RowSelected;
     
@@ -11,7 +12,7 @@ public class FilePanel : IComponent
     private FileManager FM;
     private List<int> widths;
     private List<Row> rows = new List<Row>();
-    private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
+    private List<FileSystemInfo> _FS_Objects = new List<FileSystemInfo>();
                                                    // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
     private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
@@ -31,8 +32,8 @@ public class FilePanel : IComponent
     private bool _isDiscs;
     private string _path = "";
 
-    private int _offset = 0;
-    private int _selected = 0;
+    //private int _offset = 0;
+    //private int _selected = 0;
     private int _visible = 10;
     #endregion
 
@@ -41,7 +42,16 @@ public class FilePanel : IComponent
     {
         get { return Console.BufferWidth / 2; } //always calcul -> performance? (fixed buggy size?)
     }
-
+    public List<FileSystemInfo> FS_Objects
+    {
+        get { return _FS_Objects; }
+        set
+        {
+            //if (Cursor is not null)
+                Cursor.Y_totalSize = value.Count; //+1
+            _FS_Objects = value;
+        }
+    }
     public int Y
     {
         get { return _y; }
@@ -70,29 +80,11 @@ public class FilePanel : IComponent
         set
         {
             if (value < 0)
-                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
+                throw new Exception(String.Format($"Y_visible < 0 (val: {value})"));
+            //if (Cursor is not null)
+                Cursor.Y_visible = value + 1;
+            
             _visible = value;
-        }
-    }
-    public int Offset
-    {
-        get { return _offset; }
-        set
-        {
-            if (value < 0) { _offset = 0; return; }
-            if (FS_Objects.Count <= Visible) { return; }
-            if (value >= FS_Objects.Count - Visible) { _offset = FS_Objects.Count - Visible; _selected = FS_Objects.Count - 1; return; }
-            _offset = value;
-        }
-    }
-    public int Selected
-    {
-        get { return _selected; }
-        set
-        {
-            if (value < 0) { return; }
-            if (value >= rows.Count - deadRows) { return; }
-            _selected = value;
         }
     }
     public bool IsActive
@@ -126,6 +118,7 @@ public class FilePanel : IComponent
         y_temp = y;
         UpdateMaxLengths();
         FM = new FileManager();
+        Cursor = new Cursor_1D(y, Visible, FS_Objects.Count);
         //set lisener for if window size changed -> update rows and their length +...
         OnResize();
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -157,22 +150,23 @@ public class FilePanel : IComponent
                 break;
             //---------NAVIGATION---------
             case ConsoleKey.UpArrow:
-                ScrollUp();
+                Cursor.Up();
+                //throw new Exception($"Selected: {Cursor.Y_selected}, Height: {Cursor.Y_totalSize}");
                 break;
             case ConsoleKey.DownArrow:
-                ScrollDown();
+                Cursor.Down();
                 break;
             case ConsoleKey.Home:
-                GoBegin();
+                Cursor.GoBegin();
                 break;
             case ConsoleKey.End:
-                GoEnd();
+                Cursor.GoEnd();
                 break;
             case ConsoleKey.PageUp:
-                PageUp();
+                Cursor.PageUp();
                 break;
             case ConsoleKey.PageDown:
-                PageDown();
+                Cursor.PageDown();
                 break;
             //------------------------
             //---------FUNCTION---------
@@ -235,9 +229,9 @@ public class FilePanel : IComponent
         DrawData(headers, widths, l.lineY, ' ');
         DrawData(null, widths, l.cross, l.lineX, l.upRight, l.upleft);
 
-        for (int i = Offset; i < Offset + Math.Min(Visible, this.rows.Count); i++)
+        for (int i = Cursor.Y_offset; i < Cursor.Y_offset + Math.Min(Visible, this.rows.Count - 1); i++) 
         {
-            if (i == Selected)
+            if (i == Cursor.Y_selected)
             {
                 Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
                 Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
@@ -356,6 +350,7 @@ public class FilePanel : IComponent
 
     public void OnResize()
     {
+        
         ImportRows(); //update rows
         widths = Widths();
         UpdateMaxLengths();
@@ -512,42 +507,6 @@ public class FilePanel : IComponent
 
     #endregion
     #region HandleKey methods
-    #region Controls
-    private void ScrollUp()
-    {
-        Selected--;
-
-        if (Selected == Offset - 1)
-            Offset--;
-    }
-    private void ScrollDown()
-    {
-        Selected++;
-
-        if (Selected == Offset + Math.Min(Visible, FS_Objects.Count))
-            Offset++;
-    }
-    private void GoBegin()
-    {
-        Selected = 0;
-        Offset = 0;
-    }
-    private void GoEnd()
-    {
-        Selected = FS_Objects.Count - 1;
-        Offset = FS_Objects.Count - Visible;
-    }
-    private void PageUp()
-    {
-        Selected = Selected - Visible;
-        Offset = Offset - Visible;
-    }
-    private void PageDown()
-    {
-        Selected = Selected + Visible;
-        Offset = Offset + Visible;
-    }
-    #endregion
     #region FunctionKeys
     private void Drives() //Help
     {
@@ -604,7 +563,7 @@ public class FilePanel : IComponent
         if (IsDiscs)
             return;
         Application.SwitchPopUp(new DeleteMsg(GetActiveObject()));
-        Selected -= 1; //move before deleted (backgroud still updates) //TODO: Fix
+        Cursor.Y_selected -= 1; //move before deleted (backgroud still updates) //TODO: Fix
     }
     private void PullDn()
     {
@@ -647,7 +606,7 @@ public class FilePanel : IComponent
     {
         if (FS_Objects != null && FS_Objects.Count != 0)
         {
-            return FS_Objects[Selected];
+            return FS_Objects[Cursor.Y_selected]; 
         }
         throw new Exception("The list of panel objects is empty");
     }
@@ -659,7 +618,7 @@ public class FilePanel : IComponent
     }
     private void RefreshPanel()
     {
-        GoBegin();
+        Cursor.GoBegin();
         UpdatePanel();
     }
     private void UpdatePanel()
