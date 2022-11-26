@@ -9,14 +9,12 @@ internal class FileEditor : IComponent
 {
     #region Atributes
     public Application Application { get; set; }
-    public EditWindow ParentClass { get; set; }
 
-    private int _offset = 0;
-    private int _selected = 0;
-    private int _visible; //rows = Console.WindowWidth;
-    private int maxWidth; //columns = Console.WindowWidth;
-
-    private bool wrap = true;
+    private int _offset_Y = 0; // |
+    private int _offset_X = 0; // -
+    private int _selected = 0; // | (row)
+    private int _visible; // | rows = Console.WindowWidth;
+    private int maxWidth; // - columns = Console.WindowWidth;
 
     //cursor position
     private int _x = 0;
@@ -65,15 +63,26 @@ internal class FileEditor : IComponent
             _visible = value;
         }
     }
-    public int Offset
+    public int Offset_Y
     {
-        get { return _offset; }
+        get { return _offset_Y; }
         set
         {
-            if (value < 0) { _offset = 0; return; }
+            if (value < 0) { _offset_Y = 0; return; }
             if (Rows.Count <= Visible) { return; }
-            if (value >= Rows.Count - Visible) { _offset = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
-            _offset = value;
+            if (value >= Rows.Count - Visible) { _offset_Y = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
+            _offset_Y = value;
+        }
+    }
+    public int Offset_X
+    {
+        get { return _offset_X; }
+        set
+        {
+            if (value < 0) { _offset_X = 0; return; }
+            if (Rows.Count <= Visible) { return; }
+            if (value >= Rows.Count - Visible) { _offset_X = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
+            _offset_X = value;
         }
     }
     public int Selected
@@ -105,11 +114,6 @@ internal class FileEditor : IComponent
     {
         Start(application, file, x, y);
     }
-    public FileEditor(EditWindow parent, Application application, FileInfo file, int x = 0, int y = 0)
-    {
-        ParentClass = parent;
-        Start(application, file, x, y);
-    }
     public void OnResize() //rename to: OnResize
     {
         Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
@@ -121,7 +125,7 @@ internal class FileEditor : IComponent
     public void Draw()
     {
         Console.SetCursorPosition(X, Y);
-        for (int i = Offset; i < Offset + Math.Min(Visible, Rows.Count); i++)
+        for (int i = Offset_Y; i < Offset_Y + Math.Min(Visible, Rows.Count); i++)
         {
             //LineNumber(i); //debug //broken maxWidth -> bad Wrap
 
@@ -164,34 +168,34 @@ internal class FileEditor : IComponent
         Selected--;
 
         //if (Selected == Offset - 1)
-        Offset--;
+        Offset_Y--;
     }
     private void ScrollDown()
     {
         Selected++;
 
         //if (Selected == Offset + Math.Min(Visible, Rows.Count))
-        Offset++;
+        Offset_Y++;
     }
     private void PageUp()
     {
         Selected = Selected - Visible;
-        Offset = Offset - Visible;
+        Offset_Y = Offset_Y - Visible;
     }
     private void PageDown()
     {
         Selected = Selected + Visible;
-        Offset = Offset + Visible;
+        Offset_Y = Offset_Y + Visible;
     }
     private void GoBegin()
     {
         Selected = 0;
-        Offset = 0;
+        Offset_Y = 0;
     }
     private void GoEnd()
     {
         Selected = Rows.Count - 1;
-        Offset = Rows.Count - Visible;
+        Offset_Y = Rows.Count - Visible;
     }
     #endregion
 }

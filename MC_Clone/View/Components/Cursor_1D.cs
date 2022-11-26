@@ -79,14 +79,14 @@ internal class Cursor_1D //: IComponent //(Y '|')
     }
     #endregion
     #region Methods
-    protected void ScrollUp()
+    protected void Up()
     {
         Y_selected--;
 
         if (Y_selected == Y_offset - 1)
             Y_offset--;
     }
-    protected void ScrollDown()
+    protected void Down()
     {
         Y_selected++;
 

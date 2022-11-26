@@ -18,7 +18,7 @@ internal class EditWindow : Window
         this.Application = application;
         this.file = file;
 
-        editor = new FileEditor(this, Application, file, 0, 1);
+        editor = new FileEditor(Application, file, 0, 1);
         header = new Header(file);
         labels = new string[] { "Help", "Save", "Mark", "Replace", "Copy", "Move", "Search", "Delete", "PullDn", "Quit" };
         footer = new Footer(labels);
