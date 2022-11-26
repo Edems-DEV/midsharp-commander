@@ -82,18 +82,18 @@ public class Cursor_1D //: IComponent //(Y '|')
     }
     #endregion
     #region Methods
-    public void Up()
+    public virtual void Up()
     {
         Y_selected--;
 
         if (Y_selected == Y_offset - 1)
             Y_offset--;
     }
-    public void Down()
+    public virtual void Down()
     {
         Y_selected++;
 
-        if (Y_selected == Y_offset + Y_visible); //Math.Min(Y_visible, Y_totalSize)
+        if (Y_selected == Y_offset + Math.Min(Y_visible, Y_totalSize)) //Math.Min(Y_visible, Y_totalSize)
             Y_offset++;
     }
 

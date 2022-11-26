@@ -7,29 +7,42 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 {
-    public Cursor_2D(int x_start, int maxHeight, int rowsCount) : base(x_start, maxHeight, rowsCount)
+    public Cursor_2D(int y_start, int maxHeight, int rowsCount, int _x_start, int _x_visible) : base(y_start, maxHeight, rowsCount)
     {
-
+        X_start = _x_start;
+        X_visible = _x_visible;
+        //X_totalSize = _x_totalSize;
     }
 
-     #region Atributes
+    #region Atributes
     //Feed me
     protected int _x_start;        // original pos (for reset)
     protected int _x_visible;      // maxHeight
     protected int _x_totalSize;    // rows.count
+    protected char input = 'x';
+    protected string _row = "";   //X_totalSize = _x_totalSize;
 
     //Local
     protected int _x_selected = 0; // current cursor pos
     protected int _x_offset = 0;   // offset
     #endregion
     #region Properties 
+    public string Row
+    {
+        get { return _row; }
+        set
+        {
+            _row = value;
+        }
+    }
     public int X_selected
     {
         get { return _x_selected; }
         set
         {
             if (value < 0) { return; }
-            //if (value >= Rows.Count) { return; }
+            if (value >= Row.Length) { return; }
+            if (value > X_totalSize) { _x_selected = X_totalSize;  return; }
             _x_selected = value;
         }
     }
@@ -38,6 +51,10 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         get { return _x_offset; }
         set
         {
+            if (value < 0) { _x_offset = 0; return; }
+            if (X_totalSize <= X_visible) { return; }
+            if (value >= X_totalSize - X_visible) { _x_offset = X_totalSize - X_visible; X_selected = X_totalSize - 1; return; }
+
             _x_offset = value;
         }
     }
@@ -46,9 +63,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         get { return _x_visible; }
         set
         {
-            if (value < 0) { X_offset = 0; return; }
-            //if (Rows.Count <= Y_visible) { return; }
-            //if (value >= Rows.Count - Y_visible) { _offset_X = Rows.Count - Y_visible; _selected = Rows.Count - 1; return; }
             _x_visible = value;
         }
     }
@@ -62,48 +76,93 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     }
     public int X_totalSize
     {
-        get { return _x_totalSize; }
-        set
-        {
-            _x_totalSize = value;
-        }
+        get { return Row.Length; }
+        //set
+        //{
+        //    _x_totalSize = value;
+        //}
     }
     #endregion
     #region Methods
-    protected void Up()
+    protected void CheckLineSize(string nextRow)
     {
-        X_selected--;
-
-        if (X_selected == X_offset - 1)
-            X_offset--;
+        Row = nextRow;
+        if (X_totalSize < X_selected)
+        {
+            _x_selected = X_totalSize - 1;
+        }
     }
-    protected void Down()
+    public override void Up()
+    {
+        
+        base.Up();
+    }
+    public override void Down()
+    {
+        base.Down();
+        //go to end of line (no empthy space)
+    }
+    public void Up(string nextRow)
+    {
+        CheckLineSize(nextRow);
+        base.Up();
+    }
+    public void Down(string nextRow)
+    {
+        CheckLineSize(nextRow);
+        base.Down();
+    }
+
+    public void Right()
     {
         X_selected++;
 
         if (X_selected == X_offset + Math.Min(X_visible, X_totalSize))
             X_offset++;
     }
+    public void Left()
+    {
+        X_selected--;
 
-    protected void PageUp()
-    {
-        X_selected = X_selected - X_visible;
-        X_offset = X_offset - X_visible;
+        if (X_selected == X_offset - 1)
+            X_offset--;
     }
-    protected void PageDown()
-    {
-        X_selected = X_selected + X_visible;
-        X_offset = X_offset + X_visible;
-    }
-    protected virtual void GoBegin()
+
+    public override void GoBegin()
     {
         X_selected = 0;
         X_offset = 0;
     }
-    protected virtual void GoEnd()
+    public override void GoEnd()
     {
         X_selected = X_totalSize - 1;
         X_offset = X_totalSize - X_visible;
     }
     #endregion
+    public void Draw()
+    {
+        if (input == null)
+            return;
+
+        #region SaveOldSettings
+        int Old_X = Console.CursorLeft;
+        int Old_Y = Console.CursorTop;
+        ConsoleColor Old_BG= Console.BackgroundColor;
+        ConsoleColor Old_FG = Console.ForegroundColor;
+        #endregion
+
+
+        Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
+        Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
+        Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        Console.Write(input);
+
+
+        #region Restore
+        Console.CursorLeft = Old_X;
+        Console.CursorTop = Old_Y;
+        Console.BackgroundColor = Old_BG;
+        Console.ForegroundColor = Old_FG;
+        #endregion
+    }
 }

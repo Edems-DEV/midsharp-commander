@@ -10,9 +10,6 @@ internal class FileEditor : IComponent
     #region Atributes
     public Application Application { get; set; }
 
-    private int _offset_Y = 0; // |
-    private int _offset_X = 0; // -
-    private int _selected = 0; // | (row)
     private int _visible; // | rows = Console.WindowWidth;
     private int maxWidth; // - columns = Console.WindowWidth;
 
@@ -53,49 +50,6 @@ internal class FileEditor : IComponent
             _x = value;
         }
     }
-
-    public int Visible
-    {
-        get { return _visible; }
-        set
-        {
-            if (value < 0)
-                throw new Exception(String.Format($"Y_visible < 0 (val: {value})"));
-            _visible = value;
-        }
-    }
-    public int Offset_Y
-    {
-        get { return _offset_Y; }
-        set
-        {
-            if (value < 0) { _offset_Y = 0; return; }
-            if (Rows.Count <= Visible) { return; }
-            if (value >= Rows.Count - Visible) { _offset_Y = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
-            _offset_Y = value;
-        }
-    }
-    public int Offset_X
-    {
-        get { return _offset_X; }
-        set
-        {
-            if (value < 0) { _offset_X = 0; return; }
-            if (Rows.Count <= Visible) { return; }
-            if (value >= Rows.Count - Visible) { _offset_X = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
-            _offset_X = value;
-        }
-    }
-    public int Selected
-    {
-        get { return _selected; }
-        set
-        {
-            if (value < 0) { return; }
-            if (value >= Rows.Count) { return; }
-            _selected = value;
-        }
-    }
     #endregion
 
     private void Start(Application application, FileInfo file, int x = 0, int y = 0)
@@ -107,6 +61,7 @@ internal class FileEditor : IComponent
         FS = new MyFileService(file.FullName);
         OriginalRows = FS.Read();
         Rows = new List<string>(OriginalRows);
+        Cursor = new Cursor_2D(Y, _visible, Rows.Count, X, maxWidth);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -117,23 +72,26 @@ internal class FileEditor : IComponent
     }
     public void OnResize() //rename to: OnResize
     {
-        Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
-        maxWidth = Console.WindowWidth;
-
-        Rows = new List<string>(OriginalRows);
+        Cursor.Y_visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
+        Cursor.X_visible = Console.WindowWidth;
     }
 
     public void Draw()
     {
         Console.SetCursorPosition(X, Y);
-        for (int i = Offset_Y; i < Offset_Y + Math.Min(Visible, Rows.Count); i++)
+        for (int i = Cursor.Y_offset; i < Cursor.Y_offset + Math.Min(Cursor.Y_visible, Rows.Count); i++)
         {
-            //LineNumber(i); //debug //broken maxWidth -> bad Wrap
+            if (i == Cursor.Y_selected)
+            {
+                Cursor.Row = Rows[i];
+                Rows[i] = Cursor.Row;
+            }
 
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
             Console.WriteLine(Rows[i]); //fix: console auto line wrap -> (destroys formatting)
+            Cursor.Draw();
         }
     }
 
@@ -142,23 +100,36 @@ internal class FileEditor : IComponent
         switch (info.Key)
         {
             //Controls
+            case ConsoleKey.RightArrow:
+                Cursor.Right();
+                return;
+            case ConsoleKey.LeftArrow:
+                Cursor.Left();
+                return;
+            //---
             case ConsoleKey.UpArrow:
-                ScrollUp();
+                if (Cursor.Y_selected == 0)
+                    return;
+                Cursor.Up(Rows[Cursor.Y_selected - 1]);
+                //throw new Exception(Cursor.Y_offset.ToString());
+                //TODO: fix line length (broken cout) [wrapper]
                 return;
             case ConsoleKey.DownArrow:
-                ScrollDown();
+                if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
+                    return;
+                Cursor.Down(Rows[Cursor.Y_selected + 1]);
                 return;
             case ConsoleKey.Home:
-                GoBegin();
+                Cursor.GoBegin();
                 return;
             case ConsoleKey.End:
-                GoEnd();
+                Cursor.GoEnd();
                 return;
             case ConsoleKey.PageUp:
-                PageUp();
+                Cursor.PageUp();
                 return;
             case ConsoleKey.PageDown:
-                PageDown();
+                Cursor.PageDown();
                 return;
             //Edit
             case ConsoleKey.Delete:
@@ -169,41 +140,4 @@ internal class FileEditor : IComponent
         }
         Console.WriteLine(info.KeyChar);
     }
-
-    #region Controls Methods
-    private void ScrollUp()
-    {
-        Selected--;
-
-        //if (Selected == Offset - 1)
-        Offset_Y--;
-    }
-    private void ScrollDown()
-    {
-        Selected++;
-
-        //if (Selected == Offset + Math.Min(Y_visible, Rows.Count))
-        Offset_Y++;
-    }
-    private void PageUp()
-    {
-        Selected = Selected - Visible;
-        Offset_Y = Offset_Y - Visible;
-    }
-    private void PageDown()
-    {
-        Selected = Selected + Visible;
-        Offset_Y = Offset_Y + Visible;
-    }
-    private void GoBegin()
-    {
-        Selected = 0;
-        Offset_Y = 0;
-    }
-    private void GoEnd()
-    {
-        Selected = Rows.Count - 1;
-        Offset_Y = Rows.Count - Visible;
-    }
-    #endregion
 }
