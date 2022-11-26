@@ -10,8 +10,8 @@ internal class FileEditor : IComponent
     #region Atributes
     public Application Application { get; set; }
 
-    private int _visible; // | rows = Console.WindowWidth;
-    private int maxWidth; // - columns = Console.WindowWidth;
+    //private int _visible; // | rows = Console.WindowWidth;
+    //private int maxWidth; // - columns = Console.WindowWidth;
 
     //cursor position
     private int _x = 0;
@@ -61,7 +61,7 @@ internal class FileEditor : IComponent
         FS = new MyFileService(file.FullName);
         OriginalRows = FS.Read();
         Rows = new List<string>(OriginalRows);
-        Cursor = new Cursor_2D(Y, _visible, Rows.Count, X, maxWidth);
+        Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -72,6 +72,8 @@ internal class FileEditor : IComponent
     }
     public void OnResize() //rename to: OnResize
     {
+        Rows = new List<string>(OriginalRows);
+        Wrap();
         Cursor.Y_visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
         Cursor.X_visible = Console.WindowWidth;
     }
@@ -139,5 +141,18 @@ internal class FileEditor : IComponent
 
         }
         Console.WriteLine(info.KeyChar);
+    }
+
+    public void Wrap()
+    {
+        int a = Console.WindowWidth;
+        for (int i = 0; i < Rows.Count; i++)
+        {
+            int locMaxWidth = a;// - 1;
+            if (Rows[i].Length > a)
+            {
+                Rows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
+            }
+        }
     }
 }
