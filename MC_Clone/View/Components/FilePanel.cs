@@ -149,12 +149,6 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
-        if (PopUp)
-        {
-            a.HandleKey(info);
-            PopUp = a.alive;
-            return;
-        }
         switch (info.Key)
         {
             //---------UPDATE---------
@@ -183,9 +177,7 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                a = PopUpFactory.Move();
-                PopUp = true;
-                //Drives();
+                Drives();
                 break;
             case ConsoleKey.F2:
                 CreateFile();
@@ -261,7 +253,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = Y;   
+        y_temp = Y;
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
