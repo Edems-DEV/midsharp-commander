@@ -38,8 +38,8 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = @"C:\Users\root\Desktop\Example Folder"; //change to dynamic desktop path
-    public const string Path_RightPane = @".";
+    public const string Path_LeftPane = @"C:\Users\Dolanskyadam\Desktop\ExampleText"; //change to dynamic desktop path
+    public const string Path_RightPane = @"C:\Users\Dolanskyadam\Desktop\ExampleText";
 
     //------------------Color schemes------------------
     public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,

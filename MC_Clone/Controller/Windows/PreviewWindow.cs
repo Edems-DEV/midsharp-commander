@@ -72,11 +72,18 @@ public class Header //mak emore genral an make one specific for this class
 
     public void Draw()
     {
+        ConsoleColor oldB = Console.BackgroundColor;
+        ConsoleColor oldT = Console.ForegroundColor;
+        Console.BackgroundColor = Config.Labels_BackgroundColor;
+        Console.ForegroundColor = Config.Labels_ForegroundColor;
+
         string path = file.FullName;
         path = path.PadRight(width, ' ');
         Console.Write(path);
 
         // Write(10, "100/100");
+        Console.BackgroundColor = oldB;
+        Console.ForegroundColor = oldT;
     }
 
     public void Write(int rightOffset, string text)

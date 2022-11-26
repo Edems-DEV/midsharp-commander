@@ -93,7 +93,7 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         this.X = x;
         this.Y = y;
         FS = new MyFileService(file.FullName);
-        OriginalRows = FS.Read();
+        OriginalRows = FS.Read(); //a
         Rows = OriginalRows;
 
         OnResize(); //first size
@@ -104,7 +104,7 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
         maxWidth = Console.WindowWidth;
 
-        Rows = FS.Read(); //OriginalRows //doesnt work -> why?
+        Rows = FS.Read(); //OriginalRows; //doesnt work -> why?
         Wrap();
     }
 
@@ -193,8 +193,11 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
             case ConsoleKey.PageDown:
                 PageDown();
                 break;
+            case ConsoleKey.F2:
+                WrapLine();
+                break;
             case ConsoleKey.F5:
-                GoTo(10);
+                GoTo();
                 break;
         }
         Console.WriteLine(info.KeyChar);
@@ -236,9 +239,9 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         Offset = Rows.Count - Visible;
     }
 
-    private void GoTo(int goIndex)
+    private void GoTo()
     {
-        GoTo a = new GoTo();
+        GoTo a = new GoTo(); ///this -> value
         Application.SwitchPopUp(a);
         //while (Application.popUp != new EmptyMsg()) //block spawn of popup
         //{
@@ -249,8 +252,15 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
     #endregion
 
     #region FKeys methods
-    public void WrapLine(bool state) //bool outside? to stay persistent
+    public void WrapLine() //bool outside? to stay persistent
     {
+        wrap = !wrap;
+        if (wrap)
+        {
+            //change label Label
+            wrap = false;
+        }
+        OnResize();
     }
     public void Hex_Asci() { }
     public void GoToLine()
