@@ -524,7 +524,7 @@ public class FilePanel : IComponent
     {
         Selected++;
 
-        if (Selected == Offset + Math.Min(Visible, this.rows.Count))
+        if (Selected == Offset + Math.Min(Visible, FS_Objects.Count))
             Offset++;
     }
     private void GoBegin()
