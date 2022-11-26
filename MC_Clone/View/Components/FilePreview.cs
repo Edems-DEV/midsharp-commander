@@ -96,8 +96,8 @@ public class FilePreview : IComponent //TODO: Rename to FileViwer
         this.X = x;
         this.Y = y;
         FS = new MyFileService(file.FullName);
-        OriginalRows = FS.Read(); //a
-        Rows = OriginalRows;
+        OriginalRows = FS.Read();
+        Rows = new List<string>(OriginalRows);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -116,7 +116,7 @@ public class FilePreview : IComponent //TODO: Rename to FileViwer
         Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
         maxWidth = Console.WindowWidth;
 
-        Rows = FS.Read(); //OriginalRows; //doesnt work -> why?
+        Rows = new List<string>(OriginalRows);
         Wrap();
     }
 
