@@ -19,7 +19,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     protected int _x_start;        // original pos (for reset)
     protected int _x_visible;      // maxHeight
     protected int _x_totalSize;    // rows.count
-    protected char input = 'x';
+    public char input = 'x';
     protected string _row = "";   //X_totalSize = _x_totalSize;
 
     //Local
@@ -40,8 +40,8 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         get { return _x_selected; }
         set
         {
-            if (value < 0) { return; }
-            if (value >= Row.Length - 1) { _x_selected = Row.Length - 1; return; }
+            if (value < 0) { _x_selected = 0; return; }
+            if (value >= Row.Length) { _x_selected = Row.Length; return; }
             if (value > X_totalSize) { _x_selected = X_totalSize;  return; }
             _x_selected = value;
         }
@@ -187,8 +187,19 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
         Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
         Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
+        if (Row.Length == 0)
+        {
+            input = ' ';
+            X_selected = 0;
+            X_offset = 0;
+        }
+        else
+        {
+            input = Row[X_selected + X_offset];
+        }
         Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
-        input = Row[X_selected + X_offset];
+        
+        
         Console.Write(input);
 
 

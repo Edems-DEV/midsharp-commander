@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class FileEditor : IComponent
+public class FileEditor : IComponent
 {
     #region Atributes
     public Application Application { get; set; }
@@ -25,6 +25,8 @@ internal class FileEditor : IComponent
     public List<string> OriginalRows = new List<string>();
     public List<string> Rows = new List<string>(); //real rows in txt
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
+
+    public string flag = "-";
 
     #endregion
 
@@ -56,8 +58,8 @@ internal class FileEditor : IComponent
     {
         get { return Rows[Cursor.Y_selected]; }
         set {
-            //Cursor.Row = value;
-            Rows[Cursor.Y_selected] = value; 
+            Cursor.Row = value;
+            Rows[Cursor.Y_selected] = value;
         }
     }
     #endregion
@@ -177,11 +179,15 @@ internal class FileEditor : IComponent
         }
         WriteChar(info.KeyChar); //TODO: check for bad chars
     }
-    public void Quit()
+
+    public bool ContentChanged()
     {
         var set = new HashSet<string>(OriginalRows);
-        var equals = set.SetEquals(Rows);
-        if (!equals)
+        return set.SetEquals(Rows);
+    }
+    public void Quit()
+    {
+        if (!ContentChanged())
             Application.SwitchPopUp(new CloseFile(File, Rows));
         else
             Application.SwitchWindow(new ListWindow(Application));
@@ -213,10 +219,12 @@ internal class FileEditor : IComponent
         int CursorPos = Cursor.X_offset + Cursor.X_selected;
         string newLine = "";
         newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+        if (newLine == "" || newLine == null){newLine = " ";}
         Rows.Insert(Cursor.Y_selected + 1, newLine);
 
         ActiveRow = ActiveRow.Substring(0, CursorPos);
-        Cursor.X_selected -- ;
+        Cursor.X_selected = 0;
+        Cursor.Y_selected += 1;
     }
     public void WriteChar(char Input)
     {
@@ -237,6 +245,11 @@ internal class FileEditor : IComponent
             DeleteLine();
             Cursor.X_selected = ActiveRow.Length;
             ActiveRow = ActiveRow + deletedRow;
+        }
+        else if (CursorPos == ActiveRow.Length - 1)
+        {
+            Cursor.X_selected--;
+            ActiveRow = ActiveRow.Remove(ActiveRow.Length - 1);
         }
         else
         {
