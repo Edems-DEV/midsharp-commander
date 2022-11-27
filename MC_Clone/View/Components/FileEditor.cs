@@ -234,9 +234,10 @@ public class FileEditor : IComponent
     {
         int CursorPos = Cursor.X_offset + Cursor.X_selected;
         string newLine = "";
-        newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+        newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
         if (newLine == "" || newLine == null){newLine = " ";}
         Rows.Insert(Cursor.Y_selected + 1, newLine);
+        PrintRows = new List<string>(Rows);
 
         ActiveRow = ActiveRow.Substring(0, CursorPos);
         Cursor.X_selected = 0;

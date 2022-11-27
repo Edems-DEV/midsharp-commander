@@ -42,7 +42,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         {
             if (value < 0) { _x_selected = 0; return; }
             //if (value > X_visible) { _x_selected = X_visible; return; }
-            if (value > X_totalSize) { _x_selected = X_totalSize;  return; }
+            //if (value > X_totalSize) { _x_selected = X_totalSize;  return; } //commne out -> broken backspace cursor
             _x_selected = value;
         }
     }
@@ -218,6 +218,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         {
             X_selected = Row.Length - 1;
         }
-        return Row[X_selected + X_offset];
+        return Row[X_selected];
     }
 }
