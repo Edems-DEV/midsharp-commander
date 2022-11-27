@@ -50,6 +50,12 @@ internal class FileEditor : IComponent
             _x = value;
         }
     }
+
+    public string ActiveRow
+    {
+        get { return Rows[Cursor.Y_selected]; }
+        set { Rows[Cursor.Y_selected] = value; }
+    }
     #endregion
 
     private void Start(Application application, FileInfo file, int x = 0, int y = 0)
@@ -100,14 +106,14 @@ internal class FileEditor : IComponent
     public string NextRow()
     {
         if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
-            return Rows[Cursor.Y_selected];
+            return ActiveRow;
 
         return Rows[Cursor.Y_selected + 1];
     }
     public string PrevioustRow()
     {
         if (Cursor.Y_selected == 0)
-            return Rows[Cursor.Y_selected];
+            return ActiveRow;
 
         return Rows[Cursor.Y_selected - 1];
     }
@@ -144,12 +150,14 @@ internal class FileEditor : IComponent
                 return;
             //Edit
             case ConsoleKey.Delete:
+                Delete();
                 return;
             case ConsoleKey.Backspace:
+                Backspace();
                 return;
 
         }
-        Console.WriteLine(info.KeyChar);
+        WriteChar(info.KeyChar);
     }
 
     public void Wrap()
@@ -163,5 +171,34 @@ internal class FileEditor : IComponent
                 Rows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
             }
         }
+    }
+
+    public void WriteChar(char Input)
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        ActiveRow =
+            ActiveRow.Substring(0, CursorPos)
+            + Input + 
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
+        Cursor.X_selected++;
+    }
+
+    public void Backspace()
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        ActiveRow =
+            ActiveRow.Substring(0, CursorPos - 1)
+            +
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+
+        Cursor.X_selected--;
+    }
+    public void Delete()
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        ActiveRow =
+            ActiveRow.Substring(0, CursorPos)
+            +
+            ActiveRow.Substring(CursorPos + 1, ActiveRow.Length - 1 - CursorPos);
     }
 }
