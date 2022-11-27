@@ -37,14 +37,6 @@ internal class EditWindow : Window
 
     public override void HandleKey(ConsoleKeyInfo info)
     {
-        switch (info.Key)
-        {
-            case ConsoleKey.Escape:
-            case ConsoleKey.F10:
-                Quit();
-                return;
-        }
-
         editor.HandleKey(info);
     }
 
@@ -52,8 +44,5 @@ internal class EditWindow : Window
     {
     }
 
-    public void Quit()
-    {
-        Application.SwitchWindow(new ListWindow(Application));
-    }
+
 }

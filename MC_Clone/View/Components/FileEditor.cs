@@ -169,9 +169,20 @@ internal class FileEditor : IComponent
             case ConsoleKey.F8:
                 DeleteLine();
                 return;
+            case ConsoleKey.Escape:
+            case ConsoleKey.F10:
+                Quit();
+                return;
 
         }
         WriteChar(info.KeyChar); //TODO: check for bad chars
+    }
+    public void Quit()
+    {
+        if (!Rows.Equals(OriginalRows)) //TODO: fix this IF
+        {
+            Application.SwitchPopUp(new CloseFile(File, Rows));
+        }
     }
     public void SaveChanges()
     {

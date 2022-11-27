@@ -111,9 +111,9 @@ public abstract class PopUp : Window //?: Window -> have same needs
         components[Selected].HandleKey(info);
     }
     #region Button factory
-    public void Add_CancelBtn()
+    public void Add_CancelBtn(string title = "Cancel")
     {
-        Button btnCancel = new Button() { Title = "Cancel" };
+        Button btnCancel = new Button() { Title = title };
         btnCancel.Clicked += BtnCancel_Clicked;
         components.Add(btnCancel);
     }

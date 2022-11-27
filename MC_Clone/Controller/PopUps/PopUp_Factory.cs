@@ -13,6 +13,42 @@ public class EmptyMsg : PopUp
 {
     
 }
+public class CloseFile : PopUp
+{
+    private MyFileService FS;
+    List<string> Rows;
+
+    public CloseFile(FileSystemInfo file, List<string> rows)
+    {
+        Rows = rows;
+        FS = new MyFileService(file.FullName);
+        title = "Close file";
+        details.Add($"File: \"{file.Name}\" was modified.");
+        details.Add($"Save before close?");
+        Add_BtnOk();
+        Add_NoBtn();
+        Add_CancelBtn();
+        
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        FS.OverWrite(Rows);
+        BtnNo_Clicked();
+    }
+    public void Add_NoBtn(string title = "No")
+    {
+        Button btnNo = new Button() { Title = title };
+        btnNo.Clicked += BtnNo_Clicked;
+        components.Add(btnNo);
+    }
+    protected void BtnNo_Clicked()
+    {
+        BtnCancel_Clicked();
+        Application.SwitchWindow(new ListWindow(Application));
+    }
+}
 public class SaveFile : PopUp
 {
     private MyFileService FS;
@@ -78,6 +114,7 @@ public class CreateFolderMsg : PopUp
         input = new TextBox() { Label = $"Enter folder name:", Value = "" };
         components.Add(input);
         Add_BtnOk();
+        Add_CancelBtn("No");
         Add_CancelBtn();
     }
 
