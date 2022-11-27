@@ -179,10 +179,12 @@ internal class FileEditor : IComponent
     }
     public void Quit()
     {
-        if (!Rows.Equals(OriginalRows)) //TODO: fix this IF
-        {
+        var set = new HashSet<string>(OriginalRows);
+        var equals = set.SetEquals(Rows);
+        if (!equals)
             Application.SwitchPopUp(new CloseFile(File, Rows));
-        }
+        else
+            Application.SwitchWindow(new ListWindow(Application));
     }
     public void SaveChanges()
     {
