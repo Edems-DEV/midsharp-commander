@@ -201,12 +201,23 @@ internal class FileEditor : IComponent
     public void Backspace()
     {
         int CursorPos = Cursor.X_offset + Cursor.X_selected;
-        ActiveRow =
+        if (CursorPos == 0)
+        {
+            string deletedRow = ActiveRow;
+            Rows.RemoveAt(Cursor.Y_selected);
+            Cursor.Y_selected--;
+            Cursor.X_selected = ActiveRow.Length;
+            ActiveRow = ActiveRow + deletedRow;
+        }
+        else
+        {
+            ActiveRow =
             ActiveRow.Substring(0, CursorPos - 1)
             +
             ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
 
-        Cursor.X_selected--;
+            Cursor.X_selected--;
+        }
     }
     public void Delete()
     {
