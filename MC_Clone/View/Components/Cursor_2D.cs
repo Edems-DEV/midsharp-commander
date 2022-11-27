@@ -41,7 +41,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         set
         {
             if (value < 0) { _x_selected = 0; return; }
-            if (value >= Row.Length) { _x_selected = Row.Length; return; }
+            //if (value > X_visible) { _x_selected = X_visible; return; }
             if (value > X_totalSize) { _x_selected = X_totalSize;  return; }
             _x_selected = value;
         }
@@ -52,7 +52,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         set
         {
             if (value < 0) { _x_offset = 0; return; }
-            if (X_totalSize <= X_visible) { return; }
+            if (X_totalSize <= X_visible) { _x_offset = 0; return; }
             if (value >= X_totalSize - X_visible) { _x_offset = X_totalSize - X_visible; X_selected = X_totalSize - 1; return; }
 
             _x_offset = value;
@@ -153,7 +153,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     }
     public override void GoEnd()
     {
-        X_selected = X_totalSize - 1;
+        X_selected = X_totalSize - 1 - X_visible;
         X_offset = X_totalSize - X_visible;
     }
     public void GoEnd(int localX_totalSize)
@@ -166,6 +166,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     protected void CheckLineSize(string nextRow)
     {
         Row = nextRow;
+        X_offset = 0;
         if (X_totalSize < X_selected)
         {
             _x_selected = X_totalSize - 1;

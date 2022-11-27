@@ -73,6 +73,7 @@ public class FileEditor : IComponent
         FS = new MyFileService(file.FullName);
         OriginalRows = FS.Read();
         Rows = new List<string>(OriginalRows);
+        PrintRows = new List<string>(OriginalRows);
         Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
 
         OnResize(); //first size
@@ -92,6 +93,7 @@ public class FileEditor : IComponent
 
     public void Draw()
     {
+        Wrap();
         Console.SetCursorPosition(X, Y);
         for (int i = Cursor.Y_offset; i < Cursor.Y_offset + Math.Min(Cursor.Y_visible, Rows.Count); i++)
         {
@@ -104,7 +106,7 @@ public class FileEditor : IComponent
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
-            Console.WriteLine(Rows[i]); //fix: console auto line wrap -> (destroys formatting)
+            Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
             Cursor.Draw();
         }
     }
@@ -210,7 +212,21 @@ public class FileEditor : IComponent
             int locMaxWidth = a;// - 1;
             if (Rows[i].Length > a)
             {
-                Rows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
+                int lastLenght = Rows[i].Length - Cursor.X_offset;
+                if (lastLenght < locMaxWidth)
+                    locMaxWidth = lastLenght;
+                PrintRows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
+            }
+            else
+            {
+                if (Rows[i].Length <= Cursor.X_offset)
+                {
+                    PrintRows[i] = " ";
+                }
+                else
+                {
+                    PrintRows[i] = Rows[i];
+                }
             }
         }
     }
