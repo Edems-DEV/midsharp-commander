@@ -23,13 +23,22 @@ public class MyFileService
         {
             while (!reader.EndOfStream)
             {
-                result.Add(reader.ReadLine());
+                string line = reader.ReadLine();
+                if (line == "")
+                    line = " ";
+                result.Add(line);
             }
         }
 
         return result;
     }
-    public void OverWrite() { }
+    public void OverWrite(List<string> Rows) 
+    {
+        if (Rows[1] == " ")
+        {
+            //write ""
+        }
+    }
 
     #region Stats calc
     public void CountWords() { }
