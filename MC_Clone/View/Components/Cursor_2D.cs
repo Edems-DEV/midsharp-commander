@@ -111,7 +111,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         if (Row.Length - 1 == X_selected) //up?
         {
             Down(nextRow);
-            X_selected = 0;
+            GoBegin();
             return;
         }
 
@@ -123,18 +123,19 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     }
     public void Left(string nextRow)
     {
+        
         if (0 == X_selected)
         {
-            if (Row == nextRow) //broken
-            {
-                X_selected = 0;
-            }
-            else
-            {
-                X_selected = nextRow.Length - 1;
-            }
-                
+            bool RowIsSame = false;
+            if (Row == nextRow)
+                RowIsSame = true;
+
             Up(nextRow);
+
+            if (RowIsSame)
+                GoBegin();
+            else
+                GoEnd(nextRow.Length);
             return;
         }
 
@@ -147,7 +148,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
     public override void GoBegin()
     {
-        throw new Exception(X_selected +" " + Row.Length);
         X_selected = 0;
         X_offset = 0;
     }
@@ -155,6 +155,11 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     {
         X_selected = X_totalSize - 1;
         X_offset = X_totalSize - X_visible;
+    }
+    public void GoEnd(int localX_totalSize)
+    {
+        X_selected = localX_totalSize - 1;
+        X_offset = localX_totalSize - X_visible;
     }
     #endregion
 
