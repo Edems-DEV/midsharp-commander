@@ -97,29 +97,38 @@ internal class FileEditor : IComponent
         }
     }
 
+    public string NextRow()
+    {
+        if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
+            return Rows[Cursor.Y_selected];
+
+        return Rows[Cursor.Y_selected + 1];
+    }
+    public string PrevioustRow()
+    {
+        if (Cursor.Y_selected == 0)
+            return Rows[Cursor.Y_selected];
+
+        return Rows[Cursor.Y_selected - 1];
+    }
+
     public void HandleKey(ConsoleKeyInfo info)
     {
         switch (info.Key)
         {
             //Controls
             case ConsoleKey.RightArrow:
-                Cursor.Right();
+                Cursor.Right(NextRow());
                 return;
             case ConsoleKey.LeftArrow:
-                Cursor.Left();
+                Cursor.Left(PrevioustRow());
                 return;
             //---
             case ConsoleKey.UpArrow:
-                if (Cursor.Y_selected == 0)
-                    return;
-                Cursor.Up(Rows[Cursor.Y_selected - 1]);
-                //throw new Exception(Cursor.Y_offset.ToString());
-                //TODO: fix line length (broken cout) [wrapper]
+                Cursor.Up(PrevioustRow());
                 return;
             case ConsoleKey.DownArrow:
-                if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
-                    return;
-                Cursor.Down(Rows[Cursor.Y_selected + 1]);
+                Cursor.Down(NextRow());
                 return;
             case ConsoleKey.Home:
                 Cursor.GoBegin();

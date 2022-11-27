@@ -84,14 +84,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     }
     #endregion
     #region Methods
-    protected void CheckLineSize(string nextRow)
-    {
-        Row = nextRow;
-        if (X_totalSize < X_selected)
-        {
-            _x_selected = X_totalSize - 1;
-        }
-    }
+
     public override void Up()
     {
         
@@ -113,23 +106,48 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         base.Down();
     }
 
-    public void Right()
+    public void Right(string nextRow)
     {
+        if (Row.Length - 1 == X_selected) //up?
+        {
+            Down(nextRow);
+            X_selected = 0;
+            return;
+        }
+
         X_selected++;
 
         if (X_selected == X_offset + Math.Min(X_visible, X_totalSize))
             X_offset++;
+
     }
-    public void Left()
+    public void Left(string nextRow)
     {
+        if (0 == X_selected)
+        {
+            if (Row == nextRow) //broken
+            {
+                X_selected = 0;
+            }
+            else
+            {
+                X_selected = nextRow.Length - 1;
+            }
+                
+            Up(nextRow);
+            return;
+        }
+
         X_selected--;
 
         if (X_selected == X_offset - 1)
             X_offset--;
+
     }
 
     public override void GoBegin()
     {
+        throw new Exception(X_selected +" " + Row.Length);
         X_selected = 0;
         X_offset = 0;
     }
@@ -139,6 +157,16 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         X_offset = X_totalSize - X_visible;
     }
     #endregion
+
+    protected void CheckLineSize(string nextRow)
+    {
+        Row = nextRow;
+        if (X_totalSize < X_selected)
+        {
+            _x_selected = X_totalSize - 1;
+        }
+    }
+
     public void Draw()
     {
         if (input == null)
@@ -155,6 +183,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
         Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
         Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        input = Row[X_selected + X_offset];
         Console.Write(input);
 
 
