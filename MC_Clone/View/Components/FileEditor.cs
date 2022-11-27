@@ -54,7 +54,10 @@ internal class FileEditor : IComponent
     public string ActiveRow
     {
         get { return Rows[Cursor.Y_selected]; }
-        set { Rows[Cursor.Y_selected] = value; }
+        set {
+            //Cursor.Row = value;
+            Rows[Cursor.Y_selected] = value; 
+        }
     }
     #endregion
 
@@ -160,7 +163,7 @@ internal class FileEditor : IComponent
                 return;
 
         }
-        WriteChar(info.KeyChar);
+        WriteChar(info.KeyChar); //TODO: check for bad chars
     }
 
     public void Wrap()

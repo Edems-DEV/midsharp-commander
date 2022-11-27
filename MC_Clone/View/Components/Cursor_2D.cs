@@ -41,7 +41,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         set
         {
             if (value < 0) { return; }
-            if (value >= Row.Length) { return; }
+            if (value >= Row.Length - 1) { _x_selected = Row.Length - 1; return; }
             if (value > X_totalSize) { _x_selected = X_totalSize;  return; }
             _x_selected = value;
         }
