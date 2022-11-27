@@ -153,7 +153,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     }
     public override void GoEnd()
     {
-        X_selected = X_totalSize - 1 - X_visible;
+        X_selected = X_totalSize - 1;
         X_offset = X_totalSize - X_visible;
     }
     public void GoEnd(int localX_totalSize)
@@ -196,7 +196,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         }
         else
         {
-            input = Row[X_selected + X_offset];
+            input = GetActiveChar();
         }
         Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
         
@@ -210,5 +210,14 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         Console.BackgroundColor = Old_BG;
         Console.ForegroundColor = Old_FG;
         #endregion
+    }
+
+    public char GetActiveChar()
+    {
+        if (X_selected + X_offset > Row.Length - 1)
+        {
+            X_selected = Row.Length - 1;
+        }
+        return Row[X_selected + X_offset];
     }
 }
