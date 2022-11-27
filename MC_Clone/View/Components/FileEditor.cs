@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -161,9 +162,25 @@ internal class FileEditor : IComponent
             case ConsoleKey.Enter:
                 Enter();
                 return;
+            //FKeys
+            case ConsoleKey.F2:
+                SaveChanges();
+                return;
+            case ConsoleKey.F8:
+                DeleteLine();
+                return;
 
         }
         WriteChar(info.KeyChar); //TODO: check for bad chars
+    }
+    public void SaveChanges()
+    {
+        Application.SwitchPopUp(new SaveFile(File, Rows));
+    }
+    public void DeleteLine()
+    {
+        Rows.RemoveAt(Cursor.Y_selected);
+        Cursor.Y_selected--;
     }
 
     public void Wrap()
@@ -204,8 +221,7 @@ internal class FileEditor : IComponent
         if (CursorPos == 0)
         {
             string deletedRow = ActiveRow;
-            Rows.RemoveAt(Cursor.Y_selected);
-            Cursor.Y_selected--;
+            DeleteLine();
             Cursor.X_selected = ActiveRow.Length;
             ActiveRow = ActiveRow + deletedRow;
         }

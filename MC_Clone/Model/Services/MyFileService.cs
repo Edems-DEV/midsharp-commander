@@ -34,9 +34,15 @@ public class MyFileService
     }
     public void OverWrite(List<string> Rows) 
     {
-        if (Rows[1] == " ")
+        using (StreamWriter sw = new StreamWriter(Path))
         {
-            //write ""
+            foreach (string row in Rows)
+            {
+                //if (row == " ")
+                    //row = "";
+                     
+                sw.WriteLine(row);
+            }
         }
     }
 

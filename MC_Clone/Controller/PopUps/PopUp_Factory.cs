@@ -13,6 +13,30 @@ public class EmptyMsg : PopUp
 {
     
 }
+public class SaveFile : PopUp
+{
+    private MyFileService FS;
+    List<string> Rows;
+
+    public SaveFile(FileSystemInfo file, List<string> rows)
+    {
+        Rows = rows;
+        FS = new MyFileService(file.FullName);
+        title = "Save file";
+        details.Add($"Confirm save file: \"{file.Name}\"");
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        FS.OverWrite(Rows);
+        BtnCancel_Clicked();
+    }
+}
+
+
 public class CreateFileMsg : PopUp
 {
     private FileManager FM = new FileManager();
