@@ -155,6 +155,9 @@ internal class FileEditor : IComponent
             case ConsoleKey.Backspace:
                 Backspace();
                 return;
+            case ConsoleKey.Enter:
+                Enter();
+                return;
 
         }
         WriteChar(info.KeyChar);
@@ -172,7 +175,16 @@ internal class FileEditor : IComponent
             }
         }
     }
+    public void Enter()
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        string newLine = "";
+        newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+        Rows.Insert(Cursor.Y_selected + 1, newLine);
 
+        ActiveRow = ActiveRow.Substring(0, CursorPos);
+        Cursor.X_selected -- ;
+    }
     public void WriteChar(char Input)
     {
         int CursorPos = Cursor.X_offset + Cursor.X_selected;
