@@ -7,7 +7,6 @@ public class FilePanel : IComponent
 
     public event Action<int> RowSelected;
 
-
     private FileManager FM;
     private List<int> widths;
     private List<Row> rows = new List<Row>();
@@ -262,7 +261,7 @@ public class FilePanel : IComponent
         char _end = end == 'ĉ' ? sep : end;
 
         int i = 0;
-
+        
         Console.SetCursorPosition(X, y_temp);
         y_temp++;
         foreach (int width in widths)
@@ -468,11 +467,10 @@ public class FilePanel : IComponent
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
     }
-
     private void AddDeadRows()
     {
         deadRows = 0;
-
+        
         int yElementsSize = 8; // Menu, Header, StatusLine, ... //TODO: global atribut
         int occupiedSpace = rows.Count + yElementsSize;
         for (int i = 0; i < Console.WindowHeight - occupiedSpace; i++)

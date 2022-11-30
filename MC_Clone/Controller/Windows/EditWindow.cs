@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
+
 internal class EditWindow : Window
 {
     private FileSystemInfo file;
@@ -103,6 +104,7 @@ public class Header_Edit //mak emore genral an make one specific for this class
             else if(i == editor.Cursor.Y_offset + editor.Cursor.Y_selected)
             { charTo += editor.Cursor.X_selected + editor.Cursor.X_offset; }
             charAll += row.Length;
+            
             i++;
         }
     }

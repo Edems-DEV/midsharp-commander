@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
+
 public class FileEditor : IComponent
 {
     #region Atributes
@@ -13,12 +14,13 @@ public class FileEditor : IComponent
 
     //private int _visible; // | rows = Console.WindowWidth;
     //private int maxWidth; // - columns = Console.WindowWidth;
-
+    
     //cursor position
     private int _x = 0;
     private int _y = 0;
 
     public MyFileService FS;
+
     public Cursor_2D Cursor;
 
     public FileSystemInfo File { get; set; }
@@ -27,7 +29,6 @@ public class FileEditor : IComponent
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
     public string flag = "-";
-
     #endregion
 
     #region Properties
