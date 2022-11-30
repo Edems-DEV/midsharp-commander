@@ -3,6 +3,17 @@
 namespace MC_Clone;
 internal class Misc //koncepty
 {
+    public static string ConvertCharToAsci(char a) //myString or return int/hex
+    {
+        int asciCode = (int)Convert.ToChar(a);
+        return asciCode.ToString().PadLeft(4, '0');
+    }
+    public static string ConvertCharToAsciHex(char a)
+    {
+        string hex = Convert.ToByte(a).ToString("x2");
+        return "0x" + hex.ToString().PadLeft(3, '0'); ;
+    }
+
     public static string PadBoth(string source, int length)
     {
         int spaces = length - source.Length;

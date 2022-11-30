@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class PopUp_Factory{}
+internal class PopUp_Factory{} //rename to PopUp_Builder
 
 public class EmptyMsg : PopUp
 {
@@ -37,6 +37,8 @@ public class CloseFile : PopUp
         FS.OverWrite(Rows);
         BtnNo_Clicked();
     }
+    #region NoBtn
+    // move to BtnClass?
     public void Add_NoBtn(string title = "No")
     {
         Button btnNo = new Button() { Title = title };
@@ -48,6 +50,7 @@ public class CloseFile : PopUp
         BtnCancel_Clicked();
         Application.SwitchWindow(new ListWindow(Application));
     }
+    #endregion
 }
 public class SaveFile : PopUp
 {
@@ -71,6 +74,8 @@ public class SaveFile : PopUp
         BtnCancel_Clicked();
     }
 }
+
+
 public class CreateFileMsg : PopUp
 {
     private FileManager FM = new FileManager();
@@ -113,6 +118,7 @@ public class CreateFolderMsg : PopUp
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn("No");
+        Add_CancelBtn();
     }
 
 
@@ -245,8 +251,9 @@ public class GoTo : PopUp
     {
         //Application.window.GetType();
         //Application.PreviewWindow.editor.Offset = value; // goal
-
+        
         editor.Offset = Convert.ToInt32(input.Value); //max 10chars /num (int limit?)
+        BtnCancel_Clicked();
     }
 }
 

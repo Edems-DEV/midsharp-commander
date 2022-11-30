@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-
 public class FileEditor : IComponent
 {
     #region Atributes
@@ -14,13 +13,12 @@ public class FileEditor : IComponent
 
     //private int _visible; // | rows = Console.WindowWidth;
     //private int maxWidth; // - columns = Console.WindowWidth;
-    
+
     //cursor position
     private int _x = 0;
     private int _y = 0;
 
     public MyFileService FS;
-
     public Cursor_2D Cursor;
 
     public FileSystemInfo File { get; set; }
@@ -29,6 +27,7 @@ public class FileEditor : IComponent
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
     public string flag = "-";
+
     #endregion
 
     #region Properties
@@ -183,7 +182,7 @@ public class FileEditor : IComponent
         WriteChar(info.KeyChar); //TODO: check for bad chars
     }
 
-    public bool ContentChanged()
+    public bool ContentChanged() //change to return  true if changed false = same
     {
         var set = new HashSet<string>(OriginalRows);
         return set.SetEquals(Rows);
@@ -274,7 +273,7 @@ public class FileEditor : IComponent
             ActiveRow =
             ActiveRow.Substring(0, CursorPos - 1)
             +
-            ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos); //-1
 
             Cursor.X_selected--;
         }
