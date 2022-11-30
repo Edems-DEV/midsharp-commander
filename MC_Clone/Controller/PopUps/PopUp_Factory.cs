@@ -13,6 +13,64 @@ public class EmptyMsg : PopUp
 {
     
 }
+public class CloseFile : PopUp
+{
+    private MyFileService FS;
+    List<string> Rows;
+
+    public CloseFile(FileSystemInfo file, List<string> rows)
+    {
+        Rows = rows;
+        FS = new MyFileService(file.FullName);
+        title = "Close file";
+        details.Add($"File: \"{file.Name}\" was modified.");
+        details.Add($"Save before close?");
+        Add_BtnOk();
+        Add_NoBtn();
+        Add_CancelBtn();
+        
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        FS.OverWrite(Rows);
+        BtnNo_Clicked();
+    }
+    public void Add_NoBtn(string title = "No")
+    {
+        Button btnNo = new Button() { Title = title };
+        btnNo.Clicked += BtnNo_Clicked;
+        components.Add(btnNo);
+    }
+    protected void BtnNo_Clicked()
+    {
+        BtnCancel_Clicked();
+        Application.SwitchWindow(new ListWindow(Application));
+    }
+}
+public class SaveFile : PopUp
+{
+    private MyFileService FS;
+    List<string> Rows;
+
+    public SaveFile(FileSystemInfo file, List<string> rows)
+    {
+        Rows = rows;
+        FS = new MyFileService(file.FullName);
+        title = "Save file";
+        details.Add($"Confirm save file: \"{file.Name}\"");
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+
+
+    protected override void BtnOk_Clicked()
+    {
+        FS.OverWrite(Rows);
+        BtnCancel_Clicked();
+    }
+}
 public class CreateFileMsg : PopUp
 {
     private FileManager FM = new FileManager();
@@ -54,7 +112,7 @@ public class CreateFolderMsg : PopUp
         input = new TextBox() { Label = $"Enter folder name:", Value = "" };
         components.Add(input);
         Add_BtnOk();
-        Add_CancelBtn();
+        Add_CancelBtn("No");
     }
 
 
@@ -164,8 +222,9 @@ public class ErrorMsg : PopUp_Red
 public class GoTo : PopUp
 {
     public IntBox input;
+    public FilePreview editor;
 
-    public GoTo()
+    private void Start()
     {
         title = "Go To";
         input = new IntBox() { Label = $"Enter row number:", Value = "" };
@@ -173,11 +232,21 @@ public class GoTo : PopUp
         Add_BtnOk();
         Add_CancelBtn();
     }
+    //public GoTo()
+    //{
+    //    Start();
+    //}
+    public GoTo(FilePreview editor)
+    {
+        Start();
+        this.editor = editor;
+    }
     protected override void BtnOk_Clicked()
     {
         //Application.window.GetType();
         //Application.PreviewWindow.editor.Offset = value; // goal
-        BtnCancel_Clicked();
+
+        editor.Offset = Convert.ToInt32(input.Value); //max 10chars /num (int limit?)
     }
 }
 

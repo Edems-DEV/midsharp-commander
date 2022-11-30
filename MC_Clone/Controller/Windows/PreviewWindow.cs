@@ -5,21 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class PreviewWindow : Window
+public class PreviewWindow : Window
 {
     private FileSystemInfo file;
-    public FileEditor editor;
+    public FilePreview editor;
     private Header header;
     private Footer footer;
+    public string[] labels;
 
     public PreviewWindow(Application application, FileInfo file)
     {
         this.Application = application;
         this.file = file;
 
-        editor = new FileEditor(Application, file, 0, 1);
+        editor = new FilePreview(this, Application, file, 0, 1);
         header = new Header(file);
-        string[] labels = { "Help", "UnWrap", "Quit", "Hex", "Goto", "    ", "Search", "Raw", "Format", "Quit" };
+        labels = new string[] { "Help", "UnWrap", "Quit", "Hex", "Goto", "    ", "Search", "Raw", "Format", "Quit" };
         footer = new Footer(labels);
 
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -72,11 +73,18 @@ public class Header //mak emore genral an make one specific for this class
 
     public void Draw()
     {
+        ConsoleColor oldB = Console.BackgroundColor;
+        ConsoleColor oldT = Console.ForegroundColor;
+        Console.BackgroundColor = Config.Labels_BackgroundColor;
+        Console.ForegroundColor = Config.Labels_ForegroundColor;
+
         string path = file.FullName;
         path = path.PadRight(width, ' ');
         Console.Write(path);
 
         // Write(10, "100/100");
+        Console.BackgroundColor = oldB;
+        Console.ForegroundColor = oldT;
     }
 
     public void Write(int rightOffset, string text)

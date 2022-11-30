@@ -1,92 +1,131 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
 
-public class EditWindow : Window
+internal class EditWindow : Window
 {
-    private List<IComponent> components = new List<IComponent>();
-    private int selected = 0;
+    private FileSystemInfo file;
+    public FileEditor editor;
+    private Header_Edit header;
+    private Footer footer;
+    public string[] labels;
 
-    private FilesService service;
-    int index;
-
-    public EditWindow(int index)
+    public EditWindow(Application application, FileInfo file)
     {
-        this.index = index;
-        this.service = new FilesService(Config.FILE);
+        this.Application = application;
+        this.file = file;
 
-        string[] values = service.Data()[index];
+        editor = new FileEditor(Application, file, 0, 1);
+        header = new Header_Edit(editor);
+        labels = new string[] { "Help", "Save", "Mark", "Replace", "Copy", "Move", "Search", "Delete", "PullDn", "Quit" };
+        footer = new Footer(labels);
 
-        int i = 0;
-        foreach (string item in service.Headers())
-        {
-            this.components.Add(new TextBox() { Label = item, Value = values[i] });
-            i++;
-        }
-
-
-        Button btnOk = new Button() { Title = "OK" };
-        btnOk.Clicked += BtnOk_Clicked;
-
-        Button btnCancel = new Button() { Title = "Cancel" };
-        btnCancel.Clicked += BtnCancel_Clicked;
-
-        this.components.Add(btnOk);
-        this.components.Add(btnCancel);
-    }
-     
-    private void BtnCancel_Clicked()
-    {
-        //this.Application.SwitchWindow(new ListWindow());
-    }
-
-    private void BtnOk_Clicked()
-    {
-        List<string> data = new List<string>();
-        foreach (IComponent item in this.components)
-        {
-            if (item is TextBox)
-            {
-                string value = (item as TextBox)!.Value;
-                data.Add(value);
-            }
-        }
-
-        this.service.Update(data.ToArray(), this.index);
-
-        //this.Application.SwitchWindow(new ListWindow());
+        Application.WinSize.OnWindowSizeChange += OnResize;
     }
 
     public override void Draw()
     {
-        int i = 0;
-        foreach (IComponent item in this.components)
-        {
-            if (i == this.selected)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-
-            item.Draw();
-
-            Console.ResetColor();
-            i++;
-        }
+        Console.Clear(); //editor
+        Console.SetCursorPosition(0, 0);
+        header.Draw(); //own header
+        editor.Draw();
+        footer.Draw();
     }
 
     public override void HandleKey(ConsoleKeyInfo info)
     {
-        if (info.Key == ConsoleKey.Tab)
+        editor.HandleKey(info);
+    }
+
+    public void OnResize() //add to interface and call only in app?
+    {
+    }
+
+
+}
+public class Header_Edit //mak emore genral an make one specific for this class
+{
+    int width = Console.WindowWidth;
+    FileEditor editor;
+
+    int charTo;
+    int charAll;
+
+    public Header_Edit(FileEditor editor)
+    {
+        this.editor = editor;
+        int width = Console.WindowWidth;
+    }
+
+    public void Draw()
+    {
+        ConsoleColor oldB = Console.BackgroundColor;
+        ConsoleColor oldT = Console.ForegroundColor;
+        Console.BackgroundColor = Config.Labels_BackgroundColor;
+        Console.ForegroundColor = Config.Labels_ForegroundColor;
+
+        string space = new String(' ', Console.WindowWidth);
+        Console.SetCursorPosition(0, 0);
+        Console.Write(space);
+        CalcChars();
+
+        string path = editor.File.Name;
+        string mod = Mode();
+        string pos = $"{editor.Cursor.X_selected + editor.Cursor.X_offset} L: [{editor.Cursor.Y_offset} + {editor.Cursor.Y_selected}  {editor.Cursor.Y_offset + editor.Cursor.Y_selected}/{editor.Rows.Count}]";
+        string idk = $"({charTo}/{charAll}b)";
+        string asci = $"{ConvertCharToAsci(editor.Cursor.input)}  {ConvertCharToAsciHex(editor.Cursor.input)}";
+        string final = $"{path}  {mod}  {pos} *{idk} {asci}";
+        Console.SetCursorPosition(0, 0);
+        Console.Write(final);
+        string debug = $" = {editor.Cursor.input}";
+        Console.Write(debug);
+
+        Console.BackgroundColor = oldB;
+        Console.ForegroundColor = oldT;
+    }
+
+    public void CalcChars()
+    {
+        charTo = 0;
+        charAll = 0;
+        int i = 0;
+        
+        foreach (string row in editor.Rows)
         {
-            this.selected = (this.selected + 1) % this.components.Count;
+            if (i < editor.Cursor.Y_offset + editor.Cursor.Y_selected)
+            {
+                charTo += row.Length;
+            }
+            else if(i == editor.Cursor.Y_offset + editor.Cursor.Y_selected)
+            { charTo += editor.Cursor.X_selected + editor.Cursor.X_offset; }
+            charAll += row.Length;
+            
+            i++;
         }
-        else
+    }
+
+    public static string ConvertCharToAsci(char a)
+    {
+        int asciCode = (int)Convert.ToChar(a);
+        return asciCode.ToString().PadLeft(4, '0');
+    }
+    public static string ConvertCharToAsciHex(char a)
+    {
+        string hex = Convert.ToByte(a).ToString("x2");
+        return "0x" + hex.ToString().PadLeft(3, '0'); ;
+    }
+    public string Mode(string mod = "-") //[-M---]
+    {
+        if (!editor.ContentChanged()) //TODO: broken on large text
         {
-            this.components[this.selected].HandleKey(info);
+            mod = "M";
         }
+        
+        return $"[-{mod.PadRight(3,'-')}]";
     }
 }

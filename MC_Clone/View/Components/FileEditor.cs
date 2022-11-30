@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class FileEditor : IComponent //TODO: Rename to FileViwer
+
+public class FileEditor : IComponent
 {
     #region Atributes
     public Application Application { get; set; }
 
-    private int _offset = 0;
-    private int _selected = 0;
-    private int _visible; //rows = Console.WindowWidth;
-    private int maxWidth; //columns = Console.WindowWidth;
-
-    private bool wrap = true;
-
+    //private int _visible; // | rows = Console.WindowWidth;
+    //private int maxWidth; // - columns = Console.WindowWidth;
+    
     //cursor position
     private int _x = 0;
     private int _y = 0;
 
     public MyFileService FS;
 
+    public Cursor_2D Cursor;
+
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
     public List<string> Rows = new List<string>(); //real rows in txt
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
+    public string flag = "-";
     #endregion
 
     #region Properties
@@ -54,39 +55,17 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         }
     }
 
-    public int Visible
+    public string ActiveRow
     {
-        get { return _visible; }
-        set
-        {
-            if (value < 0)
-                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
-            _visible = value;
-        }
-    }
-    public int Offset
-    {
-        get { return _offset; }
-        set
-        {
-            if (value < 0) { _offset = 0; return; }
-            if (Rows.Count <= Visible) { return; }
-            if (value >= Rows.Count - Visible) { _offset = Rows.Count - Visible; _selected = Rows.Count - 1; return; }
-            _offset = value;
-        }
-    }
-    public int Selected
-    {
-        get { return _selected; }
-        set
-        {
-            if (value < 0) { return; }
-            if (value >= Rows.Count) { return; }
-            _selected = value;
+        get { return Rows[Cursor.Y_selected]; }
+        set {
+            Cursor.Row = value;
+            Rows[Cursor.Y_selected] = value;
         }
     }
     #endregion
-    public FileEditor(Application application, FileInfo file, int x = 0, int y = 0)
+
+    private void Start(Application application, FileInfo file, int x = 0, int y = 0)
     {
         this.Application = application;
         this.File = file;
@@ -94,177 +73,218 @@ internal class FileEditor : IComponent //TODO: Rename to FileViwer
         this.Y = y;
         FS = new MyFileService(file.FullName);
         OriginalRows = FS.Read();
-        Rows = OriginalRows;
+        Rows = new List<string>(OriginalRows);
+        PrintRows = new List<string>(OriginalRows);
+        Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
     }
+    public FileEditor(Application application, FileInfo file, int x = 0, int y = 0)
+    {
+        Start(application, file, x, y);
+    }
     public void OnResize() //rename to: OnResize
     {
-        Visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
-        maxWidth = Console.WindowWidth;
-
-        Rows = FS.Read(); //OriginalRows //doesnt work -> why?
+        Rows = new List<string>(OriginalRows);
         Wrap();
+        Cursor.Y_visible = Console.WindowHeight - 1 - 1; //-1 (Header) - 1 (Footer)
+        Cursor.X_visible = Console.WindowWidth;
     }
 
     public void Draw()
     {
-        Console.SetCursorPosition(X,Y);
-        for (int i = Offset; i < Offset + Math.Min(Visible, Rows.Count); i++)
+        Wrap();
+        Console.SetCursorPosition(X, Y);
+        for (int i = Cursor.Y_offset; i < Cursor.Y_offset + Math.Min(Cursor.Y_visible, Rows.Count); i++)
         {
-            //LineNumber(i); //debug //broken maxWidth -> bad Wrap
+            if (i == Cursor.Y_selected)
+            {
+                Cursor.Row = Rows[i];
+                Rows[i] = Cursor.Row;
+            }
 
             Console.ForegroundColor = Config.Table_ForegroundColor;
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
-            Console.WriteLine(Rows[i]); //fix: console auto line wrap -> (destroys formatting)
+            Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
+            Cursor.Draw();
         }
     }
-    public void LineNumber(int i)
+
+    public string NextRow()
     {
-        //selected is disabled
-        if (i == Selected)
-        {
-            Console.ForegroundColor = Config.Table_Line_ACTIVE_ForegroundColor;
-            Console.BackgroundColor = Config.Table_Line_ACTIVE_BackgroundColor;
-        }
-        Console.Write($"{i}. ");
+        if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
+            return ActiveRow;
+
+        return Rows[Cursor.Y_selected + 1];
     }
-    public void Wrap()
+    public string PrevioustRow()
     {
-        for (int i = 0; i < Rows.Count; i++)
-        {
-            int locMaxWidth = maxWidth;// - 1;
-            if (Rows[i].Length > maxWidth)
-            {
-                if (wrap)
-                {
-                    List<string> texts = new List<string>();
-                    int lenght = Rows[i].Length;
-                    int index = locMaxWidth;// - 1;
-                    string text = "";
-                    while (locMaxWidth + locMaxWidth < lenght) //+ index
-                    {
-                        text = Rows[i].Substring(index, locMaxWidth);
-                        lenght -= locMaxWidth;
-                        index += locMaxWidth - 1;
-                        //Rows.Insert(i + 1, text);
-                        texts.Add(text);
-                    }
-                    if (lenght < locMaxWidth + locMaxWidth)
-                    {
-                        text = Rows[i].Substring(index, lenght - locMaxWidth);
-                        //Rows.Insert(i + 1, text);
-                        texts.Add(text);
-                        //throw new Exception(lenght.ToString());
-                    }
-                    texts.Reverse();
-                    //Rows.InsertRange();
-                    foreach (var item in texts)
-                    {
-                        Rows.Insert(i + 1, item);
-                    }
-                }
-                Rows[i] = Rows[i].Substring(0, locMaxWidth);
-            }
-        }
+        if (Cursor.Y_selected == 0)
+            return ActiveRow;
+
+        return Rows[Cursor.Y_selected - 1];
     }
 
     public void HandleKey(ConsoleKeyInfo info)
     {
         switch (info.Key)
         {
+            //Controls
+            case ConsoleKey.RightArrow:
+                Cursor.Right(NextRow());
+                return;
+            case ConsoleKey.LeftArrow:
+                Cursor.Left(PrevioustRow());
+                return;
+            //---
             case ConsoleKey.UpArrow:
-                ScrollUp();
-                break;
+                Cursor.Up(PrevioustRow());
+                return;
             case ConsoleKey.DownArrow:
-                ScrollDown();
-                break;
+                Cursor.Down(NextRow());
+                return;
             case ConsoleKey.Home:
-                GoBegin();
-                break;
+                Cursor.GoBegin();
+                return;
             case ConsoleKey.End:
-                GoEnd();
-                break;
+                Cursor.GoEnd();
+                return;
             case ConsoleKey.PageUp:
-                PageUp();
-                break;
+                Cursor.PageUp();
+                return;
             case ConsoleKey.PageDown:
-                PageDown();
-                break;
-            case ConsoleKey.F5:
-                GoTo(10);
-                break;
+                Cursor.PageDown();
+                return;
+            //Edit
+            case ConsoleKey.Delete:
+                Delete();
+                return;
+            case ConsoleKey.Backspace:
+                Backspace();
+                return;
+            case ConsoleKey.Enter:
+                Enter();
+                return;
+            //FKeys
+            case ConsoleKey.F2:
+                SaveChanges();
+                return;
+            case ConsoleKey.F8:
+                DeleteLine();
+                return;
+            case ConsoleKey.Escape:
+            case ConsoleKey.F10:
+                Quit();
+                return;
+
         }
-        Console.WriteLine(info.KeyChar);
+        WriteChar(info.KeyChar); //TODO: check for bad chars
     }
 
-    #region Controls Methods
-    private void ScrollUp()
+    public bool ContentChanged()
     {
-        Selected--;
-
-        //if (Selected == Offset - 1)
-            Offset--;
+        var set = new HashSet<string>(OriginalRows);
+        return set.SetEquals(Rows);
     }
-    private void ScrollDown()
+    public void Quit()
     {
-        Selected++;
-
-        //if (Selected == Offset + Math.Min(Visible, Rows.Count))
-          Offset++;
+        if (!ContentChanged())
+            Application.SwitchPopUp(new CloseFile(File, Rows));
+        else
+            Application.SwitchWindow(new ListWindow(Application));
     }
-    private void PageUp()
+    public void SaveChanges()
     {
-        Selected = Selected - Visible;
-        Offset = Offset - Visible;
+        Application.SwitchPopUp(new SaveFile(File, Rows));
     }
-    private void PageDown()
+    public void DeleteLine()
     {
-        Selected = Selected + Visible;
-        Offset = Offset + Visible;
-    }
-    private void GoBegin()
-    {
-        Selected = 0;
-        Offset = 0;
-    }
-    private void GoEnd()
-    {
-        Selected = Rows.Count - 1;
-        Offset = Rows.Count - Visible;
+        Rows.RemoveAt(Cursor.Y_selected);
+        Cursor.Y_selected--;
     }
 
-    private void GoTo(int goIndex)
+    public void Wrap()
     {
-        GoTo a = new GoTo();
-        Application.SwitchPopUp(a);
-        //while (Application.popUp != new EmptyMsg()) //block spawn of popup
-        //{
-        //}
-        //Offset = Convert.ToInt32(a.input.Value);
+        int a = Console.WindowWidth;
+        for (int i = 0; i < Rows.Count; i++)
+        {
+            int locMaxWidth = a;// - 1;
+            if (Rows[i].Length > a)
+            {
+                int lastLenght = Rows[i].Length - Cursor.X_offset;
+                if (lastLenght < locMaxWidth)
+                    locMaxWidth = lastLenght;
+                PrintRows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
+            }
+            else
+            {
+                if (Rows[i].Length <= Cursor.X_offset)
+                {
+                    PrintRows[i] = " ";
+                }
+                else
+                {
+                    PrintRows[i] = Rows[i];
+                }
+            }
+        }
+    }
+    public void Enter()
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        string newLine = "";
+        newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
+        if (newLine == "" || newLine == null){newLine = " ";}
+        Rows.Insert(Cursor.Y_selected + 1, newLine);
+        PrintRows = new List<string>(Rows);
+
+        ActiveRow = ActiveRow.Substring(0, CursorPos);
+        Cursor.X_selected = 0;
+        Cursor.Y_selected += 1;
+    }
+    public void WriteChar(char Input)
+    {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        ActiveRow =
+            ActiveRow.Substring(0, CursorPos)
+            + Input + 
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
+        Cursor.X_selected++;
     }
 
-    #endregion
-
-    #region FKeys methods
-    public void WrapLine(bool state) //bool outside? to stay persistent
+    public void Backspace()
     {
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        if (CursorPos == 0)
+        {
+            string deletedRow = ActiveRow;
+            DeleteLine();
+            Cursor.X_selected = ActiveRow.Length;
+            ActiveRow = ActiveRow + deletedRow;
+        }
+        else if (CursorPos == ActiveRow.Length - 1)
+        {
+            Cursor.X_selected--;
+            ActiveRow = ActiveRow.Remove(ActiveRow.Length - 1);
+        }
+        else
+        {
+            ActiveRow =
+            ActiveRow.Substring(0, CursorPos - 1)
+            +
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+
+            Cursor.X_selected--;
+        }
     }
-    public void Hex_Asci() { }
-    public void GoToLine()
+    public void Delete()
     {
-
-    }
-    public void SearchText()
-    {
-
-    }
-    #endregion
-
-    private void Write(ConsoleKeyInfo info)
-    {
-        Console.WriteLine(info.KeyChar);
+        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        ActiveRow =
+            ActiveRow.Substring(0, CursorPos)
+            +
+            ActiveRow.Substring(CursorPos + 1, ActiveRow.Length - 1 - CursorPos);
     }
 }

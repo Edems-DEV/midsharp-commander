@@ -6,13 +6,12 @@ public class FilePanel : IComponent
     public Application Application { get; set; }
 
     public event Action<int> RowSelected;
-    
 
     private FileManager FM;
     private List<int> widths;
     private List<Row> rows = new List<Row>();
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
-                                                   // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
+    // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
     private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
     #region Atributes
@@ -149,12 +148,6 @@ public class FilePanel : IComponent
 
     public void HandleKey(ConsoleKeyInfo info)
     {
-        if (PopUp)
-        {
-            a.HandleKey(info);
-            PopUp = a.alive;
-            return;
-        }
         switch (info.Key)
         {
             //---------UPDATE---------
@@ -183,9 +176,7 @@ public class FilePanel : IComponent
             //------------------------
             //---------FUNCTION---------
             case ConsoleKey.F1:
-                a = PopUpFactory.Move();
-                PopUp = true;
-                //Drives();
+                Drives();
                 break;
             case ConsoleKey.F2:
                 CreateFile();
@@ -225,7 +216,7 @@ public class FilePanel : IComponent
     public void Draw()
     {
         if (!IsDiscs) //temp fix (need: event if data were changed  <- popUps)
-        { 
+        {
             SetLists(_path); //TODO: change me (draw no -> logic)
             ImportRows();
         }
@@ -261,7 +252,7 @@ public class FilePanel : IComponent
 
         //DrawData(null, widths, l.up, l.lineX, l.bottomLeft, l.bottomRight);
         StatusLine(statusBarLabel);
-        y_temp = Y;   
+        y_temp = Y;
     }
     #region Draw methods
     private void DrawData(List<string>? data, List<int> widths, char sep, char pad, char start = 'ĉ', char end = 'ĉ')
@@ -333,7 +324,7 @@ public class FilePanel : IComponent
         int currentLeftCursor = Console.CursorLeft;
         if (currentLeftCursor > (diskInfo.Length + 2))
             Console.CursorLeft = currentLeftCursor - (diskInfo.Length + 2);
-        
+
         Console.Write(diskInfo);
     }
     private string[] Generate_StatusLine(string label)
@@ -429,7 +420,7 @@ public class FilePanel : IComponent
     {
         UpdateMaxLengths();
         LongLine();
-        
+
         if (rows != null)
             rows.Clear();
 
@@ -476,7 +467,6 @@ public class FilePanel : IComponent
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
     }
-    
     private void AddDeadRows()
     {
         deadRows = 0;
@@ -575,7 +565,7 @@ public class FilePanel : IComponent
             return;
         if (GetActiveObject() is not FileInfo)
             return;
-        
+
         FileInfo file = GetActiveObject() as FileInfo;
 
         Application.WinSize.OnWindowSizeChange -= OnResize;
@@ -583,7 +573,15 @@ public class FilePanel : IComponent
     }
     private void Edit()
     {
-        this.RowSelected(this.Selected);
+        if (IsDiscs)
+            return;
+        if (GetActiveObject() is not FileInfo)
+            return;
+
+        FileInfo file = GetActiveObject() as FileInfo;
+
+        Application.WinSize.OnWindowSizeChange -= OnResize;
+        Application.SwitchWindow(new EditWindow(Application, file));
     }
     private void Copy()
     {

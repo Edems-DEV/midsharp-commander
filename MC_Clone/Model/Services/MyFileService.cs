@@ -1,5 +1,5 @@
 ﻿namespace MC_Clone;
-internal class MyFileService
+public class MyFileService
 {
     public string Path { get; set; }
     public FileInfo File { get; set; }
@@ -23,13 +23,28 @@ internal class MyFileService
         {
             while (!reader.EndOfStream)
             {
-                result.Add(reader.ReadLine());
+                string line = reader.ReadLine();
+                if (line == "")
+                    line = " ";
+                result.Add(line);
             }
         }
 
         return result;
     }
-    public void OverWrite() { }
+    public void OverWrite(List<string> Rows) 
+    {
+        using (StreamWriter sw = new StreamWriter(Path))
+        {
+            foreach (string row in Rows)
+            {
+                //if (row == " ")
+                    //row = "";
+                     
+                sw.WriteLine(row);
+            }
+        }
+    }
 
     #region Stats calc
     public void CountWords() { }

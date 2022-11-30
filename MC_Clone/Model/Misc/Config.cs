@@ -38,8 +38,9 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = @"C:\Users\root\Desktop\Example Folder"; //change to dynamic desktop path
-    public const string Path_RightPane = @".";
+
+    public const string Path_LeftPane = @"C:\Users\root\Desktop\Example Folder\TXT_debug"; //change to dynamic desktop path
+    public const string Path_RightPane = @"C:\Users\root\Desktop\Example Folder\TXT_debug";
 
     //------------------Color schemes------------------
     public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,
@@ -95,14 +96,6 @@ public class Config
     public static ConsoleColor Error_ACTIVE     = ConsoleColor.Black;
     
     public static ConsoleColor TextBox_InputField = ConsoleColor.Cyan;
-
-    public static ConsoleColor PopUp_Backgroud = ConsoleColor.Gray;
-    public static ConsoleColor PopUp_ForeGroud = ConsoleColor.Black;
-    public static ConsoleColor PopUp_Accent    = ConsoleColor.Cyan;
-
-    public static ConsoleColor Error_Backgroud  = ConsoleColor.Red;
-    public static ConsoleColor Error_Foreground = ConsoleColor.White;
-    public static ConsoleColor Error_Accent     = ConsoleColor.DarkYellow;
 
     public static void ChangeColorScheme(ConsoleColor[] colors) ////static cannot be changed ? 
     {
