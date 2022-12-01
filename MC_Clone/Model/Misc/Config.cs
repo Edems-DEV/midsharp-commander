@@ -38,7 +38,7 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = @".."; //change to dynamic desktop path
+    public const string Path_LeftPane = Private.MyPath; //change to dynamic desktop path
     public const string Path_RightPane = @".";
 
     //------------------Color schemes------------------
