@@ -70,12 +70,12 @@ public class TextBox : IComponent
     public string LineMover()
     {
         string value = Value;
-        if (Value.Length > size) //comment out for size to be dynamic / (disable line mover)
-        {
-            int start = (Value.Length - size) + 1;
-            value = Value.Substring(start, size - 1);
-            Size = size;
-        }
+        //if (Value.Length > size) //comment out for size to be dynamic / (disable line mover)
+        //{
+        //    int start = (Value.Length - size) + 1;
+        //    value = Value.Substring(start, size - 1);
+        //    Size = size;
+        //}
         DisplayValue = value;
         value = PadChar + value.PadRight(Size, PadChar);
         return value;
