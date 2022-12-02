@@ -28,8 +28,6 @@ public class Cursor_1D //: IComponent //(Y '|')
     protected int _y_totalSize;    // Y_totalSize
 
     //Local
-    public event Action KeyPressed;
-    
     protected int _y_selected = 0; // current cursor pos
     protected int _y_offset = 0;   // offset
     #endregion
@@ -84,19 +82,12 @@ public class Cursor_1D //: IComponent //(Y '|')
     }
     #endregion
     #region Methods
-    public void EventInvoke() //wrapper => child class can't invoke event?
-    {
-        KeyPressed.Invoke();
-    }
-    
     public virtual void Up()
     {
         Y_selected--;
 
         if (Y_selected == Y_offset - 1)
             Y_offset--;
-
-        EventInvoke();
     }
     public virtual void Down()
     {
@@ -104,37 +95,27 @@ public class Cursor_1D //: IComponent //(Y '|')
 
         if (Y_selected == Y_offset + Math.Min(Y_visible, Y_totalSize)) //Math.Min(Y_visible, Y_totalSize)
             Y_offset++;
-
-        EventInvoke();
     }
 
     public void PageUp()
     {
         Y_selected = Y_selected - Y_visible;
         Y_offset = Y_offset - Y_visible;
-
-        EventInvoke();
     }
     public void PageDown()
     {
         Y_selected = Y_selected + Y_visible;
         Y_offset = Y_offset + Y_visible;
-
-        EventInvoke();
     }
     public virtual void GoBegin()
     {
         Y_selected = 0;
         Y_offset = 0;
-
-        EventInvoke();
     }
     public virtual void GoEnd()
     {
         Y_selected = Y_totalSize - 1;
         Y_offset = Y_totalSize - Y_visible;
-
-        EventInvoke();
     }
 
     #region Component

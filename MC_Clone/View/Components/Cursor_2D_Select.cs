@@ -29,7 +29,7 @@ internal class Cursor_2D_Select //rename to marker?
     {
         Cursor = editor.Cursor;
         Rows = editor.Rows; //by reference => should change original List
-        Cursor.KeyPressed += Update;
+        //Cursor.KeyPressed += Update;
     }
 
     public void Mark()
@@ -39,13 +39,13 @@ internal class Cursor_2D_Select //rename to marker?
         //hook: Cursor //TODO: deletion => auto in Cursor / FE (i use original Cursor values)
         if (!MarkedMode)
         {
-            Cursor.KeyPressed -= Update; //remove hook
+            //Cursor.KeyPressed -= Update; //remove hook
             return;
         }
         else
         {
             SetMarker();
-            Cursor.KeyPressed += Update; //hook
+            //Cursor.KeyPressed += Update; //hook
             return;
         }
     }
