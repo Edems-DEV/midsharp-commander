@@ -171,7 +171,7 @@ public class Cursor_2D_Select //rename to marker?
         //TODO: add line wrapper
             // Draw in FE? => No, standalone object
             //
-        Console.SetCursorPosition(rowIndex, x);
-        Console.Write(Rows[rowIndex]);
+        Console.SetCursorPosition(x, rowIndex);
+        Console.Write(Rows[rowIndex - start_Y]);
     }
 }
