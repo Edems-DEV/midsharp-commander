@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-internal class Cursor_2D_Select //rename to marker?
+public class Cursor_2D_Select //rename to marker?
 {
     //editor
     Cursor_2D Cursor;
@@ -29,9 +29,14 @@ internal class Cursor_2D_Select //rename to marker?
     {
         Cursor = editor.Cursor;
         Rows = editor.Rows; //by reference => should change original List
-        //Cursor.KeyPressed += Update;
     }
 
+    public void Hook()
+    {
+        if (MarkedMode)
+            Update(); //hook
+    }
+    
     public void Mark()
     {
         MarkedMode = !MarkedMode;

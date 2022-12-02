@@ -21,6 +21,7 @@ public class FileEditor : IComponent
 
     public MyFileService FS;
     public Cursor_2D Cursor;
+    public Cursor_2D_Select Marker;
 
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
@@ -76,6 +77,7 @@ public class FileEditor : IComponent
         Rows = new List<string>(OriginalRows);
         PrintRows = new List<string>(OriginalRows);
         Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
+        Marker = new Cursor_2D_Select(this);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -134,56 +136,59 @@ public class FileEditor : IComponent
             //Controls
             case ConsoleKey.RightArrow:
                 Cursor.Right(NextRow());
-                return;
+                break;
             case ConsoleKey.LeftArrow:
                 Cursor.Left(PrevioustRow());
-                return;
+                break;
             //---
             case ConsoleKey.UpArrow:
                 Cursor.Up(PrevioustRow());
-                return;
+                break;
             case ConsoleKey.DownArrow:
                 Cursor.Down(NextRow());
-                return;
+                break;
             case ConsoleKey.Home:
                 Cursor.GoBegin();
-                return;
+                break;
             case ConsoleKey.End:
                 Cursor.GoEnd();
-                return;
+                break;
             case ConsoleKey.PageUp:
                 Cursor.PageUp();
-                return;
+                break;
             case ConsoleKey.PageDown:
                 Cursor.PageDown();
-                return;
+                break;
             //Edit
             case ConsoleKey.Delete:
                 Delete();
-                return;
+                break;
             case ConsoleKey.Backspace:
                 Backspace();
-                return;
+                break;
             case ConsoleKey.Enter:
                 Enter();
-                return;
+                break;
             //FKeys
             case ConsoleKey.F2:
                 SaveChanges();
-                return;
+                break;
             case ConsoleKey.F3:
                 Mark();
-                return;
+                break;
             case ConsoleKey.F8:
                 DeleteLine();
-                return;
+                break;
             case ConsoleKey.Escape:
             case ConsoleKey.F10:
                 Quit();
-                return;
-
+                break;
+            default:
+                WriteChar(info.KeyChar); //TODO: check for bad chars
+                break;
         }
-        WriteChar(info.KeyChar); //TODO: check for bad chars
+        
+        Marker.Hook(); //TODO: find better hook
     }
 
     public bool Marked = false;
