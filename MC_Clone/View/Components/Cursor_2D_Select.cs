@@ -33,9 +33,13 @@ public class Cursor_2D_Select //rename to marker?
 
     public void DebugPrint()
     {
+        int x_selected = Cursor.X_selected;
+        int y_selected = Cursor.Y_selected;
         List<string> Debug = new List<string>();
-        Debug.Add($"R: X: {rightCursor_X}  Y: {rightCursor_Y} | Left: X: {leftCursor_X}  Y: {leftCursor_Y}");
-        Debug.Add($"   X: {Cursor.X_selected} Y: {Cursor.Y_selected} | X_start: {start_X} Y_start: {start_Y}", Cursor.X_selected);
+        string line1 = String.Format("R: X: {0}  Y: {1} |  Left: X: {2}  Y: {3}", rightCursor_X, rightCursor_Y, leftCursor_X, leftCursor_Y);
+        string line2 = String.Format("   X: {0}  Y: {1} | Start: X: {2}  Y: {3}", x_selected, y_selected, start_X, start_Y);
+        Debug.Add(line1);
+        Debug.Add(line2);
         Debug.Add(new String('•', Debug[Debug.Count - 1].Length));
         Debug.AddRange(selectedRows);
         Logs a = new Logs(Debug);
