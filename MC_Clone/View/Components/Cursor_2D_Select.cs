@@ -21,7 +21,7 @@ public class Cursor_2D_Select //rename to marker?
     int rightCursor_X = 0;
     int leftCursor_Y = 0;
     int rightCursor_Y = 0;
-    List<string> selectedRows = new List<string>();
+    public List<string> selectedRows = new List<string>();
 
     public int linesCout { get { return (leftCursor_Y - rightCursor_Y); } } //+ 1 (?)
 
@@ -136,7 +136,6 @@ public class Cursor_2D_Select //rename to marker?
             }
             selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
         }
-        Logs a = new Logs(selectedRows);
     }
     public void DrawMarker() //rename to 'Draw'?
     {
