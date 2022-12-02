@@ -174,7 +174,7 @@ public class FileEditor : IComponent
                 SaveChanges();
                 break;
             case ConsoleKey.F3:
-                Mark();
+                Marker.Mark();
                 break;
             case ConsoleKey.F8:
                 DeleteLine();
@@ -189,137 +189,6 @@ public class FileEditor : IComponent
         }
         
         Marker.Hook(); //TODO: find better hook
-    }
-
-    public bool Marked = false;
-    int start_X;
-    int start_Y;
-    
-    int leftCursor_X = 0;
-    int rightCursor_X = 0;
-    int leftCursor_Y = 0;
-    int rightCursor_Y = 0;
-    List<string> selectedRows = new List<string>();
-
-    public int linesCout { get { return(leftCursor_Y - rightCursor_Y); } } //+ 1
-    public void Mark()
-    {
-        Marked = !Marked; 
-        
-        if (Marked) //save start cursor
-        {
-            //create - new object of Marker[select] (override old)
-            if (Cursor.X_selected == start_X && Cursor.Y_selected == start_Y) //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
-            {
-                return;
-            }
-            start_X = Cursor.X_selected;
-            start_Y = Cursor.Y_selected;
-        }
-        else
-        {
-            //start_X = null; start_Y = null;
-        }
-    }
-    public void MarkSetup()
-    {
-        //create object => contructor (move this things into him)
-        SetCursorsSides();
-        GetDataToMark();
-        //DrawMarker();
-    }
-    public void SetCursorsSides() //SetCursorsSides
-    {
-        if (start_Y == Cursor.Y_selected)
-        {
-            if (start_X < Cursor.X_selected) //switch sides (left arrow)
-            {
-                leftCursor_X = start_X;
-                rightCursor_X = Cursor.X_selected;
-            }
-            else
-            {
-                leftCursor_X = Cursor.X_selected;
-                rightCursor_X = start_X;
-            }
-        }
-        else if (start_Y < Cursor.Y_selected)
-        {
-            leftCursor_X = start_X;
-            rightCursor_X = Cursor.X_selected;
-        }
-        else if (start_Y > Cursor.Y_selected)
-        {
-            leftCursor_X  = Cursor.X_selected;
-            rightCursor_X = start_X;
-        }
-    }
-    public void GetDataToMark() //move to class
-    {
-        int Y_counter = start_Y;
-        
-        if (Marked) //why this? (always is?)
-        {
-            if (start_Y == Cursor.Y_selected) //single row select
-            {
-                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
-            }
-            else
-            {
-                //start substring
-                //full rows (if rows > 2)
-                //end substring
-
-                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); //first line
-                if (linesCout >= 2) //have middle full lines
-                {
-                    //save middle lines
-                    while (Y_counter < linesCout - 2)
-                    {
-                        Y_counter++;
-                        selectedRows.Add(Rows[Y_counter]);
-                    }
-                }
-                selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
-            }
-        }
-    }
-    public void DrawMarker()
-    {
-        int Y_counter = start_Y;
-
-        if (Marked) //why this? (always is?)
-        {
-            ConsoleColor oldBG = Console.BackgroundColor;
-            Console.BackgroundColor = Config.Accent_BackgroundColor;
-
-            
-            if (start_Y == Cursor.Y_selected) //single row select
-            {
-                DrawLineOn(Y_counter, leftCursor_X);
-            }
-            else
-            {
-                DrawLineOn(Y_counter, leftCursor_X);
-                if (linesCout >= 2)
-                {
-                    while (Y_counter < linesCout - 2)
-                    {
-                        Y_counter++;
-                        DrawLineOn(Y_counter);
-                    }
-                }
-                DrawLineOn(Y_counter);
-            }
-            
-            
-            Console.BackgroundColor = oldBG;
-        }
-    }
-    public void DrawLineOn(int rowIndex, int x = 0)
-    {
-        Console.SetCursorPosition(rowIndex, x);
-        Console.Write(Rows[rowIndex]);
     }
     public bool ContentChanged() //change to return  true if changed false = same
     {
