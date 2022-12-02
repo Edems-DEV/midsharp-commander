@@ -171,6 +171,9 @@ public class FileEditor : IComponent
                 Enter();
                 break;
             //FKeys
+            case ConsoleKey.F1:
+                Marker.DebugPrint();
+                break;
             case ConsoleKey.F2:
                 SaveChanges();
                 break;
@@ -183,9 +186,6 @@ public class FileEditor : IComponent
             case ConsoleKey.Escape:
             case ConsoleKey.F10:
                 Quit();
-                break;
-            case ConsoleKey.F9:
-                Logs a = new Logs(Marker.selectedRows);
                 break;
             default:
                 WriteChar(info.KeyChar); //TODO: check for bad chars

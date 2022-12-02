@@ -31,6 +31,15 @@ public class Cursor_2D_Select //rename to marker?
         Rows = editor.Rows; //by reference => should change original List
     }
 
+    public void DebugPrint()
+    {
+        List<string> Debug = new List<string>();
+        Debug.Add($"R: X: {rightCursor_X}  Y: {rightCursor_Y} | Left: X: {leftCursor_X}  Y: {leftCursor_Y}");
+        Debug.Add($"   X: {Cursor.X_selected} Y: {Cursor.Y_selected} | X_start: {start_X} Y_start: {start_Y}", Cursor.X_selected);
+        Debug.Add(new String('•', Debug[Debug.Count - 1].Length));
+        Debug.AddRange(selectedRows);
+        Logs a = new Logs(Debug);
+    }
     public void Mark()
     {
         MarkedMode = !MarkedMode;
