@@ -14,7 +14,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public bool MarkedMode = false; //true => hooked on cursor (listen for it)
     //marker pos
-    int start_X; 
+    int start_X;
     int start_Y;
 
     int leftCursor_X = 0;
@@ -38,7 +38,7 @@ public class Cursor_2D_Select //rename to marker?
         if (MarkedMode)
             SetMarker();
     }
-    
+
     public void SetMarker()
     {
         start_X = Cursor.X_selected;
@@ -53,7 +53,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public void Update() //updateSelection
     {
-        if (Cursor.X_selected == start_X 
+        if (Cursor.X_selected == start_X
          && Cursor.Y_selected == start_Y) //Marker = Cursor => return
         {
             #region Comments
@@ -62,7 +62,7 @@ public class Cursor_2D_Select //rename to marker?
             #endregion
             return;
         }
-        
+
         SetCursorsSides();
         GetDataToMark();
         DrawMarker();
@@ -74,26 +74,41 @@ public class Cursor_2D_Select //rename to marker?
         {
             if (start_X < Cursor.X_selected) //switch sides (left arrow)
             {
-                leftCursor_X = start_X;
-                rightCursor_X = Cursor.X_selected;
+                Set_Start_Left();
             }
             else
             {
-                leftCursor_X = Cursor.X_selected;
-                rightCursor_X = start_X;
+                Set_Start_Right();
             }
         }
         else if (start_Y < Cursor.Y_selected)
         {
-            leftCursor_X = start_X;
-            rightCursor_X = Cursor.X_selected;
+            Set_Start_Left();
         }
         else if (start_Y > Cursor.Y_selected)
         {
-            leftCursor_X = Cursor.X_selected;
-            rightCursor_X = start_X;
+            Set_Start_Right();
         }
     }
+    #region HelperMethod
+    public void Set_Start_Right() //find way to have one method => use arguments
+    {
+        leftCursor_X = Cursor.X_selected;
+        rightCursor_X = start_X;
+
+        leftCursor_Y = Cursor.Y_selected;
+        rightCursor_Y = start_Y;
+    }
+    public void Set_Start_Left()
+    {
+        leftCursor_X = start_X;
+        rightCursor_X = Cursor.X_selected;
+
+        leftCursor_Y = start_Y;
+        rightCursor_Y = Cursor.Y_selected;
+    }
+    #endregion
+
     public void GetDataToMark()
     {
         int Y_counter = start_Y;
@@ -123,6 +138,7 @@ public class Cursor_2D_Select //rename to marker?
     }
     public void DrawMarker() //rename to 'Draw'?
     {
+        //TODO: add line Wrapper
         int Y_counter = start_Y;
 
         #region SetColor
