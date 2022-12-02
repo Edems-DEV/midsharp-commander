@@ -31,36 +31,26 @@ public class Cursor_2D_Select //rename to marker?
         Rows = editor.Rows; //by reference => should change original List
     }
 
-    public void Hook()
-    {
-        if (MarkedMode)
-            Update(); //hook
-    }
-    
     public void Mark()
     {
         MarkedMode = !MarkedMode;
 
-        //hook: Cursor //TODO: deletion => auto in Cursor / FE (i use original Cursor values)
-        if (!MarkedMode)
-        {
-            //Cursor.KeyPressed -= Update; //remove hook
-            return;
-        }
-        else
-        {
+        if (MarkedMode)
             SetMarker();
-            //Cursor.KeyPressed += Update; //hook
-            return;
-        }
     }
-
+    
     public void SetMarker()
     {
         start_X = Cursor.X_selected;
         start_Y = Cursor.Y_selected;
     }
-    
+
+    public void Hook()
+    {
+        if (MarkedMode)
+            Update(); //hook
+    }
+
     public void Update() //updateSelection
     {
         if (Cursor.X_selected == start_X 

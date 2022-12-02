@@ -111,6 +111,7 @@ public class FileEditor : IComponent
 
             Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
             Cursor.Draw();
+            Marker.Hook(); //TODO: find better hook
         }
     }
 
@@ -188,7 +189,7 @@ public class FileEditor : IComponent
                 break;
         }
         
-        Marker.Hook(); //TODO: find better hook
+        //Marker.Hook(); //TODO: find better hook
     }
     public bool ContentChanged() //change to return  true if changed false = same
     {
