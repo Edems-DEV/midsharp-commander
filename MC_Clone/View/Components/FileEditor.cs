@@ -111,7 +111,7 @@ public class FileEditor : IComponent
 
             Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
             Cursor.Draw();
-            Marker.Hook(); //TODO: find better hook
+            Marker.Hook(); //TODO: find better hook //this method moved cursor to same line => single line
         }
     }
 

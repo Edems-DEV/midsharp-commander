@@ -111,6 +111,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public void GetDataToMark()
     {
+        selectedRows.Clear();
         int Y_counter = start_Y;
 
         if (start_Y == Cursor.Y_selected) //single row select
@@ -170,9 +171,14 @@ public class Cursor_2D_Select //rename to marker?
     public void DrawLineOn(int rowIndex, int x = 0)
     {
         //TODO: add line wrapper
-            // Draw in FE? => No, standalone object
-            //
+        // Draw in FE? => No, standalone object
+        //
+        int old_X = Console.CursorLeft;
+        int old_y = Console.CursorTop;
+
         Console.SetCursorPosition(x, rowIndex);
         Console.Write(Rows[rowIndex - start_Y]); //change - start_Y to set cursor?
+
+        Console.SetCursorPosition(old_X, old_y);
     }
 }
