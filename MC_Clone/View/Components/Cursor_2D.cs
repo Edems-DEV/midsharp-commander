@@ -87,23 +87,30 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
     public override void Up()
     {
-        
         base.Up();
+
+        EventInvoke();
     }
     public override void Down()
     {
         base.Down();
         //go to end of line (no empthy space)
+
+        EventInvoke();
     }
     public void Up(string nextRow)
     {
         CheckLineSize(nextRow);
         base.Up();
+
+        EventInvoke();
     }
     public void Down(string nextRow)
     {
         CheckLineSize(nextRow);
         base.Down();
+
+        EventInvoke();
     }
 
     public void Right(string nextRow)
@@ -120,6 +127,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         if (X_selected == X_offset + Math.Min(X_visible, X_totalSize))
             X_offset++;
 
+        EventInvoke();
     }
     public void Left(string nextRow)
     {
@@ -144,22 +152,29 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         if (X_selected == X_offset - 1)
             X_offset--;
 
+        EventInvoke();
     }
 
     public override void GoBegin()
     {
         X_selected = 0;
         X_offset = 0;
+
+        EventInvoke();
     }
     public override void GoEnd()
     {
         X_selected = X_totalSize - 1;
         X_offset = X_totalSize - X_visible;
+
+        EventInvoke();
     }
     public void GoEnd(int localX_totalSize)
     {
         X_selected = localX_totalSize - 1;
         X_offset = localX_totalSize - X_visible;
+
+        EventInvoke();
     }
     #endregion
 
