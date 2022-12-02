@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,11 @@ internal class Logs
     {
         LogWrite(logMessage);
     }
+    public Logs(List<string> logMessage)
+    {
+        LogList(logMessage);
+    }
+        
     public void LogWrite(string logMessage)
     {
         m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -37,6 +43,40 @@ internal class Logs
                 DateTime.Now.ToLongDateString());
             txtWriter.WriteLine("  :{0}", logMessage);
             txtWriter.WriteLine("-------------------------------");
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+    public void SimpleLog(string logMessage, TextWriter txtWriter)
+    {
+        try
+        {
+            string time = DateTime.Now.ToLongTimeString();
+            string date = DateTime.Now.ToLongDateString();
+            txtWriter.Write($"\r\nLog Entry : {time}/{date}");
+            txtWriter.WriteLine($"MSG: '{logMessage}'");
+            txtWriter.WriteLine("-------------------------------");
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+    public void LogList(List<string> list)
+    {
+        m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+
+        try
+        {
+            using (StreamWriter w = File.AppendText(m_exePath + "\\" + "log.txt"))
+            {
+                foreach (string item in list)
+                {
+                    w.WriteLine(item);
+                }
+                w.WriteLine("-------------------------------");
+            }
         }
         catch (Exception ex)
         {

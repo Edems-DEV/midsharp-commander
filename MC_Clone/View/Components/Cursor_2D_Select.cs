@@ -135,6 +135,7 @@ public class Cursor_2D_Select //rename to marker?
             }
             selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
         }
+        Logs a = new Logs(selectedRows);
     }
     public void DrawMarker() //rename to 'Draw'?
     {
@@ -172,6 +173,6 @@ public class Cursor_2D_Select //rename to marker?
             // Draw in FE? => No, standalone object
             //
         Console.SetCursorPosition(x, rowIndex);
-        Console.Write(Rows[rowIndex - start_Y]);
+        Console.Write(Rows[rowIndex - start_Y]); //change - start_Y to set cursor?
     }
 }
