@@ -4,7 +4,150 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MC_Clone.View.Components;
-internal class Cursor_2D_Select
+namespace MC_Clone;
+internal class Cursor_2D_Select //rename to marker?
 {
+    //editor
+    Cursor_2D Cursor;
+    public List<string> Rows; //reference on original rows in FileEditor
+
+
+    public bool MarkedMode = false; //true => hooked on cursor (listen for it)
+    //marker pos
+    int start_X; 
+    int start_Y;
+
+    int leftCursor_X = 0;
+    int rightCursor_X = 0;
+    int leftCursor_Y = 0;
+    int rightCursor_Y = 0;
+    List<string> selectedRows = new List<string>();
+
+    public int linesCout { get { return (leftCursor_Y - rightCursor_Y); } } //+ 1 (?)
+
+    public Cursor_2D_Select(FileEditor editor)
+    {
+        Cursor = editor.Cursor;
+        Rows = editor.Rows; //by reference => should change original List
+    }
+    public void Mark()
+    {
+        MarkedMode = !MarkedMode;
+
+        if (MarkedMode) //save start cursor
+        {
+            //create - new object of Marker[select] (override old)
+            if (Cursor.X_selected == start_X && Cursor.Y_selected == start_Y) //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
+            {
+                return;
+            }
+            start_X = Cursor.X_selected;
+            start_Y = Cursor.Y_selected;
+        }
+        else
+        {
+            //start_X = null; start_Y = null;
+        }
+    }
+    public void MarkSetup()
+    {
+        //create object => contructor (move this things into him)
+        SetCursorsSides();
+        GetDataToMark();
+        //DrawMarker();
+    }
+    public void SetCursorsSides() //SetCursorsSides
+    {
+        if (start_Y == Cursor.Y_selected)
+        {
+            if (start_X < Cursor.X_selected) //switch sides (left arrow)
+            {
+                leftCursor_X = start_X;
+                rightCursor_X = Cursor.X_selected;
+            }
+            else
+            {
+                leftCursor_X = Cursor.X_selected;
+                rightCursor_X = start_X;
+            }
+        }
+        else if (start_Y < Cursor.Y_selected)
+        {
+            leftCursor_X = start_X;
+            rightCursor_X = Cursor.X_selected;
+        }
+        else if (start_Y > Cursor.Y_selected)
+        {
+            leftCursor_X = Cursor.X_selected;
+            rightCursor_X = start_X;
+        }
+    }
+    public void GetDataToMark() //move to class
+    {
+        int Y_counter = start_Y;
+
+        if (MarkedMode) //why this? (always is?)
+        {
+            if (start_Y == Cursor.Y_selected) //single row select
+            {
+                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
+            }
+            else
+            {
+                //start substring
+                //full rows (if rows > 2)
+                //end substring
+
+                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); //first line
+                if (linesCout >= 2) //have middle full lines
+                {
+                    //save middle lines
+                    while (Y_counter < linesCout - 2)
+                    {
+                        Y_counter++;
+                        selectedRows.Add(Rows[Y_counter]);
+                    }
+                }
+                selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
+            }
+        }
+    }
+    public void DrawMarker()
+    {
+        int Y_counter = start_Y;
+
+        #region SetColor
+        ConsoleColor oldBG = Console.BackgroundColor;
+        Console.BackgroundColor = Config.Accent_BackgroundColor; //TODO: own color in config
+        #endregion
+
+        //if (Marked) => draw always just empthy string (? performance)
+        if (start_Y == Cursor.Y_selected) //single row select
+        {
+            DrawLineOn(Y_counter, leftCursor_X);
+        }
+        else
+        {
+            DrawLineOn(Y_counter, leftCursor_X);
+            if (linesCout >= 2)
+            {
+                while (Y_counter < linesCout - 2)
+                {
+                    Y_counter++;
+                    DrawLineOn(Y_counter);
+                }
+            }
+            DrawLineOn(Y_counter);
+        }
+        Console.BackgroundColor = oldBG;
+    }
+
+    public void DrawLineOn(int rowIndex, int x = 0)
+    {
+        //TODO: add line wrapper
+            // Draw in FE? => No, standalone object
+            //
+        Console.SetCursorPosition(rowIndex, x);
+        Console.Write(Rows[rowIndex]);
+    }
 }
