@@ -29,33 +29,50 @@ internal class Cursor_2D_Select //rename to marker?
     {
         Cursor = editor.Cursor;
         Rows = editor.Rows; //by reference => should change original List
+        Cursor.KeyPressed += Update;
     }
+
     public void Mark()
     {
         MarkedMode = !MarkedMode;
 
-        if (MarkedMode) //save start cursor
+        //hook: Cursor //TODO: deletion => auto in Cursor / FE (i use original Cursor values)
+        if (!MarkedMode)
         {
-            //create - new object of Marker[select] (override old)
-            if (Cursor.X_selected == start_X && Cursor.Y_selected == start_Y) //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
-            {
-                return;
-            }
-            start_X = Cursor.X_selected;
-            start_Y = Cursor.Y_selected;
+            Cursor.KeyPressed -= Update; //remove hook
+            return;
         }
         else
         {
-            //start_X = null; start_Y = null;
+            SetMarker();
+            Cursor.KeyPressed += Update; //hook
+            return;
         }
     }
-    public void MarkSetup()
+
+    public void SetMarker()
     {
-        //create object => contructor (move this things into him)
+        start_X = Cursor.X_selected;
+        start_Y = Cursor.Y_selected;
+    }
+    
+    public void Update() //updateSelection
+    {
+        if (Cursor.X_selected == start_X 
+         && Cursor.Y_selected == start_Y) //Marker = Cursor => return
+        {
+            #region Comments
+            //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
+            //TODO: finish this (used at update + F3) => zero selection (right place? => no more calc)
+            #endregion
+            return;
+        }
+        
         SetCursorsSides();
         GetDataToMark();
-        //DrawMarker();
+        DrawMarker();
     }
+
     public void SetCursorsSides() //SetCursorsSides
     {
         if (start_Y == Cursor.Y_selected)
@@ -82,37 +99,34 @@ internal class Cursor_2D_Select //rename to marker?
             rightCursor_X = start_X;
         }
     }
-    public void GetDataToMark() //move to class
+    public void GetDataToMark()
     {
         int Y_counter = start_Y;
 
-        if (MarkedMode) //why this? (always is?)
+        if (start_Y == Cursor.Y_selected) //single row select
         {
-            if (start_Y == Cursor.Y_selected) //single row select
-            {
-                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
-            }
-            else
-            {
-                //start substring
-                //full rows (if rows > 2)
-                //end substring
+            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
+        }
+        else
+        {
+            //start substring
+            //full rows (if rows > 2)
+            //end substring
 
-                selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); //first line
-                if (linesCout >= 2) //have middle full lines
+            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); //first line
+            if (linesCout >= 2) //have middle full lines
+            {
+                //save middle lines
+                while (Y_counter < linesCout - 2)
                 {
-                    //save middle lines
-                    while (Y_counter < linesCout - 2)
-                    {
-                        Y_counter++;
-                        selectedRows.Add(Rows[Y_counter]);
-                    }
+                    Y_counter++;
+                    selectedRows.Add(Rows[Y_counter]);
                 }
-                selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
             }
+            selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
         }
     }
-    public void DrawMarker()
+    public void DrawMarker() //rename to 'Draw'?
     {
         int Y_counter = start_Y;
 
@@ -128,13 +142,12 @@ internal class Cursor_2D_Select //rename to marker?
         }
         else
         {
-            DrawLineOn(Y_counter, leftCursor_X);
+            DrawLineOn(Y_counter, leftCursor_X); Y_counter++;
             if (linesCout >= 2)
             {
                 while (Y_counter < linesCout - 2)
                 {
-                    Y_counter++;
-                    DrawLineOn(Y_counter);
+                    DrawLineOn(Y_counter); Y_counter++;
                 }
             }
             DrawLineOn(Y_counter);

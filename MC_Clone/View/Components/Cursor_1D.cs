@@ -28,7 +28,7 @@ public class Cursor_1D //: IComponent //(Y '|')
     protected int _y_totalSize;    // Y_totalSize
 
     //Local
-    protected event Action KeyPressed;
+    public event Action KeyPressed;
     
     protected int _y_selected = 0; // current cursor pos
     protected int _y_offset = 0;   // offset
