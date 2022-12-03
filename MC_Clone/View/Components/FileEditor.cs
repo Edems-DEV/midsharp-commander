@@ -191,7 +191,7 @@ public class FileEditor : IComponent
             case ConsoleKey.F7:
                 break;
             case ConsoleKey.F8:
-                if (false) //if marker is alive (have selection)
+                if (Marker.SelectionAlive)
                     Marker.Delete();
                 else
                     DeleteLine();

@@ -219,20 +219,22 @@ public class Cursor_2D_Select //rename to marker?
 
         if (leftCursor_Y == rightCursor_Y)
         {
-            Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, rightCursor_X - leftCursor_X);
+            //Editor.Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, rightCursor_X - leftCursor_X);
+            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(0, leftCursor_X) + Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
         }
         else
         {
-            Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X); Y_counter++;
+            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(0, leftCursor_X); Y_counter++;
             if (linesCout >= 2)
             {
                 while (Y_counter - Cursor.Y_offset <= linesCout)
                 {
-                    Rows.RemoveAt(Y_counter); //Y_counter++;
+                    Editor.Rows.RemoveAt(Y_counter); //Y_counter++;
                 }
             }
-            Rows[Y_counter] = Rows[Y_counter].Substring(0, rightCursor_X);
+            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
         }
+        SelectionAlive = false;
     }
     public void Copy()
     {
@@ -250,15 +252,15 @@ public class Cursor_2D_Select //rename to marker?
         }
         else
         {
-            Rows[Cursor.Y_selected] = firstLine + selectedRows[0]; Y_counter++;
+            Editor.Rows[Cursor.Y_selected] = firstLine + selectedRows[0]; Y_counter++;
 
             selectedRows.RemoveAt(0);
             selectedRows.Reverse();
             foreach (var row in selectedRows)
             {
-                Rows.Insert(Y_counter, row); Y_counter++;
+                Editor.Rows.Insert(Y_counter, row); Y_counter++;
             }
-            Rows[Y_counter - 1] = selectedRows[selectedRows.Count - 1] + endLine;
+            Editor.Rows[Y_counter - 1] = selectedRows[selectedRows.Count - 1] + endLine;
         }
         
         if (Logs){
