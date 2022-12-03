@@ -229,12 +229,12 @@ public class Cursor_2D_Select //rename to marker?
 
         string firstLine = Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected)
                            + selectedRows[0];
+        
+        string endLine = Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
 
         if (leftCursor_Y == rightCursor_Y)
         {
-            Rows[Cursor.Y_selected] =
-                firstLine +
-                Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected); 
+            Rows[Cursor.Y_selected] = firstLine + endLine;
         }
         else
         {
@@ -246,9 +246,7 @@ public class Cursor_2D_Select //rename to marker?
             {
                 Rows.Insert(Y_counter, row); Y_counter++;
             }
-            Rows[Y_counter - 1] = 
-                selectedRows[selectedRows.Count - 1] 
-                + Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
+            Rows[Y_counter - 1] = selectedRows[selectedRows.Count - 1] + endLine;
         }
     }
     
