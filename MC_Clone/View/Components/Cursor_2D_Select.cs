@@ -152,35 +152,6 @@ public class Cursor_2D_Select //rename to marker?
             selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
         }
     }
-    public void oldDrawMarker() //rename to 'Draw'?
-    {
-        //TODO: add line Wrapper
-        int Y_counter = leftCursor_Y;
-
-        #region SetColor
-        ConsoleColor oldBG = Console.BackgroundColor;
-        Console.BackgroundColor = Config.Accent_BackgroundColor; //TODO: own color in config
-        #endregion
-
-        //if (Marked) => draw always just empthy string (? performance)
-        if (leftCursor_Y == rightCursor_Y) //single row select
-        {
-            DrawLineOn(Y_counter, leftCursor_X);
-        }
-        else
-        {
-            DrawLineOn(Y_counter, leftCursor_X); Y_counter++;
-            if (linesCout >= 3)
-            {
-                while (Y_counter < linesCout - 2)
-                {
-                    DrawLineOn(Y_counter); Y_counter++;
-                }
-            }
-            DrawLineOn(Y_counter);
-        }
-        Console.BackgroundColor = oldBG;
-    }
     public void DrawMarker()
     {
         #region SetColor
@@ -222,7 +193,6 @@ public class Cursor_2D_Select //rename to marker?
     {
         //TODO: add line wrapper
         // Draw in FE? => No, standalone object
-        //
 
         DrawLineOn(rowIndex, selectedRows[rowIndex - leftCursor_Y], x);
     }
