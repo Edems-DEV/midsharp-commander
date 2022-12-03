@@ -96,6 +96,9 @@ public class Config
     
     public static ConsoleColor TextBox_InputField = ConsoleColor.Cyan;
 
+    public static ConsoleColor Selection_Foreground = ConsoleColor.Black;
+    public static ConsoleColor Selection_Backgroud  = ConsoleColor.Gray;
+
 
 
 

@@ -159,9 +159,11 @@ public class Cursor_2D_Select //rename to marker?
     {
         #region SetColor
         ConsoleColor oldBG = Console.BackgroundColor;
-        Console.BackgroundColor = Config.Accent_BackgroundColor;
+        Console.BackgroundColor = Config.Selection_Backgroud;
+        ConsoleColor oldTEXT = Console.BackgroundColor;
+        Console.ForegroundColor = Config.Selection_Foreground;
         #endregion
-        
+
         int Y_counter = leftCursor_Y;
         if (leftCursor_Y == rightCursor_Y)
         {
@@ -178,6 +180,7 @@ public class Cursor_2D_Select //rename to marker?
 
         #region ResetColor
         Console.BackgroundColor = oldBG;
+        Console.ForegroundColor = oldTEXT;
         #endregion
     }
 
