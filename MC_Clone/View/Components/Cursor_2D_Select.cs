@@ -136,15 +136,17 @@ public class Cursor_2D_Select //rename to marker?
         }
         else
         {
+            #region Comments
             //start substring
             //full rows (if rows > 2)
             //end substring
+            #endregion
 
             selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); Y_counter++; //first line
-            if (linesCout >= 3) //have middle full lines
+            if (linesCout >= 2) //have middle full lines
             {
                 //save middle lines
-                while (Y_counter < linesCout - 2)
+                while (Y_counter <= linesCout)
                 {
                     selectedRows.Add(Rows[Y_counter]); Y_counter++;
                 }
