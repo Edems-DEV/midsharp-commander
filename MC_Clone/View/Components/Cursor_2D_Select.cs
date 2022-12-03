@@ -57,8 +57,7 @@ public class Cursor_2D_Select //rename to marker?
         if (MarkedMode)
         {
             SetMarker();
-            SelectionAlive = true;
-
+            SelectionAlive = true; //Alive 1
         }
     }
 
@@ -70,37 +69,23 @@ public class Cursor_2D_Select //rename to marker?
 
     public void Hook()
     {
-        //if (MarkedMode)
-            Update(); //hook
-    }
-
-    public void Update() //updateSelection
-    {
-        if (Cursor.X_selected == marker_X
-         && Cursor.Y_selected == marker_Y) //Marker = Cursor => return
-        {
-            #region Comments
-            //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
-            //TODO: finish this (used at update + F3) => zero selection (right place? => no more calc)
-            #endregion
-            SelectionAlive = false;
-            return;
-        }
-        SelectionAlive = true;
-        Draw();
-    }
-    public void Draw()
-    {
-        //if (!SelectionAlive) { return; } //always
-
         if (MarkedMode)
         {
             SetCursorsSides();
             GetDataToMark();
+            
+            if (Cursor.X_selected == marker_X
+            && Cursor.Y_selected == marker_Y) //Marker = Cursor => return
+                SelectionAlive = false;
+            else
+                SelectionAlive = true;
         }
-        DrawMarker();
+        if (SelectionAlive)
+        {
+            DrawMarker();
+        }
     }
-
+    
     public void SetCursorsSides() //SetCursorsSides
     {
         if (marker_Y == Cursor.Y_selected)
