@@ -14,8 +14,8 @@ public class Cursor_2D_Select //rename to marker?
 
     public bool MarkedMode = false; //true => hooked on cursor (listen for it)
     //marker pos
-    int start_X;
-    int start_Y;
+    int marker_X;
+    int marker_Y;
 
     int leftCursor_X = 0;
     int rightCursor_X = 0;
@@ -37,7 +37,7 @@ public class Cursor_2D_Select //rename to marker?
         int y_selected = Cursor.Y_selected;
         List<string> Debug = new List<string>();
         string line1 = String.Format("  Left: X: {0}  Y: {1} |  Right: X: {2}  Y: {3}",  leftCursor_X, leftCursor_Y, rightCursor_X, rightCursor_Y);
-        string line2 = String.Format("Marker: X: {0}  Y: {1} | Cursor: X: {2}  Y: {3}", start_X, start_Y, x_selected, y_selected);
+        string line2 = String.Format("Marker: X: {0}  Y: {1} | Cursor: X: {2}  Y: {3}", marker_X, marker_Y, x_selected, y_selected);
         Debug.Add(line1);
         Debug.Add(line2);
         Debug.Add(new String('•', Debug[Debug.Count - 1].Length));
@@ -54,8 +54,8 @@ public class Cursor_2D_Select //rename to marker?
 
     public void SetMarker()
     {
-        start_X = Cursor.X_selected;
-        start_Y = Cursor.Y_selected;
+        marker_X = Cursor.X_selected;
+        marker_Y = Cursor.Y_selected;
     }
 
     public void Hook()
@@ -66,8 +66,8 @@ public class Cursor_2D_Select //rename to marker?
 
     public void Update() //updateSelection
     {
-        if (Cursor.X_selected == start_X
-         && Cursor.Y_selected == start_Y) //Marker = Cursor => return
+        if (Cursor.X_selected == marker_X
+         && Cursor.Y_selected == marker_Y) //Marker = Cursor => return
         {
             #region Comments
             //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
@@ -83,9 +83,9 @@ public class Cursor_2D_Select //rename to marker?
 
     public void SetCursorsSides() //SetCursorsSides
     {
-        if (start_Y == Cursor.Y_selected)
+        if (marker_Y == Cursor.Y_selected)
         {
-            if (start_X < Cursor.X_selected) //switch sides (left arrow)
+            if (marker_X < Cursor.X_selected) //switch sides (left arrow)
             {
                 Set_Start_Left();
             }
@@ -94,11 +94,11 @@ public class Cursor_2D_Select //rename to marker?
                 Set_Start_Right();
             }
         }
-        else if (start_Y < Cursor.Y_selected)
+        else if (marker_Y < Cursor.Y_selected)
         {
             Set_Start_Left();
         }
-        else if (start_Y > Cursor.Y_selected)
+        else if (marker_Y > Cursor.Y_selected)
         {
             Set_Start_Right();
         }
@@ -107,17 +107,17 @@ public class Cursor_2D_Select //rename to marker?
     public void Set_Start_Right() //find way to have one method => use arguments
     {
         leftCursor_X = Cursor.X_selected;
-        rightCursor_X = start_X;
+        rightCursor_X = marker_X;
 
         leftCursor_Y = Cursor.Y_selected;
-        rightCursor_Y = start_Y;
+        rightCursor_Y = marker_Y;
     }
     public void Set_Start_Left()
     {
-        leftCursor_X = start_X;
+        leftCursor_X = marker_X;
         rightCursor_X = Cursor.X_selected;
 
-        leftCursor_Y = start_Y;
+        leftCursor_Y = marker_Y;
         rightCursor_Y = Cursor.Y_selected;
     }
     #endregion
@@ -125,9 +125,9 @@ public class Cursor_2D_Select //rename to marker?
     public void GetDataToMark()
     {
         selectedRows.Clear();
-        int Y_counter = start_Y;
+        int Y_counter = marker_Y;
 
-        if (start_Y == Cursor.Y_selected) //single row select
+        if (marker_Y == Cursor.Y_selected) //single row select
         {
             selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
         }
@@ -153,7 +153,7 @@ public class Cursor_2D_Select //rename to marker?
     public void DrawMarker() //rename to 'Draw'?
     {
         //TODO: add line Wrapper
-        int Y_counter = start_Y;
+        int Y_counter = leftCursor_Y;
 
         #region SetColor
         ConsoleColor oldBG = Console.BackgroundColor;
@@ -161,7 +161,7 @@ public class Cursor_2D_Select //rename to marker?
         #endregion
 
         //if (Marked) => draw always just empthy string (? performance)
-        if (start_Y == Cursor.Y_selected) //single row select
+        if (marker_Y == Cursor.Y_selected) //single row select
         {
             DrawLineOn(Y_counter, leftCursor_X);
         }
@@ -189,7 +189,7 @@ public class Cursor_2D_Select //rename to marker?
         int old_y = Console.CursorTop;
 
         Console.SetCursorPosition(x, rowIndex + 1);
-        Console.Write(selectedRows[rowIndex - start_Y]); //change - start_Y to set cursor?
+        Console.Write(selectedRows[rowIndex - leftCursor_Y]); //change - marker_Y to set cursor?
 
         Console.SetCursorPosition(old_X, old_y);
     }
