@@ -153,7 +153,7 @@ public class Cursor_2D_Select //rename to marker?
             if (linesCout >= 2) //have middle full lines
             {
                 //save middle lines
-                while (Y_counter - Cursor.Y_offset <= linesCout)
+                while (Y_counter - Cursor.Y_offset - leftCursor_Y < linesCout)
                 {
                     selectedRows.Add(Rows[Y_counter]); Y_counter++;
                 }
@@ -217,28 +217,25 @@ public class Cursor_2D_Select //rename to marker?
         
         int Y_counter = leftCursor_Y;
 
+        string firstLine = Rows[Y_counter].Substring(0, leftCursor_X);
+
+        string endLine = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
+
 
         if (leftCursor_Y == rightCursor_Y)
         {
-            string firstLine = Rows[Y_counter].Substring(0, leftCursor_X);
-
-            string endLine = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
-
             Editor.Rows[Y_counter] = firstLine + endLine;
         }
         else
         {
-            string firstLine = Rows[Y_counter].Substring(0, leftCursor_X);
-            Editor.Rows[Y_counter] = firstLine; Y_counter++;
+            Editor.Rows[Y_counter] = firstLine + endLine; Y_counter++;
             if (linesCout >= 2)
             {
-                while (Y_counter - Cursor.Y_offset < linesCout)
+                while (Y_counter - Cursor.Y_offset - leftCursor_Y < linesCout + 1)
                 {
                     Editor.Rows.RemoveAt(Y_counter); Y_counter++;
                 }
             }
-            string endLine = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
-            Editor.Rows[Y_counter] = endLine;
         }
         SelectionAlive = false;
         MarkedMode = false;
