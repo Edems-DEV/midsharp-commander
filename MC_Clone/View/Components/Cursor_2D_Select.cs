@@ -13,6 +13,7 @@ public class Cursor_2D_Select //rename to marker?
     public List<string> Rows; //reference on original rows in FileEditor
 
 
+    public bool SelectionAlive = false; //Able to draw //TODO: remove (find better solution)
     public bool MarkedMode = false; //true => hooked on cursor (listen for it)
     //marker pos
     int marker_X;
@@ -41,9 +42,10 @@ public class Cursor_2D_Select //rename to marker?
         string line1 = String.Format("  Left: X: {0}  Y: {1} |  Right: X: {2}  Y: {3}",  leftCursor_X, leftCursor_Y, rightCursor_X, rightCursor_Y);
         string line2 = String.Format("Marker: X: {0}  Y: {1} | Cursor: X: {2}  Y: {3}",  marker_X,     marker_Y,     x_selected,    y_selected);
         string line3 = String.Format("Lines: {0}", linesCout);
+        string line4 = String.Format("MarkedMode: {0} | SelectionAlive {1}", MarkedMode, SelectionAlive);
         Debug.Add(line1);
         Debug.Add(line2);
-        Debug.Add(line3);
+        Debug.Add(line3 + " | " + line4);
         Debug.Add(new String('•', Debug[Debug.Count - 1].Length));
         Debug.AddRange(selectedRows);
         Logs a = new Logs(Debug);
@@ -53,7 +55,11 @@ public class Cursor_2D_Select //rename to marker?
         MarkedMode = !MarkedMode;
 
         if (MarkedMode)
+        {
             SetMarker();
+            SelectionAlive = true;
+
+        }
     }
 
     public void SetMarker()
@@ -64,7 +70,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public void Hook()
     {
-        if (MarkedMode)
+        //if (MarkedMode)
             Update(); //hook
     }
 
@@ -77,11 +83,21 @@ public class Cursor_2D_Select //rename to marker?
             //Cursor.pos = Marker.Pos => return (only cursor) [make pos object?]
             //TODO: finish this (used at update + F3) => zero selection (right place? => no more calc)
             #endregion
+            SelectionAlive = false;
             return;
         }
+        SelectionAlive = true;
+        Draw();
+    }
+    public void Draw()
+    {
+        //if (!SelectionAlive) { return; } //always
 
-        SetCursorsSides();
-        GetDataToMark();
+        if (MarkedMode)
+        {
+            SetCursorsSides();
+            GetDataToMark();
+        }
         DrawMarker();
     }
 
@@ -189,6 +205,7 @@ public class Cursor_2D_Select //rename to marker?
         int old_X = Console.CursorLeft;
         int old_y = Console.CursorTop;
 
+        //if (0 > rowIndex + 1 - Cursor.Y_offset){return;} //concept
         Console.SetCursorPosition(x, rowIndex + 1 - Cursor.Y_offset);
         Console.Write(row);
 
@@ -204,9 +221,10 @@ public class Cursor_2D_Select //rename to marker?
     }
 
     #region Functions
-    //TODO: check if selection is avaible
     public void Delete()
     {
+        if (!SelectionAlive) { return; }
+        
         int Y_counter = leftCursor_Y;
 
         if (leftCursor_Y == rightCursor_Y)
@@ -228,6 +246,8 @@ public class Cursor_2D_Select //rename to marker?
     }
     public void Copy()
     {
+        if (!SelectionAlive) { return; }
+        
         int Y_counter = Cursor.Y_selected;
 
         string firstLine = Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected);
