@@ -23,7 +23,7 @@ public class Cursor_2D_Select //rename to marker?
     int rightCursor_Y = 0;
     public List<string> selectedRows = new List<string>();
 
-    public int linesCout { get { return (leftCursor_Y - rightCursor_Y); } } //+ 1 (?)
+    public int linesCout { get { return (rightCursor_Y - leftCursor_Y); } } //+ 1 (?)
 
     public Cursor_2D_Select(FileEditor editor)
     {
@@ -37,9 +37,11 @@ public class Cursor_2D_Select //rename to marker?
         int y_selected = Cursor.Y_selected;
         List<string> Debug = new List<string>();
         string line1 = String.Format("  Left: X: {0}  Y: {1} |  Right: X: {2}  Y: {3}",  leftCursor_X, leftCursor_Y, rightCursor_X, rightCursor_Y);
-        string line2 = String.Format("Marker: X: {0}  Y: {1} | Cursor: X: {2}  Y: {3}", marker_X, marker_Y, x_selected, y_selected);
+        string line2 = String.Format("Marker: X: {0}  Y: {1} | Cursor: X: {2}  Y: {3}",  marker_X,     marker_Y,     x_selected,    y_selected);
+        string line3 = String.Format("Lines: {0}", linesCout);
         Debug.Add(line1);
         Debug.Add(line2);
+        Debug.Add(line3);
         Debug.Add(new String('•', Debug[Debug.Count - 1].Length));
         Debug.AddRange(selectedRows);
         Logs a = new Logs(Debug);
@@ -125,7 +127,7 @@ public class Cursor_2D_Select //rename to marker?
     public void GetDataToMark()
     {
         selectedRows.Clear();
-        int Y_counter = marker_Y;
+        int Y_counter = leftCursor_Y;
 
         if (marker_Y == Cursor.Y_selected) //single row select
         {
@@ -137,14 +139,13 @@ public class Cursor_2D_Select //rename to marker?
             //full rows (if rows > 2)
             //end substring
 
-            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); //first line
+            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); Y_counter++; //first line
             if (linesCout >= 2) //have middle full lines
             {
                 //save middle lines
                 while (Y_counter < linesCout - 2)
                 {
-                    Y_counter++;
-                    selectedRows.Add(Rows[Y_counter]);
+                    selectedRows.Add(Rows[Y_counter]); Y_counter++;
                 }
             }
             selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
