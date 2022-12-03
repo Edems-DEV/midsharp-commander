@@ -180,8 +180,21 @@ public class FileEditor : IComponent
             case ConsoleKey.F3:
                 Marker.Mark();
                 break;
+            case ConsoleKey.F4:
+                break;
+            case ConsoleKey.F5:
+                Marker.Copy();
+                break;
+            case ConsoleKey.F6:
+                Marker.Move();
+                break;
+            case ConsoleKey.F7:
+                break;
             case ConsoleKey.F8:
-                DeleteLine();
+                if (false) //if marker is alive (have selection)
+                    Marker.Delete();
+                else
+                    DeleteLine();
                 break;
             case ConsoleKey.Escape:
             case ConsoleKey.F10:

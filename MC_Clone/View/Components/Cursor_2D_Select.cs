@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -198,4 +199,69 @@ public class Cursor_2D_Select //rename to marker?
 
         DrawLineOn(rowIndex, selectedRows[rowIndex - leftCursor_Y], x);
     }
+
+    #region Functions
+    //TODO: check if selection is avaible
+    public void Delete()
+    {
+        int Y_counter = leftCursor_Y;
+
+        if (leftCursor_Y == rightCursor_Y)
+        {
+            Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, rightCursor_X - leftCursor_X);
+        }
+        else
+        {
+            Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X); Y_counter++;
+            if (linesCout >= 2)
+            {
+                while (Y_counter - Cursor.Y_offset <= linesCout)
+                {
+                    Rows.RemoveAt(Y_counter); //Y_counter++;
+                }
+            }
+            Rows[Y_counter] = Rows[Y_counter].Substring(0, rightCursor_X);
+        }
+    }
+    public void Copy()
+    {
+        int Y_counter = leftCursor_Y;
+
+        if (leftCursor_Y == rightCursor_Y)
+        {
+            #region First line
+            Rows[Cursor.Y_selected] =
+                Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected)
+                + selectedRows[0] +
+                Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected); 
+            #endregion
+        }
+        else
+        {
+            #region First line
+            Rows[Cursor.Y_selected] =
+                Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected)
+                + selectedRows[0]; Y_counter++;
+            #endregion
+
+            selectedRows.RemoveAt(0);
+            selectedRows.Reverse();
+            foreach (var row in selectedRows)
+            {
+                Rows.Insert(Y_counter, row); Y_counter++;
+            }
+            Rows[selectedRows.Count - 1] = 
+                selectedRows[selectedRows.Count - 1] 
+                + Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
+        }
+    }
+    
+    public void Move()
+    {
+        Delete();
+        Copy();
+    }
+
+
+    #endregion
 }
