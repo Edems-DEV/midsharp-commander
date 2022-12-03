@@ -13,6 +13,58 @@ public class EmptyMsg : PopUp
 {
     
 }
+
+public class NotFound : PopUp
+{
+    public NotFound(string title, string details)
+    {
+        this.title = title;
+        this.details.Add(details);
+        Add_CancelBtn("Dismiss");
+    }
+}
+
+public class File_Replace : PopUp
+{
+    private TextBox input;
+    private TextBox input2;
+
+    public File_Replace()
+    {
+        title = "Replace";
+        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        input2 = new TextBox() { Label = $"Enter replacement string:", Value = "" };
+        components.Add(input);
+        components.Add(input2);
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+    protected override void BtnOk_Clicked()
+    {
+    }
+}
+
+public class File_Search : PopUp
+{
+    private TextBox input;
+    private FileEditor editor;
+
+    public File_Search(FileEditor editor)
+    {
+        this.editor = editor;
+
+        title = "Search";
+        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        components.Add(input);
+        Add_BtnOk();
+        Add_CancelBtn();
+    }
+    protected override void BtnOk_Clicked()
+    {
+        editor.SearchString(input.Value, editor.Cursor.Y_selected);
+        BtnCancel_Clicked();
+    }
+}
 public class CloseFile : PopUp
 {
     private MyFileService FS;
@@ -28,7 +80,6 @@ public class CloseFile : PopUp
         Add_BtnOk();
         Add_NoBtn();
         Add_CancelBtn();
-        
     }
 
 

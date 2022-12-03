@@ -77,7 +77,6 @@ public class Cursor_2D_Select //rename to marker?
         if (MarkedMode)
         {
             SetCursorsSides();
-            GetDataToMark();
             
             if (Cursor.X_selected == marker_X
             && Cursor.Y_selected == marker_Y) //Marker = Cursor => return
@@ -87,6 +86,7 @@ public class Cursor_2D_Select //rename to marker?
         }
         if (SelectionAlive)
         {
+            GetDataToMark();
             DrawMarker();
         }
     }
@@ -242,7 +242,7 @@ public class Cursor_2D_Select //rename to marker?
     }
     public void Copy()
     {
-        //if (!SelectionAlive) { return; }
+        if (!SelectionAlive) { return; }
         
         int Y_counter = Cursor.Y_selected;
 
