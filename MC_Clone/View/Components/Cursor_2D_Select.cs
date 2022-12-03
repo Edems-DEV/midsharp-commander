@@ -217,14 +217,17 @@ public class Cursor_2D_Select //rename to marker?
         
         int Y_counter = leftCursor_Y;
 
+        string firstLine = Rows[Y_counter].Substring(0, leftCursor_X);
+
+        string endLine = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
+
         if (leftCursor_Y == rightCursor_Y)
         {
-            //Editor.Rows[Y_counter] = Rows[Y_counter].Substring(leftCursor_X, rightCursor_X - leftCursor_X);
-            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(0, leftCursor_X) + Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
+            Editor.Rows[Y_counter] = firstLine + endLine;
         }
         else
         {
-            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(0, leftCursor_X); Y_counter++;
+            Editor.Rows[Y_counter] = firstLine; Y_counter++;
             if (linesCout >= 2)
             {
                 while (Y_counter - Cursor.Y_offset <= linesCout)
@@ -232,7 +235,7 @@ public class Cursor_2D_Select //rename to marker?
                     Editor.Rows.RemoveAt(Y_counter); //Y_counter++;
                 }
             }
-            Editor.Rows[Y_counter] = Rows[Y_counter].Substring(rightCursor_X, Rows[Y_counter].Length - rightCursor_X);
+            Editor.Rows[Y_counter] = endLine;
         }
         SelectionAlive = false;
     }
