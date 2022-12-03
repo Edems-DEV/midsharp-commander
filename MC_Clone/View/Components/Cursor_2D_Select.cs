@@ -146,7 +146,7 @@ public class Cursor_2D_Select //rename to marker?
             if (linesCout >= 2) //have middle full lines
             {
                 //save middle lines
-                while (Y_counter <= linesCout)
+                while (Y_counter - Cursor.Y_offset <= linesCout)
                 {
                     selectedRows.Add(Rows[Y_counter]); Y_counter++;
                 }
@@ -185,7 +185,7 @@ public class Cursor_2D_Select //rename to marker?
         int old_X = Console.CursorLeft;
         int old_y = Console.CursorTop;
 
-        Console.SetCursorPosition(x, rowIndex + 1);
+        Console.SetCursorPosition(x, rowIndex + 1 - Cursor.Y_offset);
         Console.Write(row);
 
         Console.SetCursorPosition(old_X, old_y);
