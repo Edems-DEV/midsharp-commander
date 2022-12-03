@@ -227,18 +227,17 @@ public class Cursor_2D_Select //rename to marker?
     {
         int Y_counter = Cursor.Y_selected;
 
-        string firstLine = Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected)
-                           + selectedRows[0];
+        string firstLine = Rows[Cursor.Y_selected].Substring(0, Cursor.X_selected);
         
         string endLine = Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
 
         if (leftCursor_Y == rightCursor_Y)
         {
-            Rows[Cursor.Y_selected] = firstLine + endLine;
+            Rows[Cursor.Y_selected] = firstLine + selectedRows[0] + endLine;
         }
         else
         {
-            Rows[Cursor.Y_selected] = firstLine; Y_counter++;
+            Rows[Cursor.Y_selected] = firstLine + selectedRows[0]; Y_counter++;
 
             selectedRows.RemoveAt(0);
             selectedRows.Reverse();
