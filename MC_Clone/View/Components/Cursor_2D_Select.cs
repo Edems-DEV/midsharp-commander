@@ -24,6 +24,7 @@ public class Cursor_2D_Select //rename to marker?
     public List<string> selectedRows = new List<string>();
 
     public int linesCout { get { return (rightCursor_Y - leftCursor_Y); } } //+ 1 (?)
+    public int spaceBetween_L_R { get { return (rightCursor_X - leftCursor_X); } } //concept
 
     public Cursor_2D_Select(FileEditor editor)
     {
@@ -129,9 +130,9 @@ public class Cursor_2D_Select //rename to marker?
         selectedRows.Clear();
         int Y_counter = leftCursor_Y;
 
-        if (marker_Y == Cursor.Y_selected) //single row select
+        if (leftCursor_Y == rightCursor_Y) //single row select
         {
-            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X));
+            selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, rightCursor_X - leftCursor_X));
         }
         else
         {
@@ -140,7 +141,7 @@ public class Cursor_2D_Select //rename to marker?
             //end substring
 
             selectedRows.Add(Rows[Y_counter].Substring(leftCursor_X, Rows[Y_counter].Length - leftCursor_X)); Y_counter++; //first line
-            if (linesCout >= 2) //have middle full lines
+            if (linesCout >= 3) //have middle full lines
             {
                 //save middle lines
                 while (Y_counter < linesCout - 2)
@@ -151,7 +152,7 @@ public class Cursor_2D_Select //rename to marker?
             selectedRows.Add(Rows[Y_counter].Substring(0, rightCursor_X)); //last row
         }
     }
-    public void DrawMarker() //rename to 'Draw'?
+    public void oldDrawMarker() //rename to 'Draw'?
     {
         //TODO: add line Wrapper
         int Y_counter = leftCursor_Y;
@@ -162,14 +163,14 @@ public class Cursor_2D_Select //rename to marker?
         #endregion
 
         //if (Marked) => draw always just empthy string (? performance)
-        if (marker_Y == Cursor.Y_selected) //single row select
+        if (leftCursor_Y == rightCursor_Y) //single row select
         {
             DrawLineOn(Y_counter, leftCursor_X);
         }
         else
         {
             DrawLineOn(Y_counter, leftCursor_X); Y_counter++;
-            if (linesCout >= 2)
+            if (linesCout >= 3)
             {
                 while (Y_counter < linesCout - 2)
                 {
@@ -180,18 +181,49 @@ public class Cursor_2D_Select //rename to marker?
         }
         Console.BackgroundColor = oldBG;
     }
+    public void DrawMarker()
+    {
+        #region SetColor
+        ConsoleColor oldBG = Console.BackgroundColor;
+        Console.BackgroundColor = Config.Accent_BackgroundColor;
+        #endregion
+        
+        int Y_counter = leftCursor_Y;
+        if (leftCursor_Y == rightCursor_Y)
+        {
+            DrawLineOn(Y_counter, leftCursor_X);
+        }
+        else
+        {
+            DrawLineOn(Y_counter, leftCursor_X); Y_counter++;
+            foreach (var row in selectedRows.Skip(1))
+            {
+                DrawLineOn(Y_counter, row); Y_counter++;
+            }
+        }
+
+        #region ResetColor
+        Console.BackgroundColor = oldBG;
+        #endregion
+    }
+
+    public void DrawLineOn(int rowIndex, string row, int x = 0)
+    {
+        int old_X = Console.CursorLeft;
+        int old_y = Console.CursorTop;
+
+        Console.SetCursorPosition(x, rowIndex + 1);
+        Console.Write(row);
+
+        Console.SetCursorPosition(old_X, old_y);
+    }
 
     public void DrawLineOn(int rowIndex, int x = 0)
     {
         //TODO: add line wrapper
         // Draw in FE? => No, standalone object
         //
-        int old_X = Console.CursorLeft;
-        int old_y = Console.CursorTop;
 
-        Console.SetCursorPosition(x, rowIndex + 1);
-        Console.Write(selectedRows[rowIndex - leftCursor_Y]); //change - marker_Y to set cursor?
-
-        Console.SetCursorPosition(old_X, old_y);
+        DrawLineOn(rowIndex, selectedRows[rowIndex - leftCursor_Y], x);
     }
 }
