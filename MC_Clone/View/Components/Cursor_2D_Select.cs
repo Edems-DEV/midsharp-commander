@@ -225,7 +225,7 @@ public class Cursor_2D_Select //rename to marker?
     }
     public void Copy()
     {
-        int Y_counter = leftCursor_Y;
+        int Y_counter = Cursor.Y_selected;
 
         if (leftCursor_Y == rightCursor_Y)
         {
@@ -250,7 +250,7 @@ public class Cursor_2D_Select //rename to marker?
             {
                 Rows.Insert(Y_counter, row); Y_counter++;
             }
-            Rows[selectedRows.Count - 1] = 
+            Rows[Y_counter - 1] = 
                 selectedRows[selectedRows.Count - 1] 
                 + Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
         }
