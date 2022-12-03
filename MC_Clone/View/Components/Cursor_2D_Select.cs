@@ -273,8 +273,8 @@ public class Cursor_2D_Select //rename to marker?
     
     public void Move()
     {
-        Delete();
         Copy();
+        Delete();
     }
 
 
