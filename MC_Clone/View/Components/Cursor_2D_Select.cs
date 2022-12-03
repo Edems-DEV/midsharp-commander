@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace MC_Clone;
 public class Cursor_2D_Select //rename to marker?
 {
+    FileEditor Editor;
     //editor
     Cursor_2D Cursor;
     public List<string> Rows; //reference on original rows in FileEditor
@@ -30,6 +32,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public Cursor_2D_Select(FileEditor editor)
     {
+        this.Editor = editor;
         Cursor = editor.Cursor;
         Rows = editor.Rows; //by reference => should change original List
     }
@@ -231,7 +234,7 @@ public class Cursor_2D_Select //rename to marker?
     }
     public void Copy()
     {
-        if (!SelectionAlive) { return; }
+        //if (!SelectionAlive) { return; }
         
         int Y_counter = Cursor.Y_selected;
 
@@ -239,9 +242,9 @@ public class Cursor_2D_Select //rename to marker?
         
         string endLine = Rows[Cursor.Y_selected].Substring(Cursor.X_selected, Rows[Cursor.Y_selected].Length - Cursor.X_selected);
 
-        if (leftCursor_Y == rightCursor_Y)
+        if (selectedRows.Count  == 1)
         {
-            Rows[Cursor.Y_selected] = firstLine + selectedRows[0] + endLine;
+            Editor.Rows[Cursor.Y_selected] = firstLine + selectedRows[0] + endLine;
         }
         else
         {
@@ -255,6 +258,7 @@ public class Cursor_2D_Select //rename to marker?
             }
             Rows[Y_counter - 1] = selectedRows[selectedRows.Count - 1] + endLine;
         }
+        Logs a = new Logs(Rows[Cursor.Y_selected]);
     }
     
     public void Move()
