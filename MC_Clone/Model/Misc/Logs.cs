@@ -10,6 +10,10 @@ namespace MC_Clone;
 internal class Logs
 {
     private string m_exePath = string.Empty;
+    public Logs(string logMessage, string title)
+    {
+        LogWrite(logMessage, title);
+    }
     public Logs(string logMessage)
     {
         LogWrite(logMessage);
@@ -26,7 +30,21 @@ internal class Logs
         {
             using (StreamWriter w = File.AppendText(m_exePath + "\\" + "log.txt"))
             {
-                Log(logMessage, w);
+                LogFormat(logMessage, w);
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+    public void LogWrite(string logMessage, string title) //find better solution (one method)
+    {
+        m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        try
+        {
+            using (StreamWriter w = File.AppendText(m_exePath + "\\" + "log.txt"))
+            {
+                Log(logMessage,title, w);
             }
         }
         catch (Exception ex)
@@ -34,7 +52,7 @@ internal class Logs
         }
     }
 
-    public void Log(string logMessage, TextWriter txtWriter)
+    public void LogFormat(string logMessage, TextWriter txtWriter)
     {
         try
         {
@@ -57,6 +75,19 @@ internal class Logs
             txtWriter.Write($"\r\nLog Entry : {time}/{date}");
             txtWriter.WriteLine($"MSG: '{logMessage}'");
             txtWriter.WriteLine("-------------------------------");
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+    public void Log(string logMessage, string title, TextWriter txtWriter)
+    {
+        try
+        {
+            txtWriter.WriteLine($"{title}: ");
+            txtWriter.WriteLine($"{logMessage}");
+            txtWriter.WriteLine("--- --- --- --- --- --- ");
+
         }
         catch (Exception ex)
         {

@@ -10,6 +10,7 @@ namespace MC_Clone;
 public class Cursor_2D_Select //rename to marker?
 {
     FileEditor Editor;
+    public bool Logs = true;
     //editor
     Cursor_2D Cursor;
     public List<string> Rows; //reference on original rows in FileEditor
@@ -17,6 +18,7 @@ public class Cursor_2D_Select //rename to marker?
 
     public bool SelectionAlive = false; //Able to draw //TODO: remove (find better solution)
     public bool MarkedMode = false; //true => hooked on cursor (listen for it)
+    
     //marker pos
     int marker_X;
     int marker_Y;
@@ -258,7 +260,10 @@ public class Cursor_2D_Select //rename to marker?
             }
             Rows[Y_counter - 1] = selectedRows[selectedRows.Count - 1] + endLine;
         }
-        Logs a = new Logs(Rows[Cursor.Y_selected]);
+        
+        if (Logs){
+            Logs a = new Logs(Rows[Cursor.Y_selected], "Marker/COPY");
+        }
     }
     
     public void Move()
