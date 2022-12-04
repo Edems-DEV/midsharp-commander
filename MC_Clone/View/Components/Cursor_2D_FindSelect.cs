@@ -117,7 +117,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
         Console.BackgroundColor = ConsoleColor.Green; //TODO: move to config
         Console.ForegroundColor = Config.Selection_Foreground;
 
-        for (int i = 0; i < SelectedRow.Count - 1; i++)
+        for (int i = 0; i < SelectedRow.Count; i++)
         {
             if (SelectedRow[i] < editor.Cursor.Y_offset ||
                 SelectedRow[i] > editor.Cursor.Y_offset + editor.Cursor.Y_visible)
