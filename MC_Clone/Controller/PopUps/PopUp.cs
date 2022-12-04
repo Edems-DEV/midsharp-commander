@@ -117,7 +117,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
         btnCancel.Clicked += BtnCancel_Clicked;
         components.Add(btnCancel);
     }
-    public void BtnCancel_Clicked()
+    public virtual void BtnCancel_Clicked()
     {
         this.Application.SwitchPopUp(new EmptyMsg());
     }

@@ -64,6 +64,12 @@ public class File_ReplaceIn : PopUp
         Add_SkipBtn();
         Add_CancelBtn();
     }
+
+    public virtual void BtnCancel_Clicked()
+    {
+        parent.editor.Select.Selects.Clear();
+        base.BtnCancel_Clicked();
+    }
     protected override void BtnOk_Clicked()
     {
         //Find + Replace

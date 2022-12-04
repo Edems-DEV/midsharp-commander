@@ -15,7 +15,8 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #endregion
 
     public List<int> SelectedRow = new List<int>();
-    private string oldSearch = "";
+    public string oldSearch = "";
+    public List<Select> Selects = new List<Select>();
 
     public string OldSearch
     {
@@ -29,13 +30,21 @@ public class Cursor_2D_FindSelect //TODO: find better name
         this.Cursor = editor.Cursor;
         this.Application = editor.Application;
         this.Rows = editor.Rows;
-
     }
 
     #region Draw
     public void Draw()
     {
+        DrawSelected();
         Draw_SearchAll();
+    }
+    
+    public void DrawSelected()
+    {
+        foreach (var select in Selects)
+        {
+            WriteSelect(select.Content, select.X, select.Y);
+        }
     }
     public void WriteSelect(string text, int x, int y) //useless?
     {
@@ -69,6 +78,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Search
     public Select SearchString(string searchString, int lastSearchIndex = 0)
     {
+        Selects.Clear();
         for (int i = lastSearchIndex + 1; i < Rows.Count; i++)
         {
             if (Rows[i].Contains(searchString))
@@ -80,7 +90,9 @@ public class Cursor_2D_FindSelect //TODO: find better name
                 Cursor.X_selected = Rows[i].IndexOf(searchString); //todo add offest
                 Cursor.Y_selected = i;
                 WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected - Cursor.Y_offset);
-                return new Select(Cursor.X_selected, Cursor.Y_selected, Rows[i].Substring(Cursor.X_selected, searchString.Length));
+                Select result = new Select(Cursor.X_selected, Cursor.Y_selected, Rows[i].Substring(Cursor.X_selected, searchString.Length));
+                Selects.Add(result);
+                return result;
             }
         }
         Application.SwitchPopUp(new NotFound("Search", "Search string not found"));
