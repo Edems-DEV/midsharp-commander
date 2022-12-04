@@ -17,7 +17,7 @@ public class Cursor_2D_Select //rename to marker?
 
 
     public bool SelectionAlive = false; //Able to draw //TODO: remove (find better solution)
-    public bool MarkedMode = false; //true => hooked on cursor (listen for it)
+    public bool MarkedMode = false; //true => hooked on Cursor (listen for it)
     
     //marker pos
     int marker_X;

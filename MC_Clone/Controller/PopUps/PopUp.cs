@@ -192,7 +192,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
 
         y_center = oldY;
 
-        //Console.SetCursorPosition(0, 0); //blinking cursor
+        //Console.SetCursorPosition(0, 0); //blinking Cursor
     }
 
     public void Draw(string title, string info, int width = 50)
