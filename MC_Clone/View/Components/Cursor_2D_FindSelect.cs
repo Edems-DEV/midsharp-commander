@@ -156,6 +156,14 @@ public class Cursor_2D_FindSelect //TODO: find better name
     {
         Application.SwitchPopUp(new File_Replace(editor));
     }
+    
+    
+    public Select ReplaceString(string searchString, string replaceString, int lastSearchIndex = 0)
+    {
+        Select result = SearchString(searchString, lastSearchIndex);
+        ReplaceString(result, replaceString);
+        return result;
+    }
     public void ReplaceString(Select result, string replaceString) //feed me 'Search'
     {
         if (result.Content != "")
@@ -163,17 +171,6 @@ public class Cursor_2D_FindSelect //TODO: find better name
             editor.Rows[result.Y] = editor.Rows[result.Y].Remove(result.X, result.Content.Length);
             editor.Rows[result.Y] = editor.Rows[result.Y].Insert(result.X, replaceString);
         }
-    }
-    
-    public Select ReplaceString(string searchString, string replaceString, int lastSearchIndex = 0)
-    {
-        Select result = SearchString(searchString, lastSearchIndex);
-        if (result.Content != "")
-        {
-            editor.Rows[result.Y] = editor.Rows[result.Y].Remove(result.X, result.Content.Length);
-            editor.Rows[result.Y] = editor.Rows[result.Y].Insert(result.X, replaceString);
-        }
-        return result;
     }
 
     public void ReplaceAll(string searchString, string replaceString)
