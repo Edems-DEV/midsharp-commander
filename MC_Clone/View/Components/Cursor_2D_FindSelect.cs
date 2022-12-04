@@ -48,6 +48,8 @@ public class Cursor_2D_FindSelect //TODO: find better name
     }
     public void WriteSelect(string text, int x, int y) //useless?
     {
+        if (y + 1 > Console.WindowHeight){ return; }
+        
         #region Original values
         ConsoleColor oldBG = Console.BackgroundColor;
         ConsoleColor oldTEXT = Console.ForegroundColor;

@@ -38,6 +38,7 @@ internal class EditWindow : Window
 
     public override void HandleKey(ConsoleKeyInfo info)
     {
+        editor.Select.Selects.Clear();
         editor.HandleKey(info);
     }
 
