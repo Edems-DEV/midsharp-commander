@@ -61,7 +61,7 @@ public class File_Search : PopUp
     }
     protected override void BtnOk_Clicked()
     {
-        editor.SearchString(input.Value, editor.Cursor.Y_selected);
+        editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         BtnCancel_Clicked();
     }
 }

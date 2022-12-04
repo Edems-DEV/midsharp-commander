@@ -15,13 +15,14 @@ public class FileEditor : IComponent
     //private int _visible; // | rows = Console.WindowWidth;
     //private int maxWidth; // - columns = Console.WindowWidth;
 
-    //cursor position
+    //Cursor position
     private int _x = 0;
     private int _y = 0;
 
     public MyFileService FS;
     public Cursor_2D Cursor;
     public Cursor_2D_Select Marker;
+    public Cursor_2D_FindSelect Select;
 
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
@@ -181,7 +182,7 @@ public class FileEditor : IComponent
                 Marker.Mark();
                 break;
             case ConsoleKey.F4:
-                Replace();
+                Select.Replace();
                 break;
             case ConsoleKey.F5:
                 Marker.Copy();
@@ -190,7 +191,7 @@ public class FileEditor : IComponent
                 Marker.Move();
                 break;
             case ConsoleKey.F7:
-                Search();
+                Select.Search();
                 break;
             case ConsoleKey.F8:
                 if (Marker.SelectionAlive)
@@ -209,56 +210,7 @@ public class FileEditor : IComponent
         
         //Marker.Hook(); //TODO: find better hook
     }
-    public void Search()
-    {
-        Application.SwitchPopUp(new File_Search(this));
-    }
-    public void Replace()
-    {
-        Application.SwitchPopUp(new File_Replace());
-    }
-    public void SearchString(string searchString, int lastSearchIndex = 0)
-    {
-        for (int i = lastSearchIndex + 1; i < Rows.Count; i++)
-        {
-            if (Rows[i].Contains(searchString))
-            {
-                //todo add offest
-                Cursor.X_selected = Rows[i].IndexOf(searchString);
-                if (i > Cursor.Y_visible)
-                {
-                    Cursor.Y_offset = i - Cursor.Y_visible;
-                }
-                
-                Cursor.Y_selected = i - Cursor.Y_offset;
-                WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected);
-                return;
-            }
-        }
-        Application.SwitchPopUp(new NotFound("Search", "Search string not found"));
-    }
-
-    public void WriteSelect(string text, int x, int y)
-    {
-        #region Original values
-        ConsoleColor oldBG = Console.BackgroundColor;
-        ConsoleColor oldTEXT = Console.ForegroundColor;
-        int old_Y = Console.CursorTop;
-        int old_X = Console.CursorLeft;
-        #endregion
-
-        Console.BackgroundColor = Config.Selection_Backgroud;
-        Console.ForegroundColor = Config.Selection_Foreground;
-
-        Console.SetCursorPosition(x,y + 1);//+1 => header
-        Console.Write(text);
-
-        #region Restore values
-        Console.BackgroundColor = oldBG;
-        Console.ForegroundColor = oldTEXT;
-        Console.SetCursorPosition(old_X, old_Y);
-        #endregion
-    }
+    
     public bool ContentChanged() //change to return  true if changed false = same
     {
         var set = new HashSet<string>(OriginalRows);
