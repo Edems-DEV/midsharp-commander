@@ -121,9 +121,9 @@ public abstract class PopUp : Window //?: Window -> have same needs
     {
         this.Application.SwitchPopUp(new EmptyMsg());
     }
-    public void Add_BtnOk()
+    public void Add_BtnOk(string title = "OK")
     {
-        Button btnOk = new Button() { Title = "OK" };
+        Button btnOk = new Button() { Title = title };
         btnOk.Clicked += BtnOk_Clicked;
         components.Add(btnOk);
     }

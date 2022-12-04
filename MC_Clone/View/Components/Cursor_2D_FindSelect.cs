@@ -73,15 +73,13 @@ public class Cursor_2D_FindSelect //TODO: find better name
         {
             if (Rows[i].Contains(searchString))
             {
-                //todo add offest
-                Cursor.X_selected = Rows[i].IndexOf(searchString);
                 if (i > Cursor.Y_visible)
                 {
                     Cursor.Y_offset = i - Cursor.Y_visible;
                 }
-
-                Cursor.Y_selected = i - Cursor.Y_offset;
-                WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected);
+                Cursor.X_selected = Rows[i].IndexOf(searchString); //todo add offest
+                Cursor.Y_selected = i;
+                WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected - Cursor.Y_offset);
                 return;
             }
         }
@@ -112,7 +110,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
 
             int a = SelectedRow[i] - Cursor.Y_offset;
             Console.SetCursorPosition(0, a + 1); //+1 = header
-            Console.WriteLine(editor.Rows[SelectedRow[i]]);
+            Console.WriteLine(editor.Rows[SelectedRow[i]]);  // why Rows doesn't work but editor.Rows do? (ref is broken)
         }
 
         #region Restore values
@@ -141,8 +139,9 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Replace
     public void Replace()
     {
-        Application.SwitchPopUp(new File_Replace());
+        Application.SwitchPopUp(new File_Replace(editor));
     }
+    
     #endregion
 
 

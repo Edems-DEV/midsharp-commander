@@ -26,12 +26,15 @@ public class NotFound : PopUp
 
 public class File_Replace : PopUp
 {
+    FileEditor editor;
+
     private TextBox input;
     private TextBox input2;
 
-    public File_Replace()
+    public File_Replace(FileEditor editor)
     {
-        title = "Replace";
+        this.editor = editor;
+        title = "Confirm replace";
         input = new TextBox() { Label = $"Enter search string:", Value = "" };
         input2 = new TextBox() { Label = $"Enter replacement string:", Value = "" };
         components.Add(input);
@@ -41,7 +44,55 @@ public class File_Replace : PopUp
     }
     protected override void BtnOk_Clicked()
     {
+        editor.Draw(); //override this popup
+        Application.SwitchPopUp(new File_ReplaceIn());
     }
+}
+public class File_ReplaceIn : PopUp
+{
+    public File_ReplaceIn()
+    {
+        title = "Replace";
+        details.Add("{input1}");
+        details.Add("Replace with:");
+        details.Add("{input2}");
+        Add_BtnOk("Replace");
+        Add_ReplaceAllBtn();
+        Add_CancelBtn();
+    }
+    protected override void BtnOk_Clicked()
+    {
+        //Replace
+        BtnCancel_Clicked();
+    }
+
+    #region FindAllBtn
+    public void Add_ReplaceAllBtn(string title = "All")
+    {
+        Button findAll = new Button() { Title = title };
+        findAll.Clicked += ReplaceAllBtn_Clicked;
+        components.Add(findAll);
+    }
+    protected void ReplaceAllBtn_Clicked()
+    {
+        //ReplaceAll
+        BtnCancel_Clicked();
+    }
+    #endregion
+    
+    #region SkipBtn
+    public void Add_SkipBtn(string title = "Skip")
+    {
+        Button findAll = new Button() { Title = title };
+        findAll.Clicked += SkipBtn_Clicked;
+        components.Add(findAll);
+    }
+    protected void SkipBtn_Clicked()
+    {
+        //Skip => (replace wihnout replace)
+        BtnCancel_Clicked();
+    }
+    #endregion
 }
 
 public class File_Search : PopUp
