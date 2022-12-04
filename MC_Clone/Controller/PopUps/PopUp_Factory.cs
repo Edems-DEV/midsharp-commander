@@ -47,7 +47,7 @@ public class File_Replace : PopUp
     protected override void BtnOk_Clicked()
     {
         editor.Draw(); //override this popup //broken?
-        start = editor.Select.SearchString(input.Value);
+        start = editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         Application.SwitchPopUp(new File_ReplaceIn(this));
     }
 }
@@ -78,7 +78,6 @@ public class File_ReplaceIn : PopUp
         //Find + Replace
         parent.editor.Select.ReplaceString(parent.start, parent.input2.Value);
         parent.start = parent.editor.Select.SearchString(parent.input.Value, parent.start.Y);
-        //parent.editor.Select.ReplaceString(parent.input.Value, parent.input2.Value, parent.editor.Cursor.Y_selected);
         parent.editor.Draw();
     }
 
