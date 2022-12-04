@@ -68,7 +68,8 @@ public class File_ReplaceIn : PopUp
     {
         //Find + Replace
         parent.editor.Select.ReplaceString(parent.input.Value, parent.input2.Value, parent.editor.Cursor.Y_selected);
-        BtnCancel_Clicked();
+        parent.editor.Draw();
+        //BtnCancel_Clicked();
     }
 
     #region FindAllBtn
@@ -97,7 +98,8 @@ public class File_ReplaceIn : PopUp
     {
         //Find
         parent.editor.Select.SearchString(parent.input.Value, parent.editor.Cursor.Y_selected);
-        BtnCancel_Clicked();
+        parent.editor.Draw();
+        //BtnCancel_Clicked();
     }
     #endregion
 }
