@@ -32,18 +32,41 @@ public class Cursor_2D_FindSelect //TODO: find better name
 
     }
 
-    #region FKeys
+    #region Draw
+    public void Draw()
+    {
+        Draw_SearchAll();
+    }
+    public void WriteSelect(string text, int x, int y) //useless?
+    {
+        #region Original values
+        ConsoleColor oldBG = Console.BackgroundColor;
+        ConsoleColor oldTEXT = Console.ForegroundColor;
+        int old_Y = Console.CursorTop;
+        int old_X = Console.CursorLeft;
+        #endregion
+
+        Console.BackgroundColor = Config.Selection_Backgroud;
+        Console.ForegroundColor = Config.Selection_Foreground;
+
+        Console.SetCursorPosition(x, y + 1);//+1 => header
+        Console.Write(text);
+
+        #region Restore values
+        Console.BackgroundColor = oldBG;
+        Console.ForegroundColor = oldTEXT;
+        Console.SetCursorPosition(old_X, old_Y);
+        #endregion
+    }
+    #endregion
+
+    #region Search
     public void Search()
     {
         Application.SwitchPopUp(new File_Search(editor));
     }
-    public void Replace()
-    {
-        Application.SwitchPopUp(new File_Replace());
-    }
-    #endregion
     
-    #region Methods
+    #region Search
     public void SearchString(string searchString, int lastSearchIndex = 0)
     {
         for (int i = lastSearchIndex + 1; i < Rows.Count; i++)
@@ -65,13 +88,6 @@ public class Cursor_2D_FindSelect //TODO: find better name
         Application.SwitchPopUp(new NotFound("Search", "Search string not found"));
     }
     #endregion
-
-    #region Draw
-    public void Draw()
-    {
-        Draw_SearchAll();
-    }
-
     #region SearchAll
     public void Draw_SearchAll()
     {
@@ -120,27 +136,14 @@ public class Cursor_2D_FindSelect //TODO: find better name
         }
     }
     #endregion
+    #endregion
 
-    public void WriteSelect(string text, int x, int y) //useless?
+    #region Replace
+    public void Replace()
     {
-        #region Original values
-        ConsoleColor oldBG = Console.BackgroundColor;
-        ConsoleColor oldTEXT = Console.ForegroundColor;
-        int old_Y = Console.CursorTop;
-        int old_X = Console.CursorLeft;
-        #endregion
-
-        Console.BackgroundColor = Config.Selection_Backgroud;
-        Console.ForegroundColor = Config.Selection_Foreground;
-
-        Console.SetCursorPosition(x, y + 1);//+1 => header
-        Console.Write(text);
-
-        #region Restore values
-        Console.BackgroundColor = oldBG;
-        Console.ForegroundColor = oldTEXT;
-        Console.SetCursorPosition(old_X, old_Y);
-        #endregion
+        Application.SwitchPopUp(new File_Replace());
     }
     #endregion
+
+
 }
