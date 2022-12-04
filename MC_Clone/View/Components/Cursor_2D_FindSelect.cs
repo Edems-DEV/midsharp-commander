@@ -72,6 +72,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
         Draw_SearchAll();
     }
 
+    #region SearchAll
     public void Draw_SearchAll()
     {
         if (SelectedRow.Count == 0) //perfomance? => don't change color if will do nothing?
@@ -87,14 +88,15 @@ public class Cursor_2D_FindSelect //TODO: find better name
         Console.BackgroundColor = ConsoleColor.Green; //TODO: move to config
         Console.ForegroundColor = Config.Selection_Foreground;
 
-        for (int i = 0; i < SelectedRow.Count; i++)
+        for (int i = 0; i < SelectedRow.Count - 1; i++)
         {
-            if (i < editor.Cursor.Y_offset ||
-                i > editor.Cursor.Y_offset + editor.Cursor.Y_visible)
+            if (SelectedRow[i] < editor.Cursor.Y_offset ||
+                SelectedRow[i] > editor.Cursor.Y_offset + editor.Cursor.Y_visible)
                 continue;
-            
-            Console.SetCursorPosition(0, SelectedRow[i]);
-            Console.WriteLine(Rows[SelectedRow[i]]);
+
+            int a = SelectedRow[i] - Cursor.Y_offset;
+            Console.SetCursorPosition(0, a + 1); //+1 = header
+            Console.WriteLine(editor.Rows[SelectedRow[i]]);
         }
 
         #region Restore values
@@ -103,12 +105,23 @@ public class Cursor_2D_FindSelect //TODO: find better name
         Console.SetCursorPosition(old_X, old_Y);
         #endregion
     }
-    public void Get_SearchAll()
+    public void Set_SearchAll(string searchedString)
     {
-        
-    }
+        oldSearch = searchedString;
 
-    public void WriteSelect(string text, int x, int y)
+        SelectedRow.Clear();
+        
+        for (int i = 0; i < Rows.Count; i++)
+        {   
+            if (Rows[i].Contains(oldSearch))
+            {
+                SelectedRow.Add(i);
+            }
+        }
+    }
+    #endregion
+
+    public void WriteSelect(string text, int x, int y) //useless?
     {
         #region Original values
         ConsoleColor oldBG = Console.BackgroundColor;

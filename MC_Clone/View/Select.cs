@@ -11,5 +11,5 @@ internal class Select
     public int X;
     public int Y;
 
-    public string Name;
+    public string Content; //prep for redex
 }

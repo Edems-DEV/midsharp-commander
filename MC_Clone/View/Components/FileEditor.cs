@@ -113,9 +113,10 @@ public class FileEditor : IComponent
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
             Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
-            Cursor.Draw();
-            Marker.Hook(); //TODO: find better hook
+
             Select.Draw();
+            Marker.Hook(); //TODO: find better hook
+            Cursor.Draw();
         }
     }
 

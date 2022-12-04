@@ -76,7 +76,7 @@ public class File_Search : PopUp
     }
     protected void FindAllBtn_Clicked()
     {
-        editor.Select.Get_SearchAll(); //add arguments
+        editor.Select.Set_SearchAll(input.Value); //add arguments
         BtnCancel_Clicked();
     }
     #endregion

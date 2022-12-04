@@ -158,6 +158,14 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         X_selected = localX_totalSize - 1;
         X_offset = localX_totalSize - X_visible;
     }
+    public void GoToLine(int lineIndex_Y, int x = 0)
+    {
+        Y_offset = lineIndex_Y - 1;
+        Y_selected = lineIndex_Y - Y_offset;
+
+        //add X_offset
+        X_selected = x;
+    }
     #endregion
 
     protected void CheckLineSize(string nextRow)
