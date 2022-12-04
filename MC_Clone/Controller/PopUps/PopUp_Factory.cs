@@ -44,7 +44,7 @@ public class File_Replace : PopUp
     }
     protected override void BtnOk_Clicked()
     {
-        editor.Draw(); //override this popup
+        editor.Draw(); //override this popup //broken?
         Application.SwitchPopUp(new File_ReplaceIn());
     }
 }
@@ -58,11 +58,12 @@ public class File_ReplaceIn : PopUp
         details.Add("{input2}");
         Add_BtnOk("Replace");
         Add_ReplaceAllBtn();
+        Add_SkipBtn();
         Add_CancelBtn();
     }
     protected override void BtnOk_Clicked()
     {
-        //Replace
+        //Find + Replace
         BtnCancel_Clicked();
     }
 
@@ -89,7 +90,7 @@ public class File_ReplaceIn : PopUp
     }
     protected void SkipBtn_Clicked()
     {
-        //Skip => (replace wihnout replace)
+        //Find
         BtnCancel_Clicked();
     }
     #endregion

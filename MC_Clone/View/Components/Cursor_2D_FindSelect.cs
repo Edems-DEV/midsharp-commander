@@ -67,7 +67,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     }
     
     #region Search
-    public void SearchString(string searchString, int lastSearchIndex = 0)
+    public Select SearchString(string searchString, int lastSearchIndex = 0)
     {
         for (int i = lastSearchIndex + 1; i < Rows.Count; i++)
         {
@@ -80,10 +80,11 @@ public class Cursor_2D_FindSelect //TODO: find better name
                 Cursor.X_selected = Rows[i].IndexOf(searchString); //todo add offest
                 Cursor.Y_selected = i;
                 WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected - Cursor.Y_offset);
-                return;
+                return new Select(Cursor.X_selected, Cursor.Y_selected, Rows[i].Substring(Cursor.X_selected, searchString.Length));
             }
         }
         Application.SwitchPopUp(new NotFound("Search", "Search string not found"));
+        return new Select(0, 0, ""); //change?
     }
     #endregion
     #region SearchAll
@@ -141,7 +142,15 @@ public class Cursor_2D_FindSelect //TODO: find better name
     {
         Application.SwitchPopUp(new File_Replace(editor));
     }
-    
+
+    public void ReplaceAll()
+    {
+        while (true)
+        {
+
+        }
+    }
+
     #endregion
 
 
