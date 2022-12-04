@@ -26,10 +26,10 @@ public class NotFound : PopUp
 
 public class File_Replace : PopUp
 {
-    FileEditor editor;
+    public FileEditor editor;
 
-    private TextBox input;
-    private TextBox input2;
+    public TextBox input;
+    public TextBox input2;
 
     public File_Replace(FileEditor editor)
     {
@@ -45,17 +45,20 @@ public class File_Replace : PopUp
     protected override void BtnOk_Clicked()
     {
         editor.Draw(); //override this popup //broken?
-        Application.SwitchPopUp(new File_ReplaceIn());
+        Application.SwitchPopUp(new File_ReplaceIn(this));
     }
 }
 public class File_ReplaceIn : PopUp
 {
-    public File_ReplaceIn()
+    File_Replace parent;
+    public File_ReplaceIn(File_Replace parent)
     {
+        this.parent = parent;
+        
         title = "Replace";
-        details.Add("{input1}");
+        details.Add($"{parent.input.Value}");
         details.Add("Replace with:");
-        details.Add("{input2}");
+        details.Add($"{parent.input2.Value}");
         Add_BtnOk("Replace");
         Add_ReplaceAllBtn();
         Add_SkipBtn();
@@ -64,6 +67,7 @@ public class File_ReplaceIn : PopUp
     protected override void BtnOk_Clicked()
     {
         //Find + Replace
+        parent.editor.Select.ReplaceString(parent.input.Value, parent.input2.Value, parent.editor.Cursor.Y_selected);
         BtnCancel_Clicked();
     }
 
@@ -77,6 +81,7 @@ public class File_ReplaceIn : PopUp
     protected void ReplaceAllBtn_Clicked()
     {
         //ReplaceAll
+        parent.editor.Select.ReplaceAll(parent.input.Value, parent.input2.Value);
         BtnCancel_Clicked();
     }
     #endregion
@@ -91,6 +96,7 @@ public class File_ReplaceIn : PopUp
     protected void SkipBtn_Clicked()
     {
         //Find
+        parent.editor.Select.SearchString(parent.input.Value, parent.editor.Cursor.Y_selected);
         BtnCancel_Clicked();
     }
     #endregion
