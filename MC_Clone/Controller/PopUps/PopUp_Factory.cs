@@ -57,6 +57,7 @@ public class File_Search : PopUp
         input = new TextBox() { Label = $"Enter search string:", Value = "" };
         components.Add(input);
         Add_BtnOk();
+        Add_FindAllBtn();
         Add_CancelBtn();
     }
     protected override void BtnOk_Clicked()
@@ -64,6 +65,21 @@ public class File_Search : PopUp
         editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         BtnCancel_Clicked();
     }
+
+    #region FindAllBtn
+    // move to BtnClass?
+    public void Add_FindAllBtn(string title = "Find All")
+    {
+        Button findAll = new Button() { Title = title };
+        findAll.Clicked += FindAllBtn_Clicked;
+        components.Add(findAll);
+    }
+    protected void FindAllBtn_Clicked()
+    {
+        editor.Select.Get_SearchAll(); //add arguments
+        BtnCancel_Clicked();
+    }
+    #endregion
 }
 public class CloseFile : PopUp
 {

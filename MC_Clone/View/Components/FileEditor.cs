@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
@@ -79,6 +80,7 @@ public class FileEditor : IComponent
         PrintRows = new List<string>(OriginalRows);
         Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
         Marker = new Cursor_2D_Select(this);
+        Select = new Cursor_2D_FindSelect(this);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -113,6 +115,7 @@ public class FileEditor : IComponent
             Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
             Cursor.Draw();
             Marker.Hook(); //TODO: find better hook
+            Select.Draw();
         }
     }
 
