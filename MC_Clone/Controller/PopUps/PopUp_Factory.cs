@@ -13,7 +13,6 @@ public class EmptyMsg : PopUp
 {
     
 }
-
 public class NotFound : PopUp
 {
     public NotFound(string title, string details)
@@ -209,8 +208,6 @@ public class SaveFile : PopUp
         BtnCancel_Clicked();
     }
 }
-
-
 public class CreateFileMsg : PopUp
 {
     private FileManager FM = new FileManager();
@@ -386,7 +383,6 @@ public class GoTo : PopUp
     {
         //Application.window.GetType();
         //Application.PreviewWindow.editor.Offset = value; // goal
-        
         editor.Offset = Convert.ToInt32(input.Value); //max 10chars /num (int limit?)
         BtnCancel_Clicked();
     }

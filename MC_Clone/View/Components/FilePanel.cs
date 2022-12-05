@@ -7,7 +7,6 @@ public class FilePanel : IComponent
 
     public event Action<int> RowSelected;
 
-
     private FileManager FM;
     private List<int> widths;
     private List<Row> rows = new List<Row>();
@@ -468,7 +467,6 @@ public class FilePanel : IComponent
             Add(new string[] { name, sizeStr, item.LastWriteTime.ToString("MMM dd HH:mm") });
         }
     }
-
     private void AddDeadRows()
     {
         deadRows = 0;

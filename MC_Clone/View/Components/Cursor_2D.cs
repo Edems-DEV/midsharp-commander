@@ -216,8 +216,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         Console.ForegroundColor = Old_FG;
         #endregion
     }
-
-
+    
     public char GetActiveChar()
     {
         if (X_selected + X_offset > Row.Length - 1) // ? X_selected + X_offset => X_selected //why?

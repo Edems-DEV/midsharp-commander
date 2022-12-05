@@ -99,9 +99,6 @@ public class Config
     public static ConsoleColor Selection_Foreground = ConsoleColor.Black;
     public static ConsoleColor Selection_Backgroud  = ConsoleColor.Gray;
 
-
-
-
     public static void ChangeColorScheme(ConsoleColor[] colors) ////static cannot be changed ? 
     {
         Primary_BackgroundColor = ConsoleColor.Black; //colors[0];
