@@ -27,7 +27,6 @@ internal class EditWindow : Window
 
         Application.WinSize.OnWindowSizeChange += OnResize;
     }
-
     public override void Draw()
     {
         Console.Clear(); //editor
@@ -39,6 +38,7 @@ internal class EditWindow : Window
 
     public override void HandleKey(ConsoleKeyInfo info)
     {
+        editor.Select.Selects.Clear();
         editor.HandleKey(info);
     }
 
@@ -76,14 +76,14 @@ public class Header_Edit //mak emore genral an make one specific for this class
 
         string path = editor.File.Name;
         string mod = Mode();
-        string pos = $"{editor.Cursor.X_selected + editor.Cursor.X_offset} L: [{editor.Cursor.Y_offset} + {editor.Cursor.Y_selected}  {editor.Cursor.Y_offset + editor.Cursor.Y_selected}/{editor.Rows.Count}]";
+        string pos = $"{editor.Cursor.X_selected + editor.Cursor.X_offset} L: [{editor.Cursor.Y_offset} + {editor.Cursor.Y_selected - editor.Cursor.Y_offset + 1}  {editor.Cursor.Y_offset + (editor.Cursor.Y_selected - editor.Cursor.Y_offset +1)}/{editor.Rows.Count}]";
         string idk = $"({charTo}/{charAll}b)";
-        string asci = $"{ConvertCharToAsci(editor.Cursor.input)}  {ConvertCharToAsciHex(editor.Cursor.input)}";
+        string asci = $"{Misc.ConvertCharToAsci(editor.Cursor.input)}  {Misc.ConvertCharToAsciHex(editor.Cursor.input)}";
         string final = $"{path}  {mod}  {pos} *{idk} {asci}";
         Console.SetCursorPosition(0, 0);
         Console.Write(final);
         string debug = $" = {editor.Cursor.input}";
-        Console.Write(debug);
+        //Console.Write(debug);
 
         Console.BackgroundColor = oldB;
         Console.ForegroundColor = oldT;
@@ -104,28 +104,20 @@ public class Header_Edit //mak emore genral an make one specific for this class
             else if(i == editor.Cursor.Y_offset + editor.Cursor.Y_selected)
             { charTo += editor.Cursor.X_selected + editor.Cursor.X_offset; }
             charAll += row.Length;
-            
             i++;
         }
     }
 
-    public static string ConvertCharToAsci(char a)
-    {
-        int asciCode = (int)Convert.ToChar(a);
-        return asciCode.ToString().PadLeft(4, '0');
-    }
-    public static string ConvertCharToAsciHex(char a)
-    {
-        string hex = Convert.ToByte(a).ToString("x2");
-        return "0x" + hex.ToString().PadLeft(3, '0'); ;
-    }
     public string Mode(string mod = "-") //[-M---]
     {
-        if (!editor.ContentChanged()) //TODO: broken on large text
+        if (!editor.ContentChanged()) //TODO: redraw in popup
         {
             mod = "M";
         }
-        
+        else
+        {
+            mod = "-";
+        }
         return $"[-{mod.PadRight(3,'-')}]";
     }
 }

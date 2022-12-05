@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,12 +16,15 @@ public class FileEditor : IComponent
 
     //private int _visible; // | rows = Console.WindowWidth;
     //private int maxWidth; // - columns = Console.WindowWidth;
-    
-    //cursor position
+
+    //Cursor position
     private int _x = 0;
     private int _y = 0;
 
     public MyFileService FS;
+    public Cursor_2D Cursor;
+    public Cursor_2D_Select Marker;
+    public Cursor_2D_FindSelect Select;
 
     public Cursor_2D Cursor;
 
@@ -76,6 +81,8 @@ public class FileEditor : IComponent
         Rows = new List<string>(OriginalRows);
         PrintRows = new List<string>(OriginalRows);
         Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
+        Marker = new Cursor_2D_Select(this);
+        Select = new Cursor_2D_FindSelect(this);
 
         OnResize(); //first size
         Application.WinSize.OnWindowSizeChange += OnResize;
@@ -108,6 +115,9 @@ public class FileEditor : IComponent
             Console.BackgroundColor = Config.Table_BackgroundColor;
 
             Console.WriteLine(PrintRows[i]); //fix: console auto line wrap -> (destroys formatting)
+
+            Select.Draw();
+            Marker.Hook(); //TODO: find better hook
             Cursor.Draw();
         }
     }
@@ -134,56 +144,80 @@ public class FileEditor : IComponent
             //Controls
             case ConsoleKey.RightArrow:
                 Cursor.Right(NextRow());
-                return;
+                break;
             case ConsoleKey.LeftArrow:
                 Cursor.Left(PrevioustRow());
-                return;
+                break;
             //---
             case ConsoleKey.UpArrow:
                 Cursor.Up(PrevioustRow());
-                return;
+                break;
             case ConsoleKey.DownArrow:
                 Cursor.Down(NextRow());
-                return;
+                break;
             case ConsoleKey.Home:
                 Cursor.GoBegin();
-                return;
+                break;
             case ConsoleKey.End:
                 Cursor.GoEnd();
-                return;
+                break;
             case ConsoleKey.PageUp:
                 Cursor.PageUp();
-                return;
+                break;
             case ConsoleKey.PageDown:
                 Cursor.PageDown();
-                return;
+                break;
             //Edit
             case ConsoleKey.Delete:
                 Delete();
-                return;
+                break;
             case ConsoleKey.Backspace:
                 Backspace();
-                return;
+                break;
             case ConsoleKey.Enter:
                 Enter();
-                return;
+                break;
             //FKeys
+            case ConsoleKey.F1:
+                Marker.DebugPrint();
+                break;
             case ConsoleKey.F2:
                 SaveChanges();
-                return;
+                break;
+            case ConsoleKey.F3:
+                Marker.Mark();
+                break;
+            case ConsoleKey.F4:
+                Select.Replace();
+                break;
+            case ConsoleKey.F5:
+                Marker.Copy();
+                break;
+            case ConsoleKey.F6:
+                Marker.Move();
+                break;
+            case ConsoleKey.F7:
+                Select.Search();
+                break;
             case ConsoleKey.F8:
-                DeleteLine();
-                return;
+                if (Marker.SelectionAlive)
+                    Marker.Delete();
+                else
+                    DeleteLine();
+                break;
             case ConsoleKey.Escape:
             case ConsoleKey.F10:
                 Quit();
-                return;
-
+                break;
+            default:
+                WriteChar(info.KeyChar); //TODO: check for bad chars
+                break;
         }
-        WriteChar(info.KeyChar); //TODO: check for bad chars
+        
+        //Marker.Hook(); //TODO: find better hook
     }
-
-    public bool ContentChanged()
+    
+    public bool ContentChanged() //change to return  true if changed false = same
     {
         var set = new HashSet<string>(OriginalRows);
         return set.SetEquals(Rows);
@@ -274,7 +308,7 @@ public class FileEditor : IComponent
             ActiveRow =
             ActiveRow.Substring(0, CursorPos - 1)
             +
-            ActiveRow.Substring(CursorPos, ActiveRow.Length - 1 - CursorPos);
+            ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos); //-1
 
             Cursor.X_selected--;
         }

@@ -28,7 +28,7 @@ public class Cursor_1D //: IComponent //(Y '|')
     protected int _y_totalSize;    // Y_totalSize
 
     //Local
-    protected int _y_selected = 0; // current cursor pos
+    protected int _y_selected = 0; // current Cursor pos
     protected int _y_offset = 0;   // offset
     #endregion
     #region Properties 

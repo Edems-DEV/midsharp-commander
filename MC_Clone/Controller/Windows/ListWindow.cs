@@ -54,6 +54,7 @@ public class ListWindow : Window
     {
         return _panels[_activePanelIndex];
     }
+
     private void Start()
     {
         winWidth = Console.BufferWidth / 2;

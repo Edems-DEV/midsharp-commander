@@ -117,13 +117,13 @@ public abstract class PopUp : Window //?: Window -> have same needs
         btnCancel.Clicked += BtnCancel_Clicked;
         components.Add(btnCancel);
     }
-    public void BtnCancel_Clicked()
+    public virtual void BtnCancel_Clicked()
     {
         this.Application.SwitchPopUp(new EmptyMsg());
     }
-    public void Add_BtnOk()
+    public void Add_BtnOk(string title = "OK")
     {
-        Button btnOk = new Button() { Title = "OK" };
+        Button btnOk = new Button() { Title = title };
         btnOk.Clicked += BtnOk_Clicked;
         components.Add(btnOk);
     }
@@ -192,7 +192,7 @@ public abstract class PopUp : Window //?: Window -> have same needs
 
         y_center = oldY;
 
-        //Console.SetCursorPosition(0, 0); //blinking cursor
+        //Console.SetCursorPosition(0, 0); //blinking Cursor
     }
 
     public void Draw(string title, string info, int width = 50)

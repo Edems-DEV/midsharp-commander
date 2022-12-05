@@ -23,7 +23,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     protected string _row = "";   //X_totalSize = _x_totalSize;
 
     //Local
-    protected int _x_selected = 0; // current cursor pos
+    protected int _x_selected = 0; // current Cursor pos
     protected int _x_offset = 0;   // offset
     #endregion
     #region Properties 
@@ -42,7 +42,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         {
             if (value < 0) { _x_selected = 0; return; }
             //if (value > X_visible) { _x_selected = X_visible; return; }
-            //if (value > X_totalSize) { _x_selected = X_totalSize;  return; } //commne out -> broken backspace cursor
+            //if (value > X_totalSize) { _x_selected = X_totalSize;  return; } //commne out -> broken backspace Cursor
             _x_selected = value;
         }
     }
@@ -87,7 +87,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
     public override void Up()
     {
-        
         base.Up();
     }
     public override void Down()
@@ -119,7 +118,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
         if (X_selected == X_offset + Math.Min(X_visible, X_totalSize))
             X_offset++;
-
     }
     public void Left(string nextRow)
     {
@@ -143,7 +141,6 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
 
         if (X_selected == X_offset - 1)
             X_offset--;
-
     }
 
     public override void GoBegin()
@@ -160,6 +157,14 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     {
         X_selected = localX_totalSize - 1;
         X_offset = localX_totalSize - X_visible;
+    }
+    public void GoToLine(int lineIndex_Y, int x = 0)
+    {
+        Y_offset = lineIndex_Y - 1;
+        Y_selected = lineIndex_Y - Y_offset;
+
+        //add X_offset
+        X_selected = x;
     }
     #endregion
 
@@ -211,10 +216,10 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         Console.ForegroundColor = Old_FG;
         #endregion
     }
-
+    
     public char GetActiveChar()
     {
-        if (X_selected + X_offset > Row.Length - 1)
+        if (X_selected + X_offset > Row.Length - 1) // ? X_selected + X_offset => X_selected //why?
         {
             X_selected = Row.Length - 1;
         }

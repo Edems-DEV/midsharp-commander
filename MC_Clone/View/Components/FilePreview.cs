@@ -19,7 +19,7 @@ public class FilePreview : IComponent //TODO: Rename to FileViwer
 
     private bool wrap = true;
 
-    //cursor position
+    //Cursor position
     private int _x = 0;
     private int _y = 0;
 
