@@ -18,6 +18,8 @@ public class ListWindow : Window
     public int winWidth = 0;
     Footer footer;
     MenuBar MenuBar;
+    Config Config;
+
 
     static void Y_autoSize_IDEA() //delMe
     {
@@ -57,6 +59,7 @@ public class ListWindow : Window
 
     private void Start()
     {
+        Config = Application.Config;
         winWidth = Console.BufferWidth / 2;
         FilesService service = new FilesService(Config.FILE);
 

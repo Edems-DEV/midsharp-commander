@@ -38,8 +38,8 @@ internal static class l
 
 public class Config
 {
-    public const string Path_LeftPane = Private.MyPath; //change to dynamic desktop path
-    public const string Path_RightPane = @".";
+    public string Path_LeftPane = MyPath.Project();
+    public string Path_RightPane = @".";
 
     //------------------Color schemes------------------
     public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,

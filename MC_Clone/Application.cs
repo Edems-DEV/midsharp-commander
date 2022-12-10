@@ -12,6 +12,8 @@ public class Application
     public EventPublisher WinSize = new EventPublisher();
     bool a = true;
 
+    public Config Config = new Config();
+
     public Application()
     {
         this.SwitchWindow(new ListWindow(this));
