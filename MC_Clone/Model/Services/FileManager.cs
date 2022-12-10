@@ -10,6 +10,38 @@ internal class FileManager
 {
     private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
 
+    public bool CheckPermision(string path, FileSystemInfo fileObject)
+    {
+        if (fileObject != null)
+        {
+            if (fileObject is DirectoryInfo)
+            {
+                path = fileObject.FullName;
+            }
+        }
+        else
+        {
+            string currentPath = path;
+            DirectoryInfo currentDirectory = new DirectoryInfo(currentPath);
+            DirectoryInfo upLevelDirectory = currentDirectory.Parent;
+
+            if (upLevelDirectory != null)
+            {
+                path = upLevelDirectory.FullName;
+            }
+        }
+
+        try
+        {
+            Directory.GetDirectories(path);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
     #region Import
     public List<FileSystemInfo> SetLists(string path)
     {

@@ -549,9 +549,8 @@ public class FilePanel : IComponent
     #region FunctionKeys
     private void Drives() //Help
     {
-        //SetDiscs();
-        //RefreshPanel();
-        Application.SwitchPopUp(new ErrorMsg("I can acces App from FilePanel"));
+        SetDiscs();
+        RefreshPanel();
     }
     private void CreateFile() //Menu //IDEA: move closer to MkDir?
     {
@@ -628,6 +627,11 @@ public class FilePanel : IComponent
 
     private void ChangeDir()
     {
+        if (!FM.CheckPermision(Path_, GetActiveObject()))
+        {
+            Application.SwitchPopUp(new ErrorMsg("You have no permision to access this folder"));
+            return;
+        }
         string path = FM.ChangeDir(Path_, GetActiveObject());
         if (path == null)
             _isDiscs = true;
