@@ -266,14 +266,14 @@ public class CopyMsg : PopUp
     private TextBox input;
     private FileSystemInfo file;
 
-    public CopyMsg(FileSystemInfo file) //: base()
+    public CopyMsg(FileSystemInfo file, FilePanel secondPane) //: base()
     {
         this.file = file;
 
         title = "Copy";
         details.Add($"Copy: \"{file.Name}\"");
-        //details.Add($"from: \"{Truncate.Path(file.FullName)}\"");
-        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.FullName, 1) }; //destPath
+        input = new TextBox() { Label = $"To:", Value = secondPane.Path_ }; //destPath 
+                                         //old: Value = Misc.GetPath(file.FullName, 1)
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
@@ -296,13 +296,13 @@ public class MoveMsg : PopUp
     private TextBox input2;
     private FileSystemInfo file;
 
-    public MoveMsg(FileSystemInfo file)
+    public MoveMsg(FileSystemInfo file, FilePanel secondPane)
     {
         this.file = file;
 
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
-        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.FullName, 1) };
+        input = new TextBox() { Label = "To:", Value = secondPane.Path_ };
         input2 = new TextBox() { Label = "Rename to:", Value = file.Name };
         components.Add(input);
         components.Add(input2);

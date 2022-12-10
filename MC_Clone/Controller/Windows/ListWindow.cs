@@ -68,6 +68,8 @@ public class ListWindow : Window
         FilePanel pane2 = new FilePanel(Application, Config.Path_RightPane, winWidth, paneY);
         this._panels.Add(pane1);
         this._panels.Add(pane2);
+        pane1.secondPane = pane2;
+        pane2.secondPane = pane1;
 
         string[] labels = { "Drives", "MkFile", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
         footer = new Footer(labels);

@@ -2,7 +2,7 @@
 
 public class FilePanel : IComponent
 {
-    public ListWindow listWindow { get; set; }
+    public FilePanel secondPane { get; set; }
     public Application Application { get; set; }
 
     public event Action<int> RowSelected;
@@ -584,11 +584,11 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
-        Application.SwitchPopUp(new CopyMsg(GetActiveObject()));
+        Application.SwitchPopUp(new CopyMsg(GetActiveObject(), secondPane));
     }
     private void RenMov()
     {
-        Application.SwitchPopUp(new MoveMsg(GetActiveObject()));
+        Application.SwitchPopUp(new MoveMsg(GetActiveObject(), secondPane));
     }
     private void MkDir()
     {
