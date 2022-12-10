@@ -32,11 +32,14 @@ public class File_Replace : PopUp
 
     public Select start;
 
-    public File_Replace(FileEditor editor)
+    public Cursor_2D_FindSelect caller;
+
+    public File_Replace(FileEditor editor, Cursor_2D_FindSelect parent) //TODO: find better name for 'FindSelect'
     {
+        this.caller = parent;
         this.editor = editor;
         title = "Confirm replace";
-        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        input = new TextBox() { Label = $"Enter search string:", Value = caller.oldSearch };
         input2 = new TextBox() { Label = $"Enter replacement string:", Value = "" };
         components.Add(input);
         components.Add(input2);
@@ -48,6 +51,8 @@ public class File_Replace : PopUp
         editor.Draw(); //override this popup //broken?
         start = editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         Application.SwitchPopUp(new File_ReplaceIn(this));
+
+        caller.oldSearch = input.Value;
     }
 }
 public class File_ReplaceIn : PopUp
@@ -115,13 +120,15 @@ public class File_Search : PopUp
 {
     private TextBox input;
     private FileEditor editor;
+    public Cursor_2D_FindSelect caller;
 
-    public File_Search(FileEditor editor)
+    public File_Search(FileEditor editor, Cursor_2D_FindSelect parent)
     {
+        this.caller = parent;
         this.editor = editor;
 
         title = "Search";
-        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        input = new TextBox() { Label = $"Enter search string:", Value = parent.oldSearch };
         components.Add(input);
         Add_BtnOk();
         Add_FindAllBtn();
@@ -131,6 +138,7 @@ public class File_Search : PopUp
     {
         editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         BtnCancel_Clicked();
+        caller.oldSearch = input.Value;
     }
 
     #region FindAllBtn
