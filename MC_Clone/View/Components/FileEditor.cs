@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
+
 public class FileEditor : IComponent
 {
     #region Atributes
@@ -25,13 +26,14 @@ public class FileEditor : IComponent
     public Cursor_2D_Select Marker;
     public Cursor_2D_FindSelect Select;
 
+    public Cursor_2D Cursor;
+
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
     public List<string> Rows = new List<string>(); //real rows in txt
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
     public string flag = "-";
-
     #endregion
 
     #region Properties

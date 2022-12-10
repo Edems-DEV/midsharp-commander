@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
+
 internal class EditWindow : Window
 {
     private FileSystemInfo file;
@@ -26,7 +27,6 @@ internal class EditWindow : Window
 
         Application.WinSize.OnWindowSizeChange += OnResize;
     }
-
     public override void Draw()
     {
         Console.Clear(); //editor
@@ -108,7 +108,6 @@ public class Header_Edit //mak emore genral an make one specific for this class
         }
     }
 
-    
     public string Mode(string mod = "-") //[-M---]
     {
         if (!editor.ContentChanged()) //TODO: redraw in popup
