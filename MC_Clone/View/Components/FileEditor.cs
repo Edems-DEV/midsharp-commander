@@ -243,24 +243,25 @@ public class FileEditor : IComponent
         for (int i = 0; i < Rows.Count; i++)
         {
             int locMaxWidth = a;// - 1;
-            if (Rows[i].Length > a)
-            {
+            //if (Rows[i].Length > a)
+            //{
                 int lastLenght = Rows[i].Length - Cursor.X_offset;
                 if (lastLenght < locMaxWidth)
                     locMaxWidth = lastLenght;
+                if(locMaxWidth < 0) { return; } //outside of offset
                 PrintRows[i] = Rows[i].Substring(Cursor.X_offset, locMaxWidth);
-            }
-            else
-            {
-                if (Rows[i].Length <= Cursor.X_offset)
-                {
-                    PrintRows[i] = " ";
-                }
-                else
-                {
-                    PrintRows[i] = Rows[i];
-                }
-            }
+            //}
+            //else
+            //{
+            //    if (Rows[i].Length <= Cursor.X_offset)
+            //    {
+            //        PrintRows[i] = " ";
+            //    }
+            //    else
+            //    {
+            //        PrintRows[i] = Rows[i];
+            //    }
+            //}
         }
     }
     public void Enter()
