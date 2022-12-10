@@ -293,7 +293,7 @@ public class FilePanel : IComponent
         if (_isDiscs)
             label = " Drives: ";
         else
-            label = $" {_path} ";
+            label = $" {Truncate.Text(_path, GetMaxLineLength() - 2)} "; //space
         Console.Write(label);
 
         Console.ForegroundColor = oldTextColor;
