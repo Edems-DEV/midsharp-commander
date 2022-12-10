@@ -13,7 +13,7 @@ public class Select
 
     public string Content; //prep for redex
 
-    public Select(int x, int y, string content) 
+    public Select(int x, int y, string content)
     {
         X = x;
         Y = y;

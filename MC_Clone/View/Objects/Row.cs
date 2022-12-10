@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MC_Clone;
-
-public class Row
+internal class Row
 {
     public List<string> Data { get; set; } = new List<string>();
 
