@@ -8,7 +8,7 @@ namespace MC_Clone;
 public class Cursor_2D_FindSelect //TODO: find better name
 {
     #region Editor
-    private FileEditor editor;
+    public FileEditor editor;
     private Cursor_2D Cursor;
     private Application Application;
     private List<string> Rows = new List<string>();
@@ -74,7 +74,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Search
     public void Search()
     {
-        Application.SwitchPopUp(new File_Search(editor, this));
+        Application.SwitchPopUp(new File_Search(this));
     }
     
     #region Search
@@ -154,7 +154,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Replace
     public void Replace()
     {
-        Application.SwitchPopUp(new File_Replace(editor, this));
+        Application.SwitchPopUp(new File_Replace(this));
     }
     
     

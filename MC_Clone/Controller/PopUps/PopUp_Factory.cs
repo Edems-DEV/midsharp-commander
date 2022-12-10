@@ -33,11 +33,11 @@ public class File_Replace : PopUp
     public Select start;
 
     public Cursor_2D_FindSelect caller;
-
-    public File_Replace(FileEditor editor, Cursor_2D_FindSelect parent) //TODO: find better name for 'FindSelect'
+    
+    public File_Replace(Cursor_2D_FindSelect parent) //TODO: find better name for 'FindSelect'
     {
         this.caller = parent;
-        this.editor = editor;
+        this.editor = parent.editor;
         title = "Confirm replace";
         input = new TextBox() { Label = $"Enter search string:", Value = caller.oldSearch };
         input2 = new TextBox() { Label = $"Enter replacement string:", Value = "" };
@@ -122,10 +122,10 @@ public class File_Search : PopUp
     private FileEditor editor;
     public Cursor_2D_FindSelect caller;
 
-    public File_Search(FileEditor editor, Cursor_2D_FindSelect parent)
+    public File_Search(Cursor_2D_FindSelect parent)
     {
         this.caller = parent;
-        this.editor = editor;
+        this.editor = parent.editor;
 
         title = "Search";
         input = new TextBox() { Label = $"Enter search string:", Value = parent.oldSearch };
