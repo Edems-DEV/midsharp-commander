@@ -278,20 +278,18 @@ public class CopyMsg : PopUp
     {
         this.file = file;
 
-        if (file == null)
-        {
-            //Application.SwitchPopUp(new ErrorMsg("Can't work with '/..'!"));
-            secondPane.Application.SwitchPopUp(new EmptyMsg()); //doesn know app in constructor?
-            return;
-        }
-
         title = "Copy";
-        details.Add($"Copy: \"{file.Name}\"");
+        if (file != null)
+        {
+            details.Add($"Copy: \"{file.Name}\"");
+        }
         input = new TextBox() { Label = $"To:", Value = secondPane.Path_ }; //destPath 
                                          //old: Value = Misc.GetPath(file.FullName, 1)
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
+        //if (file != null)
+            secondPane.Application.SwitchPopUp(new EmptyMsg());
     }
 
 
