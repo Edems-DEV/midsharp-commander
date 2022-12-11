@@ -1,4 +1,4 @@
-﻿namespace MC_Clone;
+﻿  namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
@@ -545,10 +545,12 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
+        if (GetActiveObject() == null){ return;}
         Application.SwitchPopUp(new CopyMsg(GetActiveObject(), secondPane));
     }
     private void RenMov()
     {
+        if (GetActiveObject() == null) { return; }
         Application.SwitchPopUp(new MoveMsg(GetActiveObject(), secondPane));
         cursor.Up(); //FIX: rename in same folder
     }

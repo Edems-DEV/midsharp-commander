@@ -277,19 +277,14 @@ public class CopyMsg : PopUp
     public CopyMsg(FileSystemInfo file, FilePanel secondPane) //: base()
     {
         this.file = file;
-
+        
         title = "Copy";
-        if (file != null)
-        {
-            details.Add($"Copy: \"{file.Name}\"");
-        }
+        details.Add($"Copy: \"{file.Name}\"");
         input = new TextBox() { Label = $"To:", Value = secondPane.Path_ }; //destPath 
                                          //old: Value = Misc.GetPath(file.FullName, 1)
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
-        //if (file != null)
-            secondPane.Application.SwitchPopUp(new EmptyMsg());
     }
 
 
@@ -312,11 +307,6 @@ public class MoveMsg : PopUp
     public MoveMsg(FileSystemInfo file, FilePanel secondPane)
     {
         this.file = file;
-
-        if (file == null)
-        {
-            Application.SwitchPopUp(new ErrorMsg("Can't work with '/..'!"));
-        }
         
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
