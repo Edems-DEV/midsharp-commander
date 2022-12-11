@@ -1,0 +1,24 @@
+FileList:
+-----------------------------
+Create:
+- folder: {F7} [MyFolder]
+- file:   {F2} [MyFile.txt]
+Move:
+- folder: {F6} [MyFolder]
+- file:   {F6} [MyFile.txt]
+ReName:
+- folder: {F6}   [MyFolder] => [DeleteMe]
+- file:   {F6} [MyFile.txt] => [DeleteMe.txt]
+Copy:
+- folder: {F4}   [MyFolder] => [DeleteMe]
+- file:   {F4} [MyFile.txt] => [DeleteMe.txt]
+Delete:
+- folder: {F8}  [DeleteMe]
+- file:   {F8}  [DeleteMe.txt]
+
+Misc:
+- Show drives {F1}
+- error MSG (no permision)
+
+=> next file
+

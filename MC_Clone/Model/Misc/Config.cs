@@ -38,8 +38,8 @@ internal static class l
 
 public class Config
 {
-    public string Path_LeftPane = MyPath.Project();
-    public string Path_RightPane = @".";
+    public string Path_LeftPane = MyPath.Project() + @"Showcase\1";
+    public string Path_RightPane = MyPath.Project() + @"Showcase\2";//MyPath.Project()
 
     //------------------Color schemes------------------
     public static ConsoleColor[] CScheme_Legacy = { ConsoleColor.Black    , ConsoleColor.White ,
