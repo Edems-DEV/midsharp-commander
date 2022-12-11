@@ -278,6 +278,13 @@ public class CopyMsg : PopUp
     {
         this.file = file;
 
+        if (file == null)
+        {
+            //Application.SwitchPopUp(new ErrorMsg("Can't work with '/..'!"));
+            secondPane.Application.SwitchPopUp(new EmptyMsg()); //doesn know app in constructor?
+            return;
+        }
+
         title = "Copy";
         details.Add($"Copy: \"{file.Name}\"");
         input = new TextBox() { Label = $"To:", Value = secondPane.Path_ }; //destPath 
@@ -308,6 +315,11 @@ public class MoveMsg : PopUp
     {
         this.file = file;
 
+        if (file == null)
+        {
+            Application.SwitchPopUp(new ErrorMsg("Can't work with '/..'!"));
+        }
+        
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
         input = new TextBox() { Label = "To:", Value = secondPane.Path_ };
