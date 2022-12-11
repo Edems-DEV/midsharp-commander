@@ -203,7 +203,14 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         {
             input = GetActiveChar();
         }
-        Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        try
+        {
+            Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        }
+        catch (Exception)
+        {
+            
+        }
         
         
         Console.Write(input);

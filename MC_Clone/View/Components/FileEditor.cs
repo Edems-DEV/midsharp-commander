@@ -28,7 +28,7 @@ public class FileEditor : IComponent
 
     public FileSystemInfo File { get; set; }
     public List<string> OriginalRows = new List<string>();
-    public List<string> Rows = new List<string>(); //real rows in txt
+    public List<string> rows = new List<string>(); //real rows in txt
     public List<string> PrintRows = new List<string>(); //rows wraped as needed -> works with 'visible'
 
     public string flag = "-";
@@ -36,6 +36,15 @@ public class FileEditor : IComponent
 
     #region Properties
     //ToDo: new object 'Cursor'
+    public List<string> Rows
+    {
+        get { return rows; }
+        set{
+            rows = value;
+            Cursor.Y_totalSize = rows.Count; //useless
+            //Wrap();
+        }
+    }
     public int Y
     {
         get { return _y; }
@@ -76,9 +85,14 @@ public class FileEditor : IComponent
         this.Y = y;
         FS = new MyFileService(file.FullName);
         OriginalRows = FS.Read();
+        if (OriginalRows.Count() == 0)
+        {
+            OriginalRows.Add(" "); //empthy file
+        }
+        Cursor = new Cursor_2D(Y, 0, 0, X, 0);
         Rows = new List<string>(OriginalRows);
         PrintRows = new List<string>(OriginalRows);
-        Cursor = new Cursor_2D(Y, 0, Rows.Count, X, 0);
+        
         Marker = new Cursor_2D_Select(this);
         Select = new Cursor_2D_FindSelect(this);
 
@@ -122,7 +136,7 @@ public class FileEditor : IComponent
 
     public string NextRow()
     {
-        if (Cursor.Y_selected == Cursor.Y_totalSize - 1)
+        if (Cursor.Y_selected == Cursor.Y_totalSize - 1 || Cursor.Y_selected == Cursor.Y_totalSize)
             return ActiveRow;
 
         return Rows[Cursor.Y_selected + 1];
@@ -234,7 +248,7 @@ public class FileEditor : IComponent
     public void DeleteLine()
     {
         Rows.RemoveAt(Cursor.Y_selected);
-        Cursor.Y_selected--;
+        Cursor.DeleteLine();
     }
 
     public void Wrap()
@@ -266,7 +280,7 @@ public class FileEditor : IComponent
     }
     public void Enter()
     {
-        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        int CursorPos = Cursor.X_selected; //Cursor.X_offset + 
         string newLine = "";
         newLine = ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
         if (newLine == "" || newLine == null){newLine = " ";}
@@ -274,22 +288,21 @@ public class FileEditor : IComponent
         PrintRows = new List<string>(Rows);
 
         ActiveRow = ActiveRow.Substring(0, CursorPos);
-        Cursor.X_selected = 0;
-        Cursor.Y_selected += 1;
+        Cursor.AddLine();
     }
     public void WriteChar(char Input)
     {
-        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        int CursorPos = Cursor.X_selected; //Cursor.X_offset + 
         ActiveRow =
             ActiveRow.Substring(0, CursorPos)
             + Input + 
             ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos);
-        Cursor.X_selected++;
+        Cursor.Right(NextRow());
     }
 
     public void Backspace()
     {
-        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        int CursorPos = Cursor.X_selected; //Cursor.X_offset + 
         if (CursorPos == 0)
         {
             string deletedRow = ActiveRow;
@@ -299,7 +312,7 @@ public class FileEditor : IComponent
         }
         else if (CursorPos == ActiveRow.Length - 1)
         {
-            Cursor.X_selected--;
+            Cursor.Left(NextRow());
             ActiveRow = ActiveRow.Remove(ActiveRow.Length - 1);
         }
         else
@@ -309,12 +322,12 @@ public class FileEditor : IComponent
             +
             ActiveRow.Substring(CursorPos, ActiveRow.Length - CursorPos); //-1
 
-            Cursor.X_selected--;
+            Cursor.Left(NextRow());
         }
     }
     public void Delete()
     {
-        int CursorPos = Cursor.X_offset + Cursor.X_selected;
+        int CursorPos = Cursor.X_selected; //Cursor.X_offset + 
         ActiveRow =
             ActiveRow.Substring(0, CursorPos)
             +

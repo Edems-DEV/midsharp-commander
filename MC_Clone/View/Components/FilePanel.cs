@@ -550,6 +550,7 @@ public class FilePanel : IComponent
     private void RenMov()
     {
         Application.SwitchPopUp(new MoveMsg(GetActiveObject(), secondPane));
+        cursor.Up(); //FIX: rename in same folder
     }
     private void MkDir()
     {
