@@ -92,7 +92,7 @@ public class FileEditor : IComponent
         Cursor = new Cursor_2D(Y, 0, 0, X, 0);
         Rows = new List<string>(OriginalRows);
         PrintRows = new List<string>(OriginalRows);
-        
+
         Marker = new Cursor_2D_Select(this);
         Select = new Cursor_2D_FindSelect(this);
 
