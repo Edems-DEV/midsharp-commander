@@ -31,12 +31,14 @@ public class File_Replace : PopUp
     public TextBox input2;
 
     public Select start;
-
-    public File_Replace(FileEditor editor)
+    public Cursor_2D_FindSelect caller;
+    
+    public File_Replace(Cursor_2D_FindSelect parent) //TODO: find better name for 'FindSelect'
     {
-        this.editor = editor;
+        this.caller = parent;
+        this.editor = parent.editor;
         title = "Confirm replace";
-        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        input = new TextBox() { Label = $"Enter search string:", Value = caller.oldSearch };
         input2 = new TextBox() { Label = $"Enter replacement string:", Value = "" };
         components.Add(input);
         components.Add(input2);
@@ -48,6 +50,7 @@ public class File_Replace : PopUp
         editor.Draw(); //override this popup //broken?
         start = editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         Application.SwitchPopUp(new File_ReplaceIn(this));
+        caller.oldSearch = input.Value;
     }
 }
 public class File_ReplaceIn : PopUp
@@ -115,13 +118,15 @@ public class File_Search : PopUp
 {
     private TextBox input;
     private FileEditor editor;
+    public Cursor_2D_FindSelect caller;
 
-    public File_Search(FileEditor editor)
+    public File_Search(Cursor_2D_FindSelect parent)
     {
-        this.editor = editor;
+        this.caller = parent;
+        this.editor = parent.editor;
 
         title = "Search";
-        input = new TextBox() { Label = $"Enter search string:", Value = "" };
+        input = new TextBox() { Label = $"Enter search string:", Value = parent.oldSearch };
         components.Add(input);
         Add_BtnOk();
         Add_FindAllBtn();
@@ -131,6 +136,7 @@ public class File_Search : PopUp
     {
         editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         BtnCancel_Clicked();
+        caller.oldSearch = input.Value;
     }
 
     #region FindAllBtn
@@ -266,14 +272,14 @@ public class CopyMsg : PopUp
     private TextBox input;
     private FileSystemInfo file;
 
-    public CopyMsg(FileSystemInfo file) //: base()
+    public CopyMsg(FileSystemInfo file, FilePanel secondPane) //: base()
     {
         this.file = file;
-
+        
         title = "Copy";
         details.Add($"Copy: \"{file.Name}\"");
-        //details.Add($"from: \"{Truncate.Path(file.FullName)}\"");
-        input = new TextBox() { Label = $"To:", Value = Misc.GetPath(file.FullName, 1) }; //destPath
+        input = new TextBox() { Label = $"To:", Value = secondPane.Path_ }; //destPath 
+                                         //old: Value = Misc.GetPath(file.FullName, 1)
         components.Add(input);
         Add_BtnOk();
         Add_CancelBtn();
@@ -296,13 +302,13 @@ public class MoveMsg : PopUp
     private TextBox input2;
     private FileSystemInfo file;
 
-    public MoveMsg(FileSystemInfo file)
+    public MoveMsg(FileSystemInfo file, FilePanel secondPane)
     {
         this.file = file;
-
+        
         title = "Move";
         details.Add($"Move: \"{file.Name}\"");
-        input = new TextBox() { Label = "To:", Value = Misc.GetPath(file.FullName, 1) };
+        input = new TextBox() { Label = "To:", Value = secondPane.Path_ };
         input2 = new TextBox() { Label = "Rename to:", Value = file.Name };
         components.Add(input);
         components.Add(input2);

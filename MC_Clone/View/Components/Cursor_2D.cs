@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -203,7 +203,14 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
         {
             input = GetActiveChar();
         }
-        Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        try
+        {
+            Console.SetCursorPosition((X_selected - X_offset) + X_start, (Y_selected - Y_offset) + Y_start);
+        }
+        catch (Exception)
+        {
+            
+        }
         
         
         Console.Write(input);
@@ -219,7 +226,7 @@ public class Cursor_2D : Cursor_1D //(1D + X ['-'] )
     
     public char GetActiveChar()
     {
-        if (X_selected + X_offset > Row.Length - 1) // ? X_selected + X_offset => X_selected //why?
+        if (X_selected  > Row.Length - 1) // ? X_selected + X_offset => X_selected //why?
         {
             X_selected = Row.Length - 1;
         }

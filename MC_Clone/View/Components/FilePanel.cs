@@ -1,16 +1,17 @@
-﻿namespace MC_Clone;
+﻿  namespace MC_Clone;
 
 public class FilePanel : IComponent
 {
-    public ListWindow listWindow { get; set; }
+    public FilePanel secondPane { get; set; }
     public Application Application { get; set; }
 
     public event Action<int> RowSelected;
 
+    public Cursor_1D cursor;
     private FileManager FM;
     private List<int> widths;
     private List<Row> rows = new List<Row>();
-    private List<FileSystemInfo> FS_Objects = new List<FileSystemInfo>();
+    private List<FileSystemInfo> fs_Objects = new List<FileSystemInfo>();
     // Size and Date are always trunced to 7 & 12 (TODO: del width -> use this)
     private List<string> headers = new List<string>(new string[] { "Name", Misc.PadBoth("Size", 7), Misc.PadBoth("Date", 12) });
 
@@ -29,10 +30,6 @@ public class FilePanel : IComponent
     private bool _isActive;
     private bool _isDiscs;
     private string _path = "";
-
-    private int _offset = 0;
-    private int _selected = 0;
-    private int _visible = 10;
     #endregion
 
     #region Properties
@@ -63,36 +60,31 @@ public class FilePanel : IComponent
         }
     }
 
-    public int Visible
+    public List<FileSystemInfo> FS_Objects //Cursor Wrapper ?
     {
-        get { return _visible; }
+        get { return fs_Objects; }
         set
         {
-            if (value < 0)
-                throw new Exception(String.Format($"Visible < 0 (val: {value})"));
-            _visible = value;
+            fs_Objects = value;
+            cursor.Y_totalSize = fs_Objects.Count();
         }
     }
-    public int Offset
+    
+
+    public int Visible //Cursor Wrapper
     {
-        get { return _offset; }
-        set
-        {
-            if (value < 0) { _offset = 0; return; }
-            if (FS_Objects.Count <= Visible) { return; }
-            if (value >= FS_Objects.Count - Visible) { _offset = FS_Objects.Count - Visible; _selected = FS_Objects.Count - 1; return; }
-            _offset = value;
-        }
+        get { return cursor.Y_visible; }
+        set { cursor.Y_visible = value; }
     }
-    public int Selected
+    public int Offset //Cursor Wrapper
     {
-        get { return _selected; }
-        set
-        {
-            if (value < 0) { return; }
-            if (value >= rows.Count - deadRows) { return; }
-            _selected = value;
-        }
+        get { return cursor.Y_offset; }
+        set {cursor.Y_offset = value; } //Y_totalSize = FS_Objects.Count}
+    }
+    public int Selected //Cursor Wrapper
+    {
+        get { return cursor.Y_selected; }
+        set{cursor.Y_selected = value;}
     }
     public bool IsActive
     {
@@ -120,10 +112,12 @@ public class FilePanel : IComponent
     #region Constructor
     void Start(int x = 0, int y = 0)
     {
+        
         X = x;
         Y = y;
         y_temp = y;
         UpdateMaxLengths();
+        cursor = new Cursor_1D(Y, 0, fs_Objects.Count);
         FM = new FileManager();
         //set lisener for if window size changed -> update rows and their length +...
         OnResize();
@@ -156,22 +150,22 @@ public class FilePanel : IComponent
                 break;
             //---------NAVIGATION---------
             case ConsoleKey.UpArrow:
-                ScrollUp();
+                cursor.Up();
                 break;
             case ConsoleKey.DownArrow:
-                ScrollDown();
+                cursor.Down();
                 break;
             case ConsoleKey.Home:
-                GoBegin();
+                cursor.GoBegin();
                 break;
             case ConsoleKey.End:
-                GoEnd();
+                cursor.GoEnd();
                 break;
             case ConsoleKey.PageUp:
-                PageUp();
+                cursor.PageUp();
                 break;
             case ConsoleKey.PageDown:
-                PageDown();
+                cursor.PageDown();
                 break;
             //------------------------
             //---------FUNCTION---------
@@ -299,7 +293,7 @@ public class FilePanel : IComponent
         if (_isDiscs)
             label = " Drives: ";
         else
-            label = $" {_path} ";
+            label = $" {Truncate.Text(_path, GetMaxLineLength() - 2)} "; //space
         Console.Write(label);
 
         Console.ForegroundColor = oldTextColor;
@@ -359,6 +353,9 @@ public class FilePanel : IComponent
         widths = Widths();
         UpdateMaxLengths();
         Visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Menu) - 3 (Header) - 3 (Status + FKey) - 1 (fKey ofset)
+
+        cursor.Y_visible = Console.WindowHeight - 1 - 1 - 2 - 3 - 1; //-1 (Header) - 1 (Footer)
+                                                                     //+ {3 (Status + FKey) - 1 (fKey ofset)} => 1h bug :)
     }
     public void UpdateMaxLengths() // why? So I don't have to calculate that for each line - PERFORMANCE?
     {
@@ -510,48 +507,11 @@ public class FilePanel : IComponent
 
     #endregion
     #region HandleKey methods
-    #region Controls
-    private void ScrollUp()
-    {
-        Selected--;
-
-        if (Selected == Offset - 1)
-            Offset--;
-    }
-    private void ScrollDown()
-    {
-        Selected++;
-
-        if (Selected == Offset + Math.Min(Visible, this.rows.Count))
-            Offset++;
-    }
-    private void GoBegin()
-    {
-        Selected = 0;
-        Offset = 0;
-    }
-    private void GoEnd()
-    {
-        Selected = FS_Objects.Count - 1;
-        Offset = FS_Objects.Count - Visible;
-    }
-    private void PageUp()
-    {
-        Selected = Selected - Visible;
-        Offset = Offset - Visible;
-    }
-    private void PageDown()
-    {
-        Selected = Selected + Visible;
-        Offset = Offset + Visible;
-    }
-    #endregion
     #region FunctionKeys
     private void Drives() //Help
     {
-        //SetDiscs();
-        //RefreshPanel();
-        Application.SwitchPopUp(new ErrorMsg("I can acces App from FilePanel"));
+        SetDiscs();
+        RefreshPanel();
     }
     private void CreateFile() //Menu //IDEA: move closer to MkDir?
     {
@@ -585,11 +545,14 @@ public class FilePanel : IComponent
     }
     private void Copy()
     {
-        Application.SwitchPopUp(new CopyMsg(GetActiveObject()));
+        if (GetActiveObject() == null){ return;}
+        Application.SwitchPopUp(new CopyMsg(GetActiveObject(), secondPane));
     }
     private void RenMov()
     {
-        Application.SwitchPopUp(new MoveMsg(GetActiveObject()));
+        if (GetActiveObject() == null) { return; }
+        Application.SwitchPopUp(new MoveMsg(GetActiveObject(), secondPane));
+        cursor.Up(); //FIX: rename in same folder
     }
     private void MkDir()
     {
@@ -628,6 +591,11 @@ public class FilePanel : IComponent
 
     private void ChangeDir()
     {
+        if (!FM.CheckPermision(Path_, GetActiveObject()))
+        {
+            Application.SwitchPopUp(new ErrorMsg("You have no permision to access this folder"));
+            return;
+        }
         string path = FM.ChangeDir(Path_, GetActiveObject());
         if (path == null)
             _isDiscs = true;
@@ -657,7 +625,7 @@ public class FilePanel : IComponent
     }
     private void RefreshPanel()
     {
-        GoBegin();
+        cursor.GoBegin();
         UpdatePanel();
     }
     private void UpdatePanel()

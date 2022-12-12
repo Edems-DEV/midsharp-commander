@@ -8,7 +8,7 @@ namespace MC_Clone;
 public class Cursor_2D_FindSelect //TODO: find better name
 {
     #region Editor
-    private FileEditor editor;
+    public FileEditor editor;
     private Cursor_2D Cursor;
     private Application Application;
     private List<string> Rows = new List<string>();
@@ -43,6 +43,12 @@ public class Cursor_2D_FindSelect //TODO: find better name
     {
         foreach (var select in Selects)
         {
+            if (select.Y > Cursor.Y_visible + Cursor.Y_offset ||
+                select.Y < Cursor.Y_offset)
+                continue; //select is not visible
+            if (select.X > Cursor.X_visible + Cursor.X_offset ||
+                select.X < Cursor.X_offset)
+                continue; //select is not visible
             WriteSelect(select.Content, select.X, select.Y);
         }
     }
@@ -59,8 +65,8 @@ public class Cursor_2D_FindSelect //TODO: find better name
 
         Console.BackgroundColor = Config.Selection_Backgroud;
         Console.ForegroundColor = Config.Selection_Foreground;
-
-        Console.SetCursorPosition(x, y + 1);//+1 => header
+        
+        Console.SetCursorPosition(x - Cursor.X_offset, y + 1);//+1 => header
         Console.Write(text);
 
         #region Restore values
@@ -74,7 +80,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Search
     public void Search()
     {
-        Application.SwitchPopUp(new File_Search(editor));
+        Application.SwitchPopUp(new File_Search(this));
     }
     
     #region Search
@@ -85,12 +91,20 @@ public class Cursor_2D_FindSelect //TODO: find better name
         {
             if (Rows[i].Contains(searchString))
             {
+                Cursor.Row = Rows[i]; //offset property check
                 if (i > Cursor.Y_visible)
                 {
                     Cursor.Y_offset = i - Cursor.Y_visible;
                 }
+                if (Rows[i].Length > Cursor.X_visible)
+                {
+                    Cursor.X_offset = Rows[i].IndexOf(searchString) - 1;
+                }
                 Cursor.X_selected = Rows[i].IndexOf(searchString); //todo add offest
                 Cursor.Y_selected = i;
+                //int idk = Cursor.X_selected - Cursor.X_offset;
+                //editor.Draw();
+
                 WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected - Cursor.Y_offset);
                 Select result = new Select(Cursor.X_selected, Cursor.Y_selected, Rows[i].Substring(Cursor.X_selected, searchString.Length));
                 Selects.Add(result);
@@ -154,7 +168,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
     #region Replace
     public void Replace()
     {
-        Application.SwitchPopUp(new File_Replace(editor));
+        Application.SwitchPopUp(new File_Replace(this));
     }
     
     

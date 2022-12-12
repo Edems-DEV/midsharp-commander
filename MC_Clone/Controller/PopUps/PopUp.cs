@@ -108,6 +108,11 @@ public abstract class PopUp : Window //?: Window -> have same needs
                 return;
         }
 
+        if (components[Selected] is TextBox && info.Key == ConsoleKey.Enter)
+        {
+            BtnOk_Clicked();
+            return;
+        }
         components[Selected].HandleKey(info);
     }
     #region Button factory

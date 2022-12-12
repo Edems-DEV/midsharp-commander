@@ -117,7 +117,22 @@ public class Cursor_1D //: IComponent //(Y '|')
         Y_selected = Y_totalSize - 1;
         Y_offset = Y_totalSize - Y_visible;
     }
-
+    #region Other
+    //aleternative: hook changing list using ref
+    public virtual void DeleteLine()
+    {
+        //Y_selected--;
+        Y_totalSize--;
+        //GoBegin();
+        Up();
+    }
+    public virtual void AddLine()
+    {
+        Y_totalSize++;
+        GoBegin();
+        Down();
+    }
+    #endregion
     #region Component
     //public void Draw()
     //{
