@@ -20,8 +20,8 @@ public class Application
         this.SwitchPopUp(new EmptyMsg());
         WinSize.Application = this;
 
-        WinSize.OnWindowSizeChange += window.Draw; //on EditWindow still draw ListWindow //COMMMENTED? WHY (FileEditor)?
-        WinSize.OnWindowSizeChange += popUp.Draw; //use SwitchPopUp obeject (why?)
+        //WinSize.OnWindowSizeChange += window.Draw; //on EditWindow still draw ListWindow //COMMMENTED? WHY (FileEditor)?
+        //WinSize.OnWindowSizeChange += popUp.Draw; //use SwitchPopUp obeject (why?)
     }
 
     public void HandleKey(ConsoleKeyInfo info)
