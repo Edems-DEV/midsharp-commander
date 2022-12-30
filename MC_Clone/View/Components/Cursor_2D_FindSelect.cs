@@ -65,7 +65,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
 
         Console.BackgroundColor = Config.Selection_Backgroud;
         Console.ForegroundColor = Config.Selection_Foreground;
-
+        
         Console.SetCursorPosition(x - Cursor.X_offset, y + 1);//+1 => header
         Console.Write(text);
 
@@ -104,6 +104,7 @@ public class Cursor_2D_FindSelect //TODO: find better name
                 Cursor.Y_selected = i;
                 //int idk = Cursor.X_selected - Cursor.X_offset;
                 //editor.Draw();
+
                 WriteSelect(searchString, Cursor.X_selected, Cursor.Y_selected - Cursor.Y_offset);
                 Select result = new Select(Cursor.X_selected, Cursor.Y_selected, Rows[i].Substring(Cursor.X_selected, searchString.Length));
                 Selects.Add(result);

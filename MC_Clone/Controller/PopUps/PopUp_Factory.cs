@@ -31,7 +31,6 @@ public class File_Replace : PopUp
     public TextBox input2;
 
     public Select start;
-
     public Cursor_2D_FindSelect caller;
     
     public File_Replace(Cursor_2D_FindSelect parent) //TODO: find better name for 'FindSelect'
@@ -51,7 +50,6 @@ public class File_Replace : PopUp
         editor.Draw(); //override this popup //broken?
         start = editor.Select.SearchString(input.Value, editor.Cursor.Y_selected);
         Application.SwitchPopUp(new File_ReplaceIn(this));
-
         caller.oldSearch = input.Value;
     }
 }
