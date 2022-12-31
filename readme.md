@@ -60,13 +60,15 @@ This project is about trying to replicate the original Midnight Commander using 
 
 <details open> <summary>📁File Manager</summary>
 
-![FilePanel_showcase](./resources/MC_fileManager_5fps.gif)
+![FilePanel_showcase](https://i.imgur.com/DLah2LE.png)
+[► GIF showcase](https://i.imgur.com/49kWFIP.gif)
 
 </details>
 
 <details> <summary>📝Text Editor</summary>
 
-![TextEditor_showcase](./resources/MC_editor_5fps.gif)
+![TextEditor_showcase](https://i.imgur.com/5etjCTk.png)
+[► GIF showcase](https://i.imgur.com/CeDJT35.gif)
 
 </details>
 
