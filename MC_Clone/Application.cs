@@ -38,13 +38,15 @@ public class Application
 
     public void Draw()
     {   
+        //this.window.Draw(); //cant be in else -> on resize backgroud is not redrawn
+
         if (popUp.GetType() != typeof(EmptyMsg))
         {
             this.popUp.Draw();
         }
         else
         {
-            this.window.Draw(); //cant be in else -> on resize backgroud is not redrawn
+            this.window.Draw(); //popup tabs blinks (popup is always redrawn by window)
         }
     }
 
